@@ -30,14 +30,15 @@ class Data:
             del self._data[key]
 
     def __str__(self):
-        string = "Data set for spatial segregation analysis\n"
-        string += "Year: {}\nHost group: {}\nOther group(s): {}\n".format(self.year, self.host, self.other)
+        string = ["Data set for spatial segregation analysis"]
+        string.append("Year: {}\nHost group: {}\nOther group(s): {}".format(self.year, self.host, self.other))
 
         for k, v in self._data.items():
-            string += "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}\n" \
-                .format(k, v['x'], v['y'], v['host'], v['other'])
+            string.append(
+                "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}\n" \
+                .format(k, v['x'], v['y'], v['host'], v['other']))
 
-        return string
+        return string.join('\n')
 
     def get_data(self, keys='all'):
         """
