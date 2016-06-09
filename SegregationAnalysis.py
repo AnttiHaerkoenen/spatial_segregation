@@ -18,9 +18,9 @@ class SegregationAnalysis:
 
 def main():
     os.chdir(DATA_FILE)
-    v80 = Data.aggregate_sum(Data.reform(pd.read_csv('1880.csv', sep='\t')))
-    v00 = Data.aggregate_sum(Data.reform(pd.read_csv('1900.csv', sep='\t')))
-    v20 = Data.aggregate_sum(Data.reform(pd.read_csv('1920.csv', sep='\t')))
+    v80 = data.aggregate_sum(data.reform(pd.read_csv('1880.csv', sep='\t')))
+    v00 = data.aggregate_sum(data.reform(pd.read_csv('1900.csv', sep='\t')))
+    v20 = data.aggregate_sum(data.reform(pd.read_csv('1920.csv', sep='\t')))
 
     point_shp = pysal.open("points.shp")
     point_db = pysal.open("points.dbf", 'r')
