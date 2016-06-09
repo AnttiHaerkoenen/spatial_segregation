@@ -6,6 +6,8 @@ import pysal
 DATA_FILE = 'data'
 
 
+### TESTI ####
+
 class SegregationAnalysis:
     def __init__(self, data, cell_sizes, kernel='distance_decay', **kernel_param):
         self.data = data

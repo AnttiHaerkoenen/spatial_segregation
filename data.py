@@ -30,8 +30,8 @@ class Data:
             del self._data[key]
 
     def __str__(self):
-        string = ["Data set for spatial segregation analysis"]
-        string.append("Year: {}\nHost group: {}\nOther group(s): {}".format(self.year, self.host, self.other))
+        string = ["Data set for spatial segregation analysis",
+                  "Year: {}\nHost group: {}\nOther group(s): {}".format(self.year, self.host, self.other)]
 
         for k, v in self._data.items():
             string.append(
