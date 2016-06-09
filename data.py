@@ -56,13 +56,14 @@ class SimulatedData(Data):
         self._data = self._shuffle(model_data.get_data())
     
     def __str__(self):
-        string = "Simulated data for spatial segregation analysis\n"
+        string = ["Simulated data for spatial segregation analysis"]
 
         for k, v in self._data.items():
-            string += "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}\n" \
-                .format(k, v['x'], v['y'], v['host'], v['other'])
+            string.append(
+                "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}" \
+                .format(k, v['x'], v['y'], v['host'], v['other']))
 
-        return string
+        return string.join('\n')
 
     @staticmethod
     def _shuffle(data, groups=('host', 'other')):
