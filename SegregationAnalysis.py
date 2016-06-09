@@ -29,7 +29,7 @@ def main():
     for i in range(len(point_shp)):
         point_data.append([point_db[i][0][1], point_shp[i][0], point_shp[i][1]])
 
-    popdata = {
+    pop_data = {
         1880: v80,
         1900: v00,
         1920: v20
@@ -38,7 +38,7 @@ def main():
     cells = [i for i in range(15, 61, 15)]
     bws = [i for i in range(2, 6)]
 
-    data = data.Data(popdata[1880], point_data, host_group='lutheran', other_group='orthodox', year=1880)
+    data = data.Data(pop_data[1880], point_data, host_group='lutheran', other_group='orthodox', year=1880)
 
     analysis = SegregationAnalysis(data=data, cell_sizes=cells, bandwidths=bws)
 
