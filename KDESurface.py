@@ -15,6 +15,9 @@ class KDESurface:
         self.y_max, self.y_min = data.get_y_limits()
         self.x_max, self.x_min = data.get_x_limits()
 
+        self._y_dim = np.rint((self.y_max - self.y_min) / self.cell_size) + 1
+        self._x_dim = np.rint((self.x_max - self.x_min) / self.cell_size) + 1
+
         # TODO self.x
         # TODO self.y
         # TODO self.host
@@ -34,6 +37,10 @@ class KDESurface:
 
     def __len__(self):
         pass
+
+    @property
+    def size(self):
+        return self._y_dim, self._x_dim
 
 ########################################################################################################################
 

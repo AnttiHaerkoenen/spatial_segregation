@@ -25,7 +25,7 @@ class SegregationIndices:
         for key in self.indices:
             string.append('{0:10} \t {1}'.format(key, self.indices[key]))
 
-        return string.join('\n')
+        return '\n'.join(string)
 
     @property
     def indices(self):
