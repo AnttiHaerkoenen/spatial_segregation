@@ -7,6 +7,8 @@ DATA_FILE = 'data'
 
 class Data:
     def __init__(self, population_data, point_data, host_group, other_group, year=None):
+        self.population_data = population_data
+        self.point_data = point_data
         self.year = year
         self.host = host_group
         self.other = other_group
@@ -38,7 +40,7 @@ class Data:
                 "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}\n"
                 .format(k, v['x'], v['y'], v['host'], v['other']))
 
-        return string.join('\n')
+        return '\n'.join(string)
 
     def get_data(self, keys='all'):
         """
@@ -51,10 +53,29 @@ class Data:
         else:
             return {self.data[k] for k in keys if k in self.data.keys()}
 
+    def get_y_limits(self):
+        y_max = y_min = self.data[random.choice(self.data.keys())]['y']
+
+        for v in self.data.values():
+            y_max = v['y'] if v['y'] > y_max else y_max
+            y_min = v['y'] if v['y'] < y_min else y_min
+
+        return y_max, y_min
+
+    def get_x_limits(self):
+        x_max = x_min = self.data[random.choice(self.data.keys())]['x']
+
+        for v in self.data.values():
+            x_max = v['y'] if v['y'] > x_max else x_max
+            x_min = v['y'] if v['y'] < x_min else x_min
+
+        return x_max, x_min
+
 
 class SimulatedData(Data):
     def __init__(self, model_data):
-        self.data = self._shuffle(model_data.get_data())
+        Data.__init__(self, model_data.population_data, model_data.point_data, model_data.host, model_data.other)
+        self.data = self._shuffle(self.data)
     
     def __str__(self):
         string = ["Simulated data for spatial segregation analysis"]
@@ -64,7 +85,7 @@ class SimulatedData(Data):
                 "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}"
                 .format(k, v['x'], v['y'], v['host'], v['other']))
 
-        return string.join('\n')
+        return '\n'.join(string)
 
     @staticmethod
     def _shuffle(data, groups=('host', 'other')):
