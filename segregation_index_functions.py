@@ -24,10 +24,18 @@ def km(host: np.ndarray, other: np.ndarray):
     index = 0
 
     for g in host, other:
-        # TODO
-        pass
+        y_dim, x_dim = g.shape
+        index_g = 0
+        p_g = g.sum() / total
+        for i in range(y_dim):
+            for j in range(x_dim):
+                p_gn = g[i][j] / total
+                index_gn = p_n[i][j] * abs(p_gn / p_g * p_n[i][j] - 1)
+                index_g += index_gn
+        index += index_g * p_g
 
     return index
+
 
 def hpg(host: np.ndarray, other: np.ndarray):
     """
