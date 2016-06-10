@@ -16,15 +16,28 @@ class SegregationIndices:
             self.index_functions = {}
             for key in index_functions:
                 self.index_functions[key] = all_index_functions[key]
+
         self.data = kde_surface
 
     def __str__(self):
-        string = 'Indices:'
+        string = ['Indices:']
+
         for key in self.indices:
-            string += '\n{0:10} \t {1}'.format(key, self.indices[key])
-        return string
+            string.append('{0:10} \t {1}'.format(key, self.indices[key]))
+
+        return string.join('\n')
 
     @property
     def indices(self):
         indices = {key: function(self.data) for key, function in self.index_functions}
         return indices
+
+########################################################################################################################
+
+
+def main():
+    pass
+
+
+if __name__ == '__main__':
+    main()

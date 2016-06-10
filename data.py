@@ -10,32 +10,32 @@ class Data:
         self.year = year
         self.host = host_group
         self.other = other_group
-        self._data = {}
+        self.data = {}
 
         for row in point_data:
-            self._data[row[0]] = {'x': row[1], 'y': row[2]}
+            self.data[row[0]] = {'x': row[1], 'y': row[2]}
 
         for r in population_data:
-            if r[0] in self._data.keys():
-                self._data[r[0]]['host'] = r[1]
-                self._data[r[0]]['other'] = r[2]
+            if r[0] in self.data.keys():
+                self.data[r[0]]['host'] = r[1]
+                self.data[r[0]]['other'] = r[2]
 
         bad_keys = []
 
-        for key in self._data:
+        for key in self.data:
             if key not in [r[0] for r in population_data]:
                 bad_keys.append(key)
 
         for key in bad_keys:
-            del self._data[key]
+            del self.data[key]
 
     def __str__(self):
         string = ["Data set for spatial segregation analysis",
                   "Year: {}\nHost group: {}\nOther group(s): {}".format(self.year, self.host, self.other)]
 
-        for k, v in self._data.items():
+        for k, v in self.data.items():
             string.append(
-                "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}\n" \
+                "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}\n"
                 .format(k, v['x'], v['y'], v['host'], v['other']))
 
         return string.join('\n')
@@ -47,21 +47,21 @@ class Data:
         :return: dict of dicts where plot numbers are keys to sub-dicts
         """
         if keys == 'all':
-            return self._data
+            return self.data
         else:
-            return {self._data[k] for k in keys if k in self._data.keys()}
+            return {self.data[k] for k in keys if k in self.data.keys()}
 
 
 class SimulatedData(Data):
     def __init__(self, model_data):
-        self._data = self._shuffle(model_data.get_data())
+        self.data = self._shuffle(model_data.get_data())
     
     def __str__(self):
         string = ["Simulated data for spatial segregation analysis"]
 
-        for k, v in self._data.items():
+        for k, v in self.data.items():
             string.append(
-                "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}" \
+                "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}"
                 .format(k, v['x'], v['y'], v['host'], v['other']))
 
         return string.join('\n')
@@ -77,6 +77,8 @@ class SimulatedData(Data):
                 data[i1][g], data[i2][g] = data[i2][g], data[i1][g]
 
         return data
+
+########################################################################################################################
 
 
 def aggregate_sum(data, group=0):
