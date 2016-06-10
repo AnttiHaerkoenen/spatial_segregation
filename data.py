@@ -42,6 +42,9 @@ class Data:
 
         return '\n'.join(string)
 
+    def __iter__(self):
+        return iter(self.data.values())
+
     def get_data(self, keys='all'):
         """
         Returns data from object

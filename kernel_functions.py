@@ -1,4 +1,4 @@
-def distance_decay(d, bw, a):
+def distance_decay(d, bw=10, a=1):
     """
     Distance decay function. See e. g. Martin et al. 2000
     :param d: actual distance between points
