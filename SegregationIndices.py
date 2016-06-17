@@ -10,7 +10,7 @@ all_index_functions = {
 
 class SegregationIndices:
     def __init__(self, kde_surface, index_functions="all"):
-        if index_functions.lower == "all":
+        if index_functions.lower() == "all":
             self.index_functions = all_index_functions
         else:
             self.index_functions = {}
@@ -23,7 +23,7 @@ class SegregationIndices:
         string = ['Indices:']
 
         for key in self.indices:
-            string.append('{0:10} \t {1}'.format(key, self.indices[key]))
+            string.append('{0:10} {1}'.format(key, self.indices[key]))
 
         return '\n'.join(string)
 

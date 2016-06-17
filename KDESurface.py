@@ -25,7 +25,7 @@ class KDESurface:
         self.other = np.zeros_like(self.host)
 
         for n in range(self.y_dim * self.x_dim):
-            i, j = n // self.y_dim, n % self.y_dim
+            i, j = divmod(n, self.y_dim)
             for point in data:
                 d = ((point['x'] - self.x[i][j]) ** 2 + (point['y'] - self.y[i][j])) ** 0.5
                 self.host[i][j] += point['host'] * self.kernel(d, self.kernel_param)
@@ -46,7 +46,10 @@ class KDESurface:
         return self.y_dim * self.x_dim
 
     def __eq__(self, other):
-        return (self.x == other.x and self.y == other.y and self.host == other.host and self.other == other.other)
+        return self.x == other.x \
+               and self.y == other.y \
+               and self.host == other.host \
+               and self.other == other.other
 
     @property
     def size(self):
