@@ -31,13 +31,13 @@ class Data:
             del self.data[key]
 
     def __str__(self):
-        string = ["Data set for spatial segregation analysis",
+        string = ["", "Data set for spatial segregation analysis",
                   "Year: {}\nHost group: {}\nOther group(s): {}"
                   .format(self.year, self.host, self.other)]
 
         for k, v in self.data.items():
             string.append(
-                "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}\n"
+                "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}"
                 .format(k, v['x'], v['y'], v['host'], v['other']))
 
         return '\n'.join(string)
@@ -78,10 +78,10 @@ class Data:
 class SimulatedData(Data):
     def __init__(self, model_data):
         Data.__init__(self, model_data.population_data, model_data.point_data, model_data.host, model_data.other)
-        self.data = self._shuffle(self.data)
+        self._shuffle()
     
     def __str__(self):
-        string = ["Simulated data for spatial segregation analysis"]
+        string = ["", "Simulated data for spatial segregation analysis"]
 
         for k, v in self.data.items():
             string.append(
@@ -90,17 +90,13 @@ class SimulatedData(Data):
 
         return '\n'.join(string)
 
-    @staticmethod
-    def _shuffle(data, groups=('host', 'other')):
-        index = [i for i in range(len(data))]
-
-        for i in range(len(data) * 2):
+    def _shuffle(self):
+        index = [i for i in self.data.keys()]
+        for i in range(len(self.data) * 2):
             i1 = random.choice(index)
             i2 = random.choice(index)
-            for g in groups:
-                data[i1][g], data[i2][g] = data[i2][g], data[i1][g]
-
-        return data
+            for co in ('x', 'y'):
+                self.data[i1][co], self.data[i2][co] = self.data[i2][co], self.data[i1][co]
 
 ########################################################################################################################
 
@@ -164,8 +160,15 @@ def main():
     d00 = Data(v00, pp, 'lutheran', 'orthodox', 1900)
     d20 = Data(v20, pp, 'lutheran', 'orthodox', 1920)
 
-    data = {k: d for k in (1880, 1900, 1920) for d in (d80, d00, d20)}
-    print(data)
+    data = {
+        1880: d80,
+        1900: d00,
+        1920: d20
+    }
+
+    print(d80)
+    s = SimulatedData(data[1880])
+    print(s)
 
 
 if __name__ == '__main__':
