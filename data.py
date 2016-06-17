@@ -1,6 +1,7 @@
 import random
 import pandas as pd
 import os
+import pysal
 
 DATA_FILE = 'data'
 
@@ -22,18 +23,17 @@ class Data:
                 self.data[r[0]]['host'] = r[1]
                 self.data[r[0]]['other'] = r[2]
 
-        bad_keys = []
-
-        for key in self.data:
-            if key not in [r[0] for r in population_data]:
-                bad_keys.append(key)
+        bad_keys = [key
+                    for key in self.data
+                    if key not in [r[0] for r in population_data]]
 
         for key in bad_keys:
             del self.data[key]
 
     def __str__(self):
         string = ["Data set for spatial segregation analysis",
-                  "Year: {}\nHost group: {}\nOther group(s): {}".format(self.year, self.host, self.other)]
+                  "Year: {}\nHost group: {}\nOther group(s): {}"
+                  .format(self.year, self.host, self.other)]
 
         for k, v in self.data.items():
             string.append(
@@ -137,7 +137,7 @@ def reform(population_data):
     """
     pop_data = population_data.fillna(value=0)
     pop_data = pop_data.loc[:, ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian',
-                                'other.religion']].astype(int)
+                            'other.religion']].astype(int)
     pop_data['lutheran'] = (pop_data['total.men'] + pop_data['total.women'] - pop_data['orthodox'] -
                             pop_data['other.christian'] - pop_data['other.religion'])
     pop_data = pop_data.loc[:, ['plot.number', 'lutheran', 'orthodox']]
@@ -149,9 +149,23 @@ def reform(population_data):
 
 def main():
     os.chdir(DATA_FILE)
+
+    point_shp = pysal.open("points.shp")
+    point_db = pysal.open("points.dbf", 'r')
+
+    pp = [[point_db[i][0][1], point_shp[i][0], point_shp[i][1]]
+          for i in range(len(point_shp))]
+
     v80 = aggregate_sum(reform(pd.read_csv('1880.csv', sep='\t')))
     v00 = aggregate_sum(reform(pd.read_csv('1900.csv', sep='\t')))
     v20 = aggregate_sum(reform(pd.read_csv('1920.csv', sep='\t')))
+
+    d80 = Data(v80, pp, 'lutheran', 'orthodox', 1880)
+    d00 = Data(v00, pp, 'lutheran', 'orthodox', 1900)
+    d20 = Data(v20, pp, 'lutheran', 'orthodox', 1920)
+
+    data = {k: d for k in (1880, 1900, 1920) for d in (d80, d00, d20)}
+    print(data)
 
 
 if __name__ == '__main__':
