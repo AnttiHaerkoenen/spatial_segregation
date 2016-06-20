@@ -8,7 +8,7 @@ all_index_functions = {
 }
 
 
-class SegregationIndices:
+class Indices:
     def __init__(self, kde_surface, index_functions="all"):
         if index_functions.lower() == "all":
             self.index_functions = all_index_functions

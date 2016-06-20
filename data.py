@@ -2,6 +2,7 @@ import random
 import pandas as pd
 import os
 import pysal
+import kde_surface
 
 DATA_FILE = 'data'
 
@@ -57,7 +58,7 @@ class Data:
             return {self.data[k] for k in keys if k in self.data.keys()}
 
     def get_y_limits(self):
-        y_max = y_min = self.data[random.choice(self.data.keys())]['y']
+        y_max = y_min = self.data[random.choice(list(self.data.keys()))]['y']
 
         for v in self.data.values():
             y_max = v['y'] if v['y'] > y_max else y_max
@@ -66,11 +67,11 @@ class Data:
         return y_max, y_min
 
     def get_x_limits(self):
-        x_max = x_min = self.data[random.choice(self.data.keys())]['x']
+        x_max = x_min = self.data[random.choice(list(self.data.keys()))]['x']
 
         for v in self.data.values():
-            x_max = v['y'] if v['y'] > x_max else x_max
-            x_min = v['y'] if v['y'] < x_min else x_min
+            x_max = v['x'] if v['x'] > x_max else x_max
+            x_min = v['x'] if v['x'] < x_min else x_min
 
         return x_max, x_min
 
@@ -166,9 +167,9 @@ def main():
         1920: d20
     }
 
-    print(d80)
+    kde = kde_surface.KDESurface(d80, 10)
+    print(kde)
     s = SimulatedData(data[1880])
-    print(s)
 
 
 if __name__ == '__main__':
