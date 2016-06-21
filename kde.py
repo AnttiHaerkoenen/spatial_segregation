@@ -55,12 +55,6 @@ class KDESurface:
     def __len__(self):
         return self.y_dim * self.x_dim
 
-    def __eq__(self, other):
-        return self.x == other.x \
-               and self.y == other.y \
-               and self.host == other.host \
-               and self.other == other.other
-
     @property
     def size(self):
         return self.y_dim, self.x_dim

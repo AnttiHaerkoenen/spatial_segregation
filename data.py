@@ -34,12 +34,12 @@ class Data:
     def __str__(self):
         string = ["", "Data set for spatial segregation analysis",
                   "Year: {}\nHost group: {}\nOther group(s): {}"
-                  .format(self.year, self.host, self.other)]
+                      .format(self.year, self.host, self.other)]
 
         for k, v in self.data.items():
             string.append(
                 "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}"
-                .format(k, v['x'], v['y'], v['host'], v['other']))
+                    .format(k, v['x'], v['y'], v['host'], v['other']))
 
         return '\n'.join(string)
 
@@ -80,14 +80,14 @@ class SimulatedData(Data):
     def __init__(self, model_data):
         Data.__init__(self, model_data.population_data, model_data.point_data, model_data.host, model_data.other)
         self._shuffle()
-    
+
     def __str__(self):
         string = ["", "Simulated data for spatial segregation analysis"]
 
         for k, v in self.data.items():
             string.append(
                 "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}"
-                .format(k, v['x'], v['y'], v['host'], v['other']))
+                    .format(k, v['x'], v['y'], v['host'], v['other']))
 
         return '\n'.join(string)
 
@@ -98,6 +98,7 @@ class SimulatedData(Data):
             i2 = random.choice(index)
             for co in ('x', 'y'):
                 self.data[i1][co], self.data[i2][co] = self.data[i2][co], self.data[i1][co]
+
 
 ########################################################################################################################
 
@@ -134,7 +135,7 @@ def reform(population_data):
     """
     pop_data = population_data.fillna(value=0)
     pop_data = pop_data.loc[:, ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian',
-                            'other.religion']].astype(int)
+                                'other.religion']].astype(int)
     pop_data['lutheran'] = (pop_data['total.men'] + pop_data['total.women'] - pop_data['orthodox'] -
                             pop_data['other.christian'] - pop_data['other.religion'])
     pop_data = pop_data.loc[:, ['plot.number', 'lutheran', 'orthodox']]
@@ -168,10 +169,9 @@ def main():
     }
 
     kde1 = kde.KDESurface(d80, 10)
-    print(kde1)
     s = SimulatedData(data[1880])
     kde2 = kde.KDESurface(s, 10)
-    print(kde2)
+    print(kde1.host[10, 10], '\n', kde2.host[10, 10])
 
 
 if __name__ == '__main__':
