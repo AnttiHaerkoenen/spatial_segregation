@@ -9,11 +9,13 @@ all_kernel_funcs = {
 class KDESurface:
     def __init__(self, data, cell_size, kernel='distance_decay', kernel_param=None):
         self.kernel = all_kernel_funcs[kernel]
-        self.kernel_param = kernel_param if kernel_param else {
+        self.cell_size = cell_size
+        self.kernel_param = kernel_param \
+            if kernel_param \
+            else {
                 'bw': 10,
                 'a': 1
             }
-        self.cell_size = cell_size
 
         self.y_max, self.y_min = data.get_y_limits()
         self.x_max, self.x_min = data.get_x_limits()

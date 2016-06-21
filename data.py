@@ -2,7 +2,7 @@ import random
 import pandas as pd
 import os
 import pysal
-import kde_surface
+import kde
 
 DATA_FILE = 'data'
 
@@ -167,9 +167,11 @@ def main():
         1920: d20
     }
 
-    kde = kde_surface.KDESurface(d80, 10)
-    print(kde)
+    kde1 = kde.KDESurface(d80, 10)
+    print(kde1)
     s = SimulatedData(data[1880])
+    kde2 = kde.KDESurface(s, 10)
+    print(kde2)
 
 
 if __name__ == '__main__':
