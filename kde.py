@@ -1,5 +1,6 @@
-import kernel_functions as kf
 import numpy as np
+
+import kernel_functions as kf
 
 all_kernel_funcs = {
     'distance_decay': kf.distance_decay
