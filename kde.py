@@ -7,13 +7,13 @@ all_kernel_funcs = {
 
 
 class KDESurface:
-    def __init__(self, data, cell_size, kernel='distance_decay', kernel_param=None):
+    def __init__(self, data, cell_size=10, kernel='distance_decay', kernel_param=None):
         self.kernel = all_kernel_funcs[kernel]
         self.cell_size = cell_size
         self.kernel_param = kernel_param \
             if kernel_param \
             else {
-                'bw': 10,
+                'bw': 50,
                 'a': 1
             }
 
@@ -65,7 +65,7 @@ class KDESurface:
 def main():
     x_min, y_min = 10, 10
     x_dim, y_dim = 10, 10
-    cell_size = 5
+    cell_size = 10
     print(np.asmatrix([[x_min + i * cell_size] * y_dim for i in range(x_dim)]).transpose())
     print(np.flipud(np.asmatrix([[y_min + i * cell_size] * y_dim for i in range(x_dim)])))
 

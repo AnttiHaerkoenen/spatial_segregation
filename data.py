@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import pysal
 import kde
+import segregation_indices
 
 DATA_FILE = 'data'
 
@@ -168,10 +169,15 @@ def main():
         1920: d20
     }
 
-    kde1 = kde.KDESurface(d80, 10)
+    kde1 = kde.KDESurface(d80, 100)
     s = SimulatedData(data[1880])
-    kde2 = kde.KDESurface(s, 10)
-    print(kde1.host[10, 10], '\n', kde2.host[10, 10])
+    kde2 = kde.KDESurface(s, 100)
+    print(kde1.host, '\n', kde2.host)
+
+    ind1 = segregation_indices.Indices(kde1)
+    ind2 = segregation_indices.Indices(kde2)
+    print(ind1)
+    print(ind2)
 
 
 if __name__ == '__main__':

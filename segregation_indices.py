@@ -13,9 +13,7 @@ class Indices:
         if index_functions.lower() == "all":
             self.index_functions = all_index_functions
         else:
-            self.index_functions = {}
-            for key in index_functions:
-                self.index_functions[key] = all_index_functions[key]
+            self.index_functions = {k: all_index_functions[k] for k in index_functions}
 
         self.data = kde_surface
 
@@ -23,13 +21,17 @@ class Indices:
         string = ['Indices:']
 
         for key in self.indices:
-            string.append('{0:10} {1}'.format(key, self.indices[key]))
+            string.append('{0:12} {1:.3f}'.format(key, self.indices[key]))
 
         return '\n'.join(string)
 
     @property
     def indices(self):
-        indices = {key: function(self.data) for key, function in self.index_functions}
+        indices = {}
+
+        for key in self.index_functions:
+            indices[key] = self.index_functions[key](self.data.host, self.data.other)
+
         return indices
 
 ########################################################################################################################
