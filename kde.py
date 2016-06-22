@@ -32,7 +32,7 @@ class KDESurface:
         for i in range(self.y_dim):
             for j in range(self.x_dim):
                 for point in data:
-                    # TODO Kernels from scikit
+                    # TODO Kernels from scikit-learn
                     '''
                     d = ((point['x'] - self.x[i, j]) ** 2 + (point['y'] - self.y[i, j])) ** 0.5
                     self.host[i, j] += point['host'] * self.kernel(d, self.kernel_param)

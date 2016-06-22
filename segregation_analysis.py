@@ -1,7 +1,9 @@
-import data
-import pandas as pd
 import os
+
 import pysal
+import pandas as pd
+
+import data
 
 DATA_FILE = 'data'
 

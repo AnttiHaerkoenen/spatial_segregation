@@ -1,7 +1,9 @@
 import random
-import pandas as pd
 import os
+
+import pandas as pd
 import pysal
+
 import kde
 import segregation_indices
 
