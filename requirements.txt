@@ -1,0 +1,4 @@
+pandas
+numpy
+pysal
+scikit-learn
