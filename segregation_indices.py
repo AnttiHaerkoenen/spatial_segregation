@@ -1,8 +1,9 @@
+import numpy as np
+
 import segregation_index_functions as sif
 
 all_index_functions = {
     'host_share': sif.host_share,
-    'gini': sif.gini,
     'km': sif.km,
     'hpg': sif.hpg
 }
@@ -15,7 +16,7 @@ class Indices:
         else:
             self.index_functions = {k: all_index_functions[k] for k in index_functions}
 
-        self.data = kde_surface
+        self.data = np.stack((kde_surface.host.ravel(), kde_surface.other.ravel()), axis=-1)
 
     def __str__(self):
         string = ['Indices:']
@@ -30,7 +31,7 @@ class Indices:
         indices = {}
 
         for key in self.index_functions:
-            indices[key] = self.index_functions[key](self.data.host, self.data.other)
+            indices[key] = self.index_functions[key](self.data)
 
         return indices
 

@@ -1,108 +1,77 @@
 import numpy as np
 
 
-def host_share(host: np.ndarray, other: np.ndarray):
+def host_share(x):
     """
-    Calculates host share. Needs two matrices of the same size.
-    :param host: host group
-    :param other: other group
+    Calculates host share.
+
+    :param x: 2-dim array with groups as columns
     :return: host share
     """
-    return host.sum() / (host.sum() + other.sum())
+    pop = np.apply_along_axis(sum, 0, x)
+    return pop[0] / sum(pop)
 
 
-def km(host: np.ndarray, other: np.ndarray):
+def km(x):
     """
-    Karmel-MacLachlan index of segregation. Needs two matrices of the same size.
-    :param host: host group
-    :param other: other group
+    Karmel-MacLachlan index of segregation.
+
+    :param x: 2-dim array with groups as columns
     :return: km index
     """
     index = 0
-    pop = host + other
-    total = pop.sum()
+    areas, groups = x.shape
+    pop = np.apply_along_axis(sum, 1, x)
+    total = sum(pop)
     p_n = pop / total
-    y_dim, x_dim = host.shape
 
-    for g in host, other:
+    for g in np.hsplit(x, groups):
         index_g = 0
-        p_g = g.sum() / total
+        p_g = sum(g) / total
 
-        for i in range(y_dim):
-            for j in range(x_dim):
-                p_gn = np.nan_to_num(g[i][j] / total)
-                index_gn = p_n[i][j] * abs(np.nan_to_num(p_gn / (p_g * p_n[i][j]) - 1))
-                index_g += index_gn
+        for k in range(areas):
+            p_gn = np.nan_to_num(g[k] / total)
+            index_gn = p_n[k] * abs(np.nan_to_num(p_gn / (p_g * p_n[k]) - 1))
+            index_g += index_gn
 
         index += index_g * p_g
 
-    return index
+    return index[0]
 
 
-def hpg(host: np.ndarray, other: np.ndarray):
+def hpg(x, host_col=0):
     """
-    Spatial exposure index. Needs two matrices of the same size.
-    :param host: host group
-    :param other: other group
+    Spatial exposure index.
+
+    :param x: 2-dim array with groups as columns
+    :param host_col: column of the host group
     :return: spatial exposure index
     """
     index = 0
-    t_n = host + other
-    t_h = host.sum()
-    y_dim, x_dim = host.shape
+    areas, groups = x.shape
+    t_n = np.apply_along_axis(sum, 1, x)
 
-    for i in range(y_dim):
-        for j in range(x_dim):
-            p_gn = np.nan_to_num(other[i][j] / t_n[i][j])
-            index += p_gn * host[i][j] / t_h
+    others = np.hsplit(x, groups)
+    host = others[host_col]
+    del others[host_col]
+    t_h = sum(host)
 
-    return index
+    for g in others:
+        for k in range(areas):
+            p_gn = np.nan_to_num(g[k] / t_n[k])
+            index += p_gn * host[k] / t_h
 
-
-def gini(host: np.ndarray, other: np.ndarray):
-    """
-    Spatial Gini index. Needs two matrices of the same size.
-    :param host: host group
-    :param other: other group
-    :return: spatial gini index
-    """
-    pop = host + other
-    p = np.nan_to_num(host / pop).ravel().tolist()
-    lorenz = cum_sum(p)
-
-    m = sum(p) / len(
-        [p[i] for i in range(len(p)) if p[i] > 0])
-
-    equal = [m * (i + 1) for i in range(len(lorenz))]
-
-    return (sum(equal) - sum(lorenz)) / sum(equal)
-
-
-def cum_sum(x):
-    """
-    Calculates cumulative sum
-    :param x: list of values
-    :return: list of cumulative values
-    """
-    x = [n for n in x if n > 0]
-    x.sort()
-
-    result = [x[0]]
-
-    for n in x[1:]:
-        result.append(n + result[-1])
-
-    return result
+    return index[0]
 
 ########################################################################################################################
 
 
 def main():
-    h, o = np.random.rand(10, 12), np.random.rand(10, 12)
-    print("host share: ", host_share(h, o))
-    print("km: ", km(h, o))
-    print("hpg: ", hpg(h, o))
-    print("gini: ", gini(h, o))
+    x = np.random.rand(20, 3)
+    print(x)
+    print("host share: ", host_share(x))
+    print("km: ", km(x))
+    print("hpg: ", hpg(x))
 
 
 if __name__ == '__main__':

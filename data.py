@@ -172,12 +172,10 @@ def main():
     kde1 = kde.KDESurface(d80, 100)
     s = SimulatedData(data[1880])
     kde2 = kde.KDESurface(s, 100)
-    print(kde1.host, '\n', kde2.host)
+    # print(kde1.host, '\n', kde2.host)
 
     ind1 = segregation_indices.Indices(kde1)
     ind2 = segregation_indices.Indices(kde2)
-    print(ind1)
-    print(ind2)
 
 
 if __name__ == '__main__':
