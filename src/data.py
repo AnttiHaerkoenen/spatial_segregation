@@ -7,7 +7,7 @@ import pysal
 import kde
 import segregation_indices
 
-DATA_FILE = 'data'
+DATA_FILE = './spatial_segregation/data'
 
 
 class Data:
