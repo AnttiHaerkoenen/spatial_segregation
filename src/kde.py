@@ -1,46 +1,38 @@
 import numpy as np
+from sklearn.neighbors.kde import KernelDensity
 
 
 class KDESurface:
-    def __init__(self, data, cell_size=10, kernel='distance_decay', bw=50, kernel_param=None):
+    def __init__(self, data, cell_size=10, kernel='distance_decay', bw=50, a=1):
         self.kernel = kernel
         self.cell_size = cell_size
-        self.kernel_param = kernel_param if kernel_param else dict(a=1)
+        self.bw = bw
+        self.a = a
 
-        self.y_max, self.y_min = data.get_y_limits()
-        self.x_max, self.x_min = data.get_x_limits()
+        self._y_max, self._y_min = data.get_y_limits()
+        self._x_max, self._x_min = data.get_x_limits()
 
-        self.y_max += bw
-        self.y_min -= bw
-        self.x_max += bw
-        self.x_min -= bw
+        self._y_max += self.bw
+        self._y_min -= self.bw
+        self._x_max += self.bw
+        self._x_min -= self.bw
 
-        self.y_dim = np.ceil((self.y_max - self.y_min) / self.cell_size).astype(int)
-        self.x_dim = np.ceil((self.x_max - self.x_min) / self.cell_size).astype(int)
+        self._y_dim = np.ceil((self._y_max - self._y_min) / self.cell_size).astype(int)
+        self._x_dim = np.ceil((self._x_max - self._x_min) / self.cell_size).astype(int)
 
-        self.x = np.broadcast_to(
-            np.arange(self.x_min, self.x_max, self.cell_size),
-            (self.y_dim, self.x_dim))
+        self.x = np.broadcast_to(np.arange(self._x_min, self._x_max, self.cell_size), (self._y_dim, self._x_dim))
 
-        self.y = np.broadcast_to(
-            np.flipud(np.arange(self.y_min, self.y_max, self.cell_size)),
-            (self.x_dim, self.y_dim)).T
+        self.y = np.broadcast_to(np.flipud(np.arange(self._y_min, self._y_max, self.cell_size)),
+                                 (self._x_dim, self._y_dim)).T
 
-        self.host = np.zeros((self.y_dim, self.x_dim))
-        self.other = np.zeros_like(self.host)
+        self.host = self._compute_kernels('host')
+        self.other = self._compute_kernels('other')
 
-        for i in range(self.y_dim):
-            for j in range(self.x_dim):
-                for point in data:
-                    # TODO Kernels from scikit-learn
-                    '''
-                    d = ((point['x'] - self.x[i, j]) ** 2 + (point['y'] - self.y[i, j])) ** 0.5
-                    self.host[i, j] += point['host'] * self.kernel(d, self.kernel_param)
-                    self.other[i, j] += point['other'] * self.kernel(d, self.kernel_param)
-                    '''
+    def _compute_kernels(self, group):
+        pass
 
     def __str__(self):
-        return "Kernel Density Estimated Surface, size {} x {}".format(self.y_dim, self.x_dim)
+        return "Kernel Density Estimated Surface, size {} x {}".format(self._y_dim, self._x_dim)
 
     def __add__(self, other):
         self.host += other.host
@@ -51,17 +43,28 @@ class KDESurface:
         self.other -= other.other
 
     def __len__(self):
-        return self.y_dim * self.x_dim
+        return self._y_dim * self._x_dim
 
     @property
     def size(self):
-        return self.y_dim, self.x_dim
+        return self._y_dim, self._x_dim
+
+    @property
+    def y_limits(self):
+        return self._y_max, self._y_min
+
+    @property
+    def x_limits(self):
+        return self._x_max, self._x_min
 
 
 ########################################################################################################################
 
 
 def main():
+    kde = KernelDensity(bandwidth=50, kernel='gaussian')
+    print(help(kde.fit))
+
     x_min, y_min = 10, 10
     x_dim, y_dim = 10, 10
     cell_size = 10

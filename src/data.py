@@ -17,34 +17,27 @@ class Data:
         self.year = year
         self.host = host_group
         self.other = other_group
-        self.data = {}
+        data_dict = {}
 
         for row in point_data:
-            self.data[row[0]] = {'x': row[1], 'y': row[2]}
+            data_dict[row[0]] = {'x': row[1], 'y': row[2]}
 
         for r in population_data:
-            if r[0] in self.data.keys():
-                self.data[r[0]]['host'] = r[1]
-                self.data[r[0]]['other'] = r[2]
+            if r[0] in data_dict.keys():
+                data_dict[r[0]]['host'] = r[1]
+                data_dict[r[0]]['other'] = r[2]
 
         bad_keys = [key
-                    for key in self.data
+                    for key in data_dict
                     if key not in [r[0] for r in population_data]]
 
         for key in bad_keys:
-            del self.data[key]
+            del data_dict[key]
+
+        self.data = pd.DataFrame.from_dict(data_dict, orient='index')
 
     def __str__(self):
-        string = ["", "Data set for spatial segregation analysis",
-                  "Year: {}\nHost group: {}\nOther group(s): {}"
-                      .format(self.year, self.host, self.other)]
-
-        for k, v in self.data.items():
-            string.append(
-                "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}"
-                    .format(k, v['x'], v['y'], v['host'], v['other']))
-
-        return '\n'.join(string)
+        return "\nData for segregation analysis\n{}".format(str(self.data))
 
     def __iter__(self):
         return iter(self.data.values())
@@ -58,25 +51,13 @@ class Data:
         if keys == 'all':
             return self.data
         else:
-            return {self.data[k] for k in keys if k in self.data.keys()}
+            return {k: v for k, v in self.data.items() if k in keys}
 
     def get_y_limits(self):
-        y_max = y_min = self.data[random.choice(list(self.data.keys()))]['y']
-
-        for v in self.data.values():
-            y_max = v['y'] if v['y'] > y_max else y_max
-            y_min = v['y'] if v['y'] < y_min else y_min
-
-        return y_max, y_min
+        return self.data['y'].max(), self.data['y'].min()
 
     def get_x_limits(self):
-        x_max = x_min = self.data[random.choice(list(self.data.keys()))]['x']
-
-        for v in self.data.values():
-            x_max = v['x'] if v['x'] > x_max else x_max
-            x_min = v['x'] if v['x'] < x_min else x_min
-
-        return x_max, x_min
+        return self.data['x'].max(), self.data['x'].min()
 
 
 class SimulatedData(Data):
@@ -84,24 +65,15 @@ class SimulatedData(Data):
         Data.__init__(self, model_data.population_data, model_data.point_data, model_data.host, model_data.other)
         self._shuffle()
 
-    def __str__(self):
-        string = ["", "Simulated data for spatial segregation analysis"]
-
-        for k, v in self.data.items():
-            string.append(
-                "Point {0:4d}:\t Coordinates {1:8.2f}, {2:8.2f}\t Host: {3:5d}\t Other: {4:5d}"
-                    .format(k, v['x'], v['y'], v['host'], v['other']))
-
-        return '\n'.join(string)
-
     def _shuffle(self):
-        index = [i for i in self.data.keys()]
-        for i in range(len(self.data) * 2):
-            i1 = random.choice(index)
-            i2 = random.choice(index)
-            for co in ('x', 'y'):
-                self.data[i1][co], self.data[i2][co] = self.data[i2][co], self.data[i1][co]
+        for _ in self.data.index:
+            i1 = random.choice(self.data.index)
+            i2 = random.choice(self.data.index)
+            for c in list('xy'):
+                self.data.loc[i1, c] = self.data.loc[i2, c]
 
+    def __str__(self):
+        return "\nSimulated data for segregation analysis\n{}".format(str(self.data))
 
 ########################################################################################################################
 
@@ -171,13 +143,16 @@ def main():
         1920: d20
     }
 
+    print(data[1880].data)
+
     kde1 = kde.KDESurface(d80, 100)
     s = SimulatedData(data[1880])
     kde2 = kde.KDESurface(s, 100)
+    print(s)
     # print(kde1.host, '\n', kde2.host)
 
-    ind1 = segregation_indices.Indices(kde1)
-    ind2 = segregation_indices.Indices(kde2)
+    # ind1 = segregation_indices.Indices(kde1)
+    # ind2 = segregation_indices.Indices(kde2)
 
 
 if __name__ == '__main__':

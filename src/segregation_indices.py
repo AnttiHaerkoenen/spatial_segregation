@@ -28,7 +28,7 @@ class Indices:
 
     @property
     def indices(self):
-        indices = {}
+        indices = dict()
 
         for key in self.index_functions:
             indices[key] = self.index_functions[key](self.data)
