@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.neighbors.kde import KernelDensity
+from statsmodels.nonparametric.kernel_density import KDEMultivariate
 
 
 class KDESurface:
@@ -62,9 +62,6 @@ class KDESurface:
 
 
 def main():
-    kde = KernelDensity(bandwidth=50, kernel='gaussian')
-    print(help(kde.fit))
-
     x_min, y_min = 10, 10
     x_dim, y_dim = 10, 10
     cell_size = 10
