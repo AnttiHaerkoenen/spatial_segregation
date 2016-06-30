@@ -7,7 +7,7 @@ import pysal
 import kde
 import segregation_indices
 
-DATA_FILE = './spatial_segregation/data'
+DATA_DIR = 'data'
 
 
 class Data:
@@ -110,7 +110,8 @@ def reform(population_data):
 
 
 def main():
-    os.chdir(DATA_FILE)
+    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+    os.chdir(os.path.join(os.path.abspath(os.path.pardir), DATA_DIR))
 
     point_shp = pysal.open("points.shp")
     point_db = pysal.open("points.dbf", 'r')
@@ -137,7 +138,6 @@ def main():
     kde1 = kde.KDESurface(d80, 100)
     s = SimulatedData(data[1880])
     kde2 = kde.KDESurface(s, 100)
-    print(s)
     # print(kde1.host, '\n', kde2.host)
 
     # ind1 = segregation_indices.Indices(kde1)

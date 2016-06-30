@@ -22,6 +22,8 @@ class KDESurface:
         self.x = np.tile(np.arange(self._x_min, self._x_max, self.cell_size), self._y_dim)
         self.y = np.flipud(np.repeat(np.arange(self._y_min, self._y_max, self.cell_size), self._x_dim))
 
+        d = calc_d(self.y, self.x, data.data['y'], data.data['x'])
+
         self.host = None
         self.other = None
 
@@ -37,7 +39,7 @@ class KDESurface:
         self.other -= other.other
 
     def __len__(self):
-        return self._y_dim * self._x_dim
+        return len(self.x)
 
     @property
     def size(self):
@@ -54,6 +56,17 @@ class KDESurface:
 
 ########################################################################################################################
 
+def calc_d(y1, x1, y2, x2):
+    if not ((len(y1) == len(x1)) and (len(y2) == len(x2))):
+        raise ValueError("Input coordinate mismatch")
+
+    r = len(y1)
+    c = len(y2)
+
+    y1 = np.broadcast(y1, r, c)
+
+########################################################################################################################
+
 
 def main():
     x_min, x_max = 10, 51
@@ -62,7 +75,7 @@ def main():
     cell_size = 10
     x = np.tile(np.arange(x_min, x_max, cell_size), y_dim)
     y = np.flipud(np.repeat(np.arange(y_min, y_max, cell_size), x_dim))
-    print(x, "\n", y)
+    #print(x, "\n", y)
 
 
 if __name__ == '__main__':
