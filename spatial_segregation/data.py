@@ -42,17 +42,6 @@ class Data:
     def __iter__(self):
         return iter(self.data.values())
 
-    def get_data(self, keys='all'):
-        """
-        Returns data from object
-        :param keys: an iterable of keys wanted
-        :return: dict of dicts where plot numbers are keys to sub-dicts
-        """
-        if keys == 'all':
-            return self.data
-        else:
-            return {k: v for k, v in self.data.items() if k in keys}
-
     def get_y_limits(self):
         return self.data['y'].max(), self.data['y'].min()
 

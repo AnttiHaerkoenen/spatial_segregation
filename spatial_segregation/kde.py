@@ -1,5 +1,4 @@
 import numpy as np
-from statsmodels.nonparametric.kernel_density import KDEMultivariate
 
 
 class KDESurface:
@@ -20,16 +19,11 @@ class KDESurface:
         self._y_dim = np.ceil((self._y_max - self._y_min) / self.cell_size).astype(int)
         self._x_dim = np.ceil((self._x_max - self._x_min) / self.cell_size).astype(int)
 
-        self.x = np.broadcast_to(np.arange(self._x_min, self._x_max, self.cell_size), (self._y_dim, self._x_dim))
+        self.x = np.tile(np.arange(self._x_min, self._x_max, self.cell_size), self._y_dim)
+        self.y = np.flipud(np.repeat(np.arange(self._y_min, self._y_max, self.cell_size), self._x_dim))
 
-        self.y = np.broadcast_to(np.flipud(np.arange(self._y_min, self._y_max, self.cell_size)),
-                                 (self._x_dim, self._y_dim)).T
-
-        self.host = self._compute_kernels('host')
-        self.other = self._compute_kernels('other')
-
-    def _compute_kernels(self, group):
-        pass
+        self.host = None
+        self.other = None
 
     def __str__(self):
         return "Kernel Density Estimated Surface, size {} x {}".format(self._y_dim, self._x_dim)
@@ -62,11 +56,13 @@ class KDESurface:
 
 
 def main():
-    x_min, y_min = 10, 10
-    x_dim, y_dim = 10, 10
+    x_min, x_max = 10, 51
+    y_min, y_max = 10, 101
+    x_dim, y_dim = 5, 10
     cell_size = 10
-    print(np.asmatrix([[x_min + i * cell_size] * y_dim for i in range(x_dim)]).transpose())
-    print(np.flipud(np.asmatrix([[y_min + i * cell_size] * y_dim for i in range(x_dim)])))
+    x = np.tile(np.arange(x_min, x_max, cell_size), y_dim)
+    y = np.flipud(np.repeat(np.arange(y_min, y_max, cell_size), x_dim))
+    print(x, "\n", y)
 
 
 if __name__ == '__main__':
