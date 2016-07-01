@@ -23,8 +23,9 @@ class KDESurface:
         self.y = np.flipud(np.repeat(np.arange(self._y_min, self._y_max, self.cell_size), self._x_dim))
 
         d = calc_d(self.y, self.x, data.data['y'], data.data['x'])
+        w = calc_w(d, kernel=self.kernel, bw=self.bw)
 
-        self.host = None
+        self.host = np.sum(w * h)
         self.other = None
 
     def __str__(self):
@@ -56,14 +57,19 @@ class KDESurface:
 
 ########################################################################################################################
 
-def calc_d(y1, x1, y2, x2):
-    if not ((len(y1) == len(x1)) and (len(y2) == len(x2))):
+def calc_d(y_a, x_a, y_b, x_b):
+    if (len(y_a) != len(x_a)) or (len(y_b) != len(x_b)):
         raise ValueError("Input coordinate mismatch")
 
-    r = len(y1)
-    c = len(y2)
+    cols = len(y_b)
+    y1, y2 = tuple(np.broadcast_arrays(y_a, np.reshape(y_b, (cols, 1))))
+    x1, x2 = tuple(np.broadcast_arrays(x_a, np.reshape(x_b, (cols, 1))))
+    
+    return ((y1 - y2)**2 + (x1 - x2)**2)**0.5
 
-    y1 = np.broadcast(y1, r, c)
+
+def calc_w(d, kernel='distance_decay', bw=10, a=1):
+    pass
 
 ########################################################################################################################
 
@@ -75,7 +81,7 @@ def main():
     cell_size = 10
     x = np.tile(np.arange(x_min, x_max, cell_size), y_dim)
     y = np.flipud(np.repeat(np.arange(y_min, y_max, cell_size), x_dim))
-    #print(x, "\n", y)
+    print(x, "\n", y)
 
 
 if __name__ == '__main__':
