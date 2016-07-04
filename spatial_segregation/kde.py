@@ -1,5 +1,7 @@
 import numpy as np
 
+import kernel_functions as kf
+
 
 class KDESurface:
     def __init__(self, data, cell_size=10, kernel='distance_decay', bw=50, a=1):
@@ -25,8 +27,8 @@ class KDESurface:
         d = calc_d(self.y, self.x, data.data['y'], data.data['x'])
         w = calc_w(d, kernel=self.kernel, bw=self.bw)
 
-        self.host = np.sum(w * h)
-        self.other = None
+        self.host = sum(w * data.data['host'], axis=1)
+        self.other = sum(w * data.data['other'], axis=1)
 
     def __str__(self):
         return "Kernel Density Estimated Surface, size {} x {}".format(self._y_dim, self._x_dim)
@@ -57,6 +59,11 @@ class KDESurface:
 
 ########################################################################################################################
 
+kernel_dict = {
+    'distance_decay': kf.distance_decay
+}
+
+
 def calc_d(y_a, x_a, y_b, x_b):
     if (len(y_a) != len(x_a)) or (len(y_b) != len(x_b)):
         raise ValueError("Input coordinate mismatch")
@@ -64,12 +71,14 @@ def calc_d(y_a, x_a, y_b, x_b):
     cols = len(y_b)
     y1, y2 = tuple(np.broadcast_arrays(y_a, np.reshape(y_b, (cols, 1))))
     x1, x2 = tuple(np.broadcast_arrays(x_a, np.reshape(x_b, (cols, 1))))
-    
-    return ((y1 - y2)**2 + (x1 - x2)**2)**0.5
+
+    return ((y1 - y2) ** 2 + (x1 - x2) ** 2) ** 0.5
 
 
 def calc_w(d, kernel='distance_decay', bw=10, a=1):
-    pass
+    if kernel not in kernel_dict:
+        raise ValueError("Kernel not found")
+
 
 ########################################################################################################################
 
