@@ -45,6 +45,7 @@ def shuffle_data(input):
 def aggregate_sum(data, group=0):
     """
     Calculates aggregate sums so that all the records with from the same address are summed up.
+
     :param data: list of lists
     :param group: index of group position
     :return: list of lists
@@ -68,7 +69,8 @@ def aggregate_sum(data, group=0):
 
 def reform(population_data):
     """
-    Cleans population data for use in segregation analysis
+    Cleans population data for use in segregation analysis.
+
     :param population_data:
     :return: Reformed list of lists
     """

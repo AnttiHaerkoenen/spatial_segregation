@@ -40,7 +40,7 @@ def main():
     cells = [i for i in range(15, 61, 15)]
     bws = [i for i in range(2, 6)]
 
-    data = data.Data(pop_data[1880], point_data, host_group='lutheran', other_group='orthodox', year=1880)
+    data = data.add_coordinates(pop_data[1880], point_data)
 
     analysis = SegregationAnalysis(data=data, cell_sizes=cells, bandwidths=bws)
 

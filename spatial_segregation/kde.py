@@ -1,17 +1,18 @@
 import numpy as np
 
 import kernel_functions as kf
+import data
 
 
 class KDESurface:
-    def __init__(self, data, cell_size=10, kernel='distance_decay', bw=50, a=1):
+    def __init__(self, data_frame, cell_size=10, kernel='distance_decay', bw=50, a=1):
         self.kernel = kernel
         self.cell_size = cell_size
         self.bw = bw
         self.a = a
 
-        self._y_max, self._y_min = data.get_y_limits()
-        self._x_max, self._x_min = data.get_x_limits()
+        self._y_max, self._y_min = data_frame.get_y_limits(data_frame)
+        self._x_max, self._x_min = data_frame.get_x_limits(data_frame)
 
         self._y_max += self.bw
         self._y_min -= self.bw
@@ -24,11 +25,11 @@ class KDESurface:
         self.x = np.tile(np.arange(self._x_min, self._x_max, self.cell_size), self._y_dim)
         self.y = np.flipud(np.repeat(np.arange(self._y_min, self._y_max, self.cell_size), self._x_dim))
 
-        d = calc_d(self.y, self.x, data.data['y'], data.data['x'])
+        d = calc_d(self.y, self.x, data_frame.data['y'], data_frame.data['x'])
         w = calc_w(d, kernel=self.kernel, bw=self.bw)
 
-        self.host = sum(w * data.data['host'], axis=1)
-        self.other = sum(w * data.data['other'], axis=1)
+        self.host = sum(w * data_frame.data['host'], axis=1)
+        self.other = sum(w * data_frame.data['other'], axis=1)
 
     def __str__(self):
         return "Kernel Density Estimated Surface, size {} x {}".format(self._y_dim, self._x_dim)
