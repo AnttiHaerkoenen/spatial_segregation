@@ -10,61 +10,36 @@ import segregation_indices
 DATA_DIR = 'data'
 
 
-class Data:
-    def __init__(self, population_data, point_data, host_group, other_group, year=None):
-        self.population_data = population_data
-        self.point_data = point_data
-        self.year = year
-        self.host = host_group
-        self.other = other_group
-        data_dict = {}
+def add_coordinates(population_data, point_data):
+    data_dict = {}
 
-        for row in point_data:
-            data_dict[row[0]] = {'x': row[1], 'y': row[2]}
+    for row in point_data:
+        data_dict[row[0]] = {'x': row[1], 'y': row[2]}
 
-        for r in population_data:
-            if r[0] in data_dict.keys():
-                data_dict[r[0]]['host'] = r[1]
-                data_dict[r[0]]['other'] = r[2]
+    for r in population_data:
+        if r[0] in data_dict.keys():
+            data_dict[r[0]]['host'] = r[1]
+            data_dict[r[0]]['other'] = r[2]
 
-        bad_keys = [key
-                    for key in data_dict
-                    if key not in [r[0] for r in population_data]]
+    bad_keys = [key
+                for key in data_dict
+                if key not in [r[0] for r in population_data]]
 
-        for key in bad_keys:
-            del data_dict[key]
+    for key in bad_keys:
+        del data_dict[key]
 
-        self.data = pd.DataFrame.from_dict(data_dict, orient='index')
-
-    def __str__(self):
-        return "\nData for segregation analysis\n{}".format(str(self.data))
-
-    def __iter__(self):
-        return iter(self.data.values())
-
-    def get_y_limits(self):
-        return self.data['y'].max(), self.data['y'].min()
-
-    def get_x_limits(self):
-        return self.data['x'].max(), self.data['x'].min()
+    return pd.DataFrame.from_dict(data_dict, orient='index')
 
 
-class SimulatedData(Data):
-    def __init__(self, model_data):
-        Data.__init__(self, model_data.population_data, model_data.point_data, model_data.host, model_data.other)
-        self._shuffle()
+def shuffle_data(input):
+    data = input.copy()
+    for _ in data.index:
+        i1 = random.choice(data.index)
+        i2 = random.choice(data.index)
+        for c in list('xy'):
+            data.loc[i1, c] = data.loc[i2, c]
 
-    def _shuffle(self):
-        for _ in self.data.index:
-            i1 = random.choice(self.data.index)
-            i2 = random.choice(self.data.index)
-            for c in list('xy'):
-                self.data.loc[i1, c] = self.data.loc[i2, c]
-
-    def __str__(self):
-        return "\nSimulated data for segregation analysis\n{}".format(str(self.data))
-
-########################################################################################################################
+    return data
 
 
 def aggregate_sum(data, group=0):
@@ -123,9 +98,9 @@ def main():
     v00 = aggregate_sum(reform(pd.read_csv('1900.csv', sep='\t')))
     v20 = aggregate_sum(reform(pd.read_csv('1920.csv', sep='\t')))
 
-    d80 = Data(v80, pp, 'lutheran', 'orthodox', 1880)
-    d00 = Data(v00, pp, 'lutheran', 'orthodox', 1900)
-    d20 = Data(v20, pp, 'lutheran', 'orthodox', 1920)
+    d80 = add_coordinates(v80, pp)
+    d00 = add_coordinates(v00, pp)
+    d20 = add_coordinates(v20, pp)
 
     data = {
         1880: d80,
@@ -136,12 +111,8 @@ def main():
     print(data[1880].data)
 
     kde1 = kde.KDESurface(d80, 100)
-    s = SimulatedData(data[1880])
+    s = shuffle_data(data[1880])
     kde2 = kde.KDESurface(s, 100)
-    # print(kde1.host, '\n', kde2.host)
-
-    # ind1 = segregation_indices.Indices(kde1)
-    # ind2 = segregation_indices.Indices(kde2)
 
 
 if __name__ == '__main__':

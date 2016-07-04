@@ -79,6 +79,9 @@ def calc_w(d, kernel='distance_decay', bw=10, a=1):
     if kernel not in kernel_dict:
         raise ValueError("Kernel not found")
 
+    func = np.vectorize(kernel_dict[kernel], excluded={'bw', 'a'})
+
+    return func(d, bw, a)
 
 ########################################################################################################################
 
