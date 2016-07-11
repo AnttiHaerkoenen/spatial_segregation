@@ -25,19 +25,17 @@
         <entry file="file://$PROJECT_DIR$/spatial_segregation/data.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
+              <caret line="6" column="10" selection-start-line="6" selection-start-column="10" selection-end-line="6" selection-end-column="10" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="kde.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="kde.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/spatial_segregation/kde.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="114" column="0" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.39787233">
+              <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -49,41 +47,9 @@
         <entry file="file://$PROJECT_DIR$/spatial_segregation/segregation_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="36" column="35" selection-start-line="36" selection-start-column="35" selection-end-line="36" selection-end-column="35" />
+              <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="segregation_indices.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spatial_segregation/segregation_indices.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="kernel_functions.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spatial_segregation/kernel_functions.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_indices.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/spatial_segregation/tests/test_indices.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7106383">
-              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -107,13 +73,14 @@
       <list>
         <option value="$PROJECT_DIR$/src/kde.py" />
         <option value="$PROJECT_DIR$/spatial_segregation/tests/kde_test.py" />
-        <option value="$PROJECT_DIR$/spatial_segregation/kernel_functions.py" />
-        <option value="$PROJECT_DIR$/spatial_segregation/data.py" />
         <option value="$PROJECT_DIR$/spatial_segregation/segregation_index_functions.py" />
-        <option value="$PROJECT_DIR$/spatial_segregation/segregation_analysis.py" />
         <option value="$PROJECT_DIR$/spatial_segregation/kde.py" />
-        <option value="$PROJECT_DIR$/spatial_segregation/segregation_indices.py" />
         <option value="$PROJECT_DIR$/spatial_segregation/tests/test_indices.py" />
+        <option value="$PROJECT_DIR$/spatial_segregation/segregation_indices.py" />
+        <option value="$PROJECT_DIR$/spatial_segregation/segregation_analysis.py" />
+        <option value="$PROJECT_DIR$/spatial_segregation/data.py" />
+        <option value="$PROJECT_DIR$/spatial_segregation/kernel_functions.py" />
+        <option value="$PROJECT_DIR$/spatial_segregation/tests/test_kernel_functions.py" />
       </list>
     </option>
   </component>
@@ -148,6 +115,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -215,7 +183,6 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -223,7 +190,7 @@
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
-  <component name="RunManager" selected="Python tests.Nosetests in test_indices">
+  <component name="RunManager" selected="Python tests.Nosetests in test_kernel_functions">
     <configuration default="false" name="kde" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -269,6 +236,27 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="spatial_segregation-master" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spatial_segregation/tests/test_indices.py" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Nosetests in test_kernel_functions" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/spatial_segregation/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="spatial_segregation-master" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spatial_segregation/tests/test_kernel_functions.py" />
       <option name="CLASS_NAME" value="" />
       <option name="METHOD_NAME" value="" />
       <option name="FOLDER_NAME" value="" />
@@ -401,16 +389,18 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <list size="3">
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Python.kde" />
       <item index="1" class="java.lang.String" itemvalue="Python.data" />
       <item index="2" class="java.lang.String" itemvalue="Python tests.Nosetests in test_indices" />
+      <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests in test_kernel_functions" />
     </list>
     <recent_temporary>
-      <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Python tests.Nosetests in test_indices" />
-        <item index="1" class="java.lang.String" itemvalue="Python.kde" />
-        <item index="2" class="java.lang.String" itemvalue="Python.data" />
+      <list size="4">
+        <item index="0" class="java.lang.String" itemvalue="Python tests.Nosetests in test_kernel_functions" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Nosetests in test_indices" />
+        <item index="2" class="java.lang.String" itemvalue="Python.kde" />
+        <item index="3" class="java.lang.String" itemvalue="Python.data" />
       </list>
     </recent_temporary>
   </component>
@@ -428,27 +418,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Nosetests_in_test_indices - 2016.07.11 at 14h 28m 23s.xml">
-      <configuration name="Nosetests in test_indices" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_test_indices - 2016.07.11 at 14h 28m 38s.xml">
-      <configuration name="Nosetests in test_indices" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_test_indices - 2016.07.11 at 14h 29m 57s.xml">
-      <configuration name="Nosetests in test_indices" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_test_indices - 2016.07.11 at 14h 31m 07s.xml">
-      <configuration name="Nosetests in test_indices" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_test_indices - 2016.07.11 at 14h 31m 52s.xml">
-      <configuration name="Nosetests in test_indices" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_test_indices - 2016.07.11 at 14h 32m 59s.xml">
-      <configuration name="Nosetests in test_indices" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_test_indices - 2016.07.11 at 14h 34m 03s.xml">
-      <configuration name="Nosetests in test_indices" configurationId="tests" />
-    </history-entry>
     <history-entry file="Nosetests_in_test_indices - 2016.07.11 at 14h 36m 35s.xml">
       <configuration name="Nosetests in test_indices" configurationId="tests" />
     </history-entry>
@@ -457,6 +426,27 @@
     </history-entry>
     <history-entry file="Nosetests_in_test_indices - 2016.07.11 at 14h 44m 32s.xml">
       <configuration name="Nosetests in test_indices" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Nosetests_in_test_kernel_functions - 2016.07.11 at 19h 46m 29s.xml">
+      <configuration name="Nosetests in test_kernel_functions" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Nosetests_in_test_kernel_functions - 2016.07.11 at 19h 50m 35s.xml">
+      <configuration name="Nosetests in test_kernel_functions" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Nosetests_in_test_kernel_functions - 2016.07.11 at 19h 53m 24s.xml">
+      <configuration name="Nosetests in test_kernel_functions" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Nosetests_in_test_kernel_functions - 2016.07.11 at 19h 53m 31s.xml">
+      <configuration name="Nosetests in test_kernel_functions" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Nosetests_in_test_kernel_functions - 2016.07.11 at 19h 58m 33s.xml">
+      <configuration name="Nosetests in test_kernel_functions" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Nosetests_in_test_kernel_functions - 2016.07.11 at 20h 02m 00s.xml">
+      <configuration name="Nosetests in test_kernel_functions" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Nosetests_in_test_kernel_functions - 2016.07.11 at 20h 03m 06s.xml">
+      <configuration name="Nosetests in test_kernel_functions" configurationId="tests" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -468,7 +458,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32974428" sideWeight="0.50253487" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32974428" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32974428" sideWeight="0.49746513" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32974428" sideWeight="0.49746513" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -498,23 +488,11 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/spatial_segregation/tests/test_indices.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/spatial_segregation/data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -568,9 +546,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -624,9 +600,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -670,9 +644,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -716,9 +688,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -726,9 +696,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -764,9 +732,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -802,9 +768,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="130" column="18" selection-start-line="130" selection-start-column="18" selection-end-line="130" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -830,9 +794,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="116" column="44" selection-start-line="116" selection-start-column="44" selection-end-line="116" selection-end-column="44" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -850,9 +812,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="116" column="44" selection-start-line="116" selection-start-column="44" selection-end-line="116" selection-end-column="44" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -870,9 +830,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="116" column="44" selection-start-line="116" selection-start-column="44" selection-end-line="116" selection-end-column="44" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -890,9 +848,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="21" column="30" selection-start-line="21" selection-start-column="30" selection-end-line="21" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -910,9 +866,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="21" column="30" selection-start-line="21" selection-start-column="30" selection-end-line="21" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -926,58 +880,66 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/spatial_segregation/data.py">
+    <entry file="file://$PROJECT_DIR$/spatial_segregation/tests/test_indices.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.5944056">
+          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/spatial_segregation/kde.py">
+    <entry file="file://$PROJECT_DIR$/spatial_segregation/segregation_indices.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.42937064">
+          <caret line="29" column="23" selection-start-line="29" selection-start-column="23" selection-end-line="29" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spatial_segregation/data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="114" column="0" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
+          <caret line="6" column="10" selection-start-line="6" selection-start-column="10" selection-end-line="6" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spatial_segregation/tests/test_kernel_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.43404254">
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spatial_segregation/kernel_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5425532">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/spatial_segregation/segregation_analysis.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="35" selection-start-line="36" selection-start-column="35" selection-end-line="36" selection-end-column="35" />
+          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/spatial_segregation/kernel_functions.py">
+    <entry file="file://$PROJECT_DIR$/spatial_segregation/kde.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spatial_segregation/segregation_indices.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spatial_segregation/tests/test_indices.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7106383">
-          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.39787233">
+          <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>

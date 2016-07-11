@@ -37,6 +37,7 @@ def calc_indices(kde_surface, index_functions='all'):
         index_functions = {k: all_index_functions[k] for k in index_functions}
 
     data = np.hstack((kde_surface.host, kde_surface.other))
+    data /= data.sum()
 
     indices = dict()
 

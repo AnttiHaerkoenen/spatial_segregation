@@ -31,8 +31,8 @@ def add_coordinates(population_data, point_data):
     return pd.DataFrame.from_dict(data_dict, orient='index')
 
 
-def shuffle_data(input):
-    data = input.copy()
+def shuffle_data(data_frame):
+    data = data_frame.copy()
     for _ in data.index:
         i1 = random.choice(data.index)
         i2 = random.choice(data.index)

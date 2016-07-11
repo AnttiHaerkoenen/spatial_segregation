@@ -9,11 +9,24 @@ DATA_FILE = 'data'
 
 
 class SegregationAnalysis:
-    def __init__(self, data, cell_sizes, kernels, bws, alphas):
-        self.data = data
-        # TODO kernels
-        # TODO cells
+    def __init__(self, data_frame, cell_size, kernel, bw, alpha=1):
+        self.data = data_frame
+        self.cell_size = cell_size
+        self.kernel = kernel
+        self.bw = bw
+        self.alpha = alpha
+        self.simulations = None
 
+    def simulate(self, rep=1000):
+        self.simulations = []
+
+        for _ in range(rep):
+            # TODO
+            pass
+
+    @property
+    def simulated(self):
+        return pd.DataFrame.from_dict(self.simulations)
 
 ########################################################################################################################
 
@@ -42,7 +55,6 @@ def main():
 
     data = data.add_coordinates(pop_data[1880], point_data)
 
-    analysis = SegregationAnalysis(data=data, cell_sizes=cells, bandwidths=bws)
 
 
 if __name__ == "__main__":
