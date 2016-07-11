@@ -9,7 +9,7 @@ DATA_FILE = 'data'
 
 
 class SegregationAnalysis:
-    def __init__(self, data, cell_sizes, kernel='distance_decay', **kernel_param):
+    def __init__(self, data, cell_sizes, kernels, bws, alphas):
         self.data = data
         # TODO kernels
         # TODO cells

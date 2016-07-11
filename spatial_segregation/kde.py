@@ -57,6 +57,22 @@ class KDESurface:
     def x_limits(self):
         return self._x_max, self._x_min
 
+    @property
+    def y_grid(self):
+        return self.y.reshape(self._y_dim, self._x_dim)
+
+    @property
+    def x_grid(self):
+        return self.x.reshape(self._y_dim, self._x_dim)
+
+    @property
+    def host_grid(self):
+        return self.host.reshape(self._y_dim, self._x_dim)
+
+    @property
+    def other_grid(self):
+        return self.other.reshape(self._y_dim, self._x_dim)
+
 
 ########################################################################################################################
 
