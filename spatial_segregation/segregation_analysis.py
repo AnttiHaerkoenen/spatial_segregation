@@ -3,7 +3,7 @@ import os
 import pysal
 import pandas as pd
 
-import data
+from spatial_segregation import kde, data, segregation_indices
 
 DATA_FILE = 'data'
 
@@ -15,14 +15,19 @@ class SegregationAnalysis:
         self.kernel = kernel
         self.bw = bw
         self.alpha = alpha
-        self.simulations = None
+
+        kd = kde.KDESurface(data_frame, self.cell_size, self.kernel, self.bw, self.alpha)
+        self.indices = segregation_indices.calc_indices(kd)
+
+        self.simulations = []
 
     def simulate(self, rep=1000):
         self.simulations = []
 
         for _ in range(rep):
-            # TODO
-            pass
+            data_frame = data.shuffle_data(self.data)
+            kd = kde.KDESurface(data_frame, self.cell_size, self.kernel, self.bw, self.alpha)
+            self.simulations.append(segregation_indices.calc_indices(kd))
 
     @property
     def simulated(self):
@@ -53,8 +58,7 @@ def main():
     cells = [i for i in range(15, 61, 15)]
     bws = [i for i in range(2, 6)]
 
-    data = data.add_coordinates(pop_data[1880], point_data)
-
+    d = data.add_coordinates(pop_data[1880], point_data)
 
 
 if __name__ == "__main__":

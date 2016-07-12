@@ -29,7 +29,7 @@ def calc_indices(kde_surface, index_functions='all'):
 
     :param kde_surface:
     :param index_functions:
-    :return:
+    :return: dict of indices
     """
     if index_functions.lower() == "all":
         index_functions = all_index_functions

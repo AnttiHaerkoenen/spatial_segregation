@@ -1,7 +1,7 @@
 import numpy as np
 
-import kernel_functions as kf
-import data
+import spatial_segregation.kernel_functions as kf
+import spatial_segregation.data
 
 
 class KDESurface:
@@ -104,13 +104,7 @@ def calc_w(d, kernel='distance_decay', bw=10, a=1):
 
 
 def main():
-    x_min, x_max = 10, 51
-    y_min, y_max = 10, 101
-    x_dim, y_dim = 5, 10
-    cell_size = 10
-    x = np.tile(np.arange(x_min, x_max, cell_size), y_dim)
-    y = np.flipud(np.repeat(np.arange(y_min, y_max, cell_size), x_dim))
-    print(x, "\n", y)
+    pass
 
 
 if __name__ == '__main__':

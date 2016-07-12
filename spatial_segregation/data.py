@@ -4,8 +4,7 @@ import os
 import pandas as pd
 import pysal
 
-import kde
-import segregation_indices
+from spatial_segregation import kde
 
 DATA_DIR = 'data'
 
