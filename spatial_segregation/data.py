@@ -41,6 +41,20 @@ def shuffle_data(data_frame):
     return data
 
 
+def get_x_limits(data_frame):
+    x = data_frame['x']
+    maxi = max(x)
+    mini = min(x)
+    return maxi, mini
+
+
+def get_y_limits(data_frame):
+    y = data_frame['y']
+    maxi = max(y)
+    mini = min(y)
+    return maxi, mini
+
+
 def aggregate_sum(data, group=0):
     """
     Calculates aggregate sums so that all the records with from the same address are summed up.
@@ -50,8 +64,7 @@ def aggregate_sum(data, group=0):
     :return: list of lists
     """
     cols = len(data[0])
-    data_rows = [i for i in range(cols)]
-    data_rows.remove(group)
+    data_rows = [i for i in range(cols) if i != group]
     aggregated_data = []
     last_id = None
 
@@ -109,11 +122,7 @@ def main():
         1920: d20
     }
 
-    print(data[1880].data)
-
-    kde1 = kde.KDESurface(d80, 100)
-    s = shuffle_data(data[1880])
-    kde2 = kde.KDESurface(s, 100)
+    print(data[1880])
 
 
 if __name__ == '__main__':

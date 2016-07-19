@@ -5,7 +5,7 @@ import pandas as pd
 
 from spatial_segregation import kde, data, segregation_indices
 
-DATA_FILE = 'data'
+DATA_DIR = 'data'
 
 
 class SegregationAnalysis:
@@ -37,7 +37,9 @@ class SegregationAnalysis:
 
 
 def main():
-    os.chdir(DATA_FILE)
+    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+    os.chdir(os.path.join(os.path.abspath(os.path.pardir), DATA_DIR))
+
     v80 = data.aggregate_sum(data.reform(pd.read_csv('1880.csv', sep='\t')))
     v00 = data.aggregate_sum(data.reform(pd.read_csv('1900.csv', sep='\t')))
     v20 = data.aggregate_sum(data.reform(pd.read_csv('1920.csv', sep='\t')))
@@ -58,7 +60,18 @@ def main():
     cells = [i for i in range(15, 61, 15)]
     bws = [i for i in range(2, 6)]
 
-    d = data.add_coordinates(pop_data[1880], point_data)
+    d = {year: data.add_coordinates(pop_data[year], point_data)
+         for year in pop_data}
+
+    results = []
+
+    for y, d in d.items():
+        for c in cells:
+            for bw in bws:
+                ana = SegregationAnalysis(d, c, 'distance_decay', bw)
+                results.append(ana.indices)
+
+    print(results)
 
 
 if __name__ == "__main__":
