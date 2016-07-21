@@ -1,6 +1,7 @@
 import unittest
 
 import pandas as pd
+import pandas.util.testing as pdt
 import numpy as np
 
 from spatial_segregation import data
@@ -14,7 +15,9 @@ loc_data = None
 
 class TestData(unittest.TestCase):
     def test_add_coordinates(self):
-        pass
+        df1 = pd.DataFrame()
+        df2 = pd.DataFrame()
+        pdt.assert_frame_equal(df1, df2)
 
     def test_get_x_lim(self):
         self.assertEqual(data.get_x_limits(df), (1, 0))
