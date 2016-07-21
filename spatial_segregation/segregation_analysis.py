@@ -16,7 +16,7 @@ class SegregationAnalysis:
         self.bw = bw
         self.alpha = alpha
 
-        kd = kde.KDESurface(data_frame, self.cell_size, self.kernel, self.bw, self.alpha)
+        kd = kde.create_kde_surface(data_frame, self.cell_size, self.kernel, self.bw, self.alpha)
         self.indices = segregation_indices.calc_indices(kd)
 
         self.simulations = []
@@ -26,7 +26,7 @@ class SegregationAnalysis:
 
         for _ in range(rep):
             data_frame = data.shuffle_data(self.data)
-            kd = kde.KDESurface(data_frame, self.cell_size, self.kernel, self.bw, self.alpha)
+            kd = kde.create_kde_surface(data_frame, self.cell_size, self.kernel, self.bw, self.alpha)
             self.simulations.append(segregation_indices.calc_indices(kd))
 
     @property
