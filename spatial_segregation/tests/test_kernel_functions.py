@@ -6,7 +6,7 @@ import spatial_segregation.kernel_functions as kf
 bw = random.randint(1, 10000)
 
 
-class KernelFuncTest(unittest.TestCase):
+class TestDistanceDecay(unittest.TestCase):
     def test_dd_zero(self):
         self.assertEqual(kf.distance_decay(bw + 1, bw), 0)
         self.assertEqual(kf.distance_decay(bw, bw), 0)

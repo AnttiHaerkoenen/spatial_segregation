@@ -15,10 +15,12 @@ loc_data = None
 
 class TestData(unittest.TestCase):
     def test_add_coordinates(self):
-        df1 = pd.DataFrame()
+        df1 = data.add_coordinates(pop_data, loc_data)
         df2 = pd.DataFrame()
         pdt.assert_frame_equal(df1, df2)
 
+
+class TestRange(unittest.TestCase):
     def test_get_x_lim(self):
         self.assertEqual(data.get_x_limits(df), (1, 0))
 

@@ -23,10 +23,14 @@ class TestKDE(unittest.TestCase):
         })
         pdt.assert_frame_equal(kde1, kde2)
 
+
+class TestD(unittest.TestCase):
     def test_calc_d(self):
         self.assertAlmostEqual(kde.calc_d(data2, data3).all(),
                                np.array([[1, 0, 0], [1, 0, 0]]).all())
 
+
+class TestW(unittest.TestCase):
     def test_calc_w(self):
         d = np.array([[0, 2, 4], [0, 2, 4]])
         w = kde.calc_w(d, 'distance_decay', bw=4, a=1)

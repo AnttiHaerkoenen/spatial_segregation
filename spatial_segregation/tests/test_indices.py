@@ -13,7 +13,7 @@ data_a /= data_a.sum()
 data_b /= data_b.sum()
 
 
-class SegregationIndicesTest(unittest.TestCase):
+class SegregationKM(unittest.TestCase):
     def test_km_identical(self):
         self.assertEqual(si.km(data_a), si.km(data_a))
 
