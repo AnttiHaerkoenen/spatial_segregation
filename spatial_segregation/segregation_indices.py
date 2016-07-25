@@ -13,34 +13,3 @@ def km(p_gn):
 
     index = np.abs(p_gn / (p_g * p_n) - 1) * p_n * p_g
     return index.sum()
-
-
-########################################################################################################################
-
-
-all_index_functions = {
-    'km': km
-}
-
-
-def calc_indices(kde_surface, index_functions='all'):
-    """
-    Calculates specified indices.
-
-    :param kde_surface:
-    :param index_functions:
-    :return: dict of indices
-    """
-    if index_functions.lower() == "all":
-        index_functions = all_index_functions
-    else:
-        index_functions = {k: all_index_functions[k] for k in index_functions}
-
-    data = np.hstack((kde_surface['host'], kde_surface['other']))
-
-    indices = dict()
-
-    for key in index_functions:
-        indices[key] = index_functions[key](data)
-
-    return indices
