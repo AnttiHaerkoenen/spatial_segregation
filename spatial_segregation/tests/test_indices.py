@@ -1,17 +1,13 @@
 import unittest
 
 import numpy as np
-import pandas as pd
 
 import spatial_segregation.segregation_indices as si
 
 rand = np.random.rand(1, 50)
 zeros = np.zeros((1, 50))
 data_a = np.tile(rand, (2, 2)).T
-data_b = pd.DataFrame(np.hstack((np.vstack((rand, zeros)), np.vstack((zeros, rand)))).T, columns='host other'.split())
-
-data_a /= data_a.sum()
-data_b /= data_b.sum()
+data_b = np.hstack((np.vstack((rand, zeros)), np.vstack((zeros, rand))))
 
 
 class TestKM(unittest.TestCase):
@@ -23,6 +19,11 @@ class TestKM(unittest.TestCase):
 
     def test_km_no_segregation(self):
         self.assertAlmostEqual(si.km(data_a), 0)
+
+
+class TestCalcIndices(unittest.TestCase):
+    def test_index_identical(self):
+        self.assertEqual(si.calc_indices(data_a), si.calc_indices(data_a))
 
 
 if __name__ == '__main__':

@@ -13,3 +13,11 @@ def km(p_gn):
 
     index = np.abs(p_gn / (p_g * p_n) - 1) * p_n * p_g
     return index.sum()
+
+
+def calc_indices(p_gn):
+    index = dict()
+
+    index['km'] = km(p_gn)
+
+    return index

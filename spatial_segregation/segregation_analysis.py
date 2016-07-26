@@ -31,7 +31,7 @@ class SegregationAnalysis:
 
     @property
     def simulated(self):
-        return pd.DataFrame.from_dict(self.simulations)
+        return pd.DataFrame.from_list(self.simulations)
 
 ########################################################################################################################
 
