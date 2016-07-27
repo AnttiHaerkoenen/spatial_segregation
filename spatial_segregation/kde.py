@@ -1,5 +1,3 @@
-import math
-
 import numpy as np
 import pandas as pd
 
@@ -18,8 +16,8 @@ def create_kde_surface(df, cell_size=20, kernel='distance_decay', bw=25, a=1):
     ymin -= bw
     xmax += bw
     xmin -= bw
-    x = np.arange(ymin, ymax, cell_size)
-    y = np.arange(xmin, xmax, cell_size)
+    x = np.arange(xmin, xmax, cell_size)
+    y = np.arange(ymin, ymax, cell_size)
     xx, yy = np.meshgrid(x, y)
 
     d_dict = {
@@ -38,18 +36,24 @@ def create_kde_surface(df, cell_size=20, kernel='distance_decay', bw=25, a=1):
 
 
 def calc_d(d_a, d_b):
+    for df in d_a, d_b:
+        if type(df) == 'pandas.core.series.Series':
+            df = df.to_dict(orient='list')
+            df['y'] = np.array(df['y'])
+            df['x'] = np.array(df['x'])
+
     y_a = d_a['y']
     x_a = d_a['x']
     y_b = d_b['y']
     x_b = d_b['x']
 
-    if (y_a.shape != x_a.shape) or (y_b.shape != x_b.shape):
-        raise ValueError("Input coordinate mismatch")
+    y1, y2 = tuple(np.meshgrid(y_a, y_b))
+    x1, x2 = tuple(np.meshgrid(x_a, x_b))
 
-    y1, y2 = np.meshgrid(y_a, y_b)
-    x1, x2 = np.meshgrid(x_a, x_b)
-
-    return np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+    x_delta = x1 - x2
+    y_delta = y1 - y2
+    d = np.sqrt(x_delta ** 2 + y_delta ** 2)
+    return d
 
 
 def calc_w(d, kernel='distance_decay', bw=10, a=1):

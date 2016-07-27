@@ -17,7 +17,7 @@ class SegregationAnalysis:
         self.alpha = alpha
 
         kd = kde.create_kde_surface(data_frame, self.cell_size, self.kernel, self.bw, self.alpha)
-        self.indices = segregation_indices.calc_indices(kd)
+        self.indices = segregation_indices.calc_indices(kd[['host', 'other']].values)
 
         self.simulations = []
 
@@ -27,7 +27,7 @@ class SegregationAnalysis:
         for _ in range(rep):
             data_frame = data.shuffle_data(self.data)
             kd = kde.create_kde_surface(data_frame, self.cell_size, self.kernel, self.bw, self.alpha)
-            self.simulations.append(segregation_indices.calc_indices(kd))
+            self.simulations.append(segregation_indices.calc_indices(kd[['host', 'other']].values))
 
     @property
     def simulated(self):
@@ -58,17 +58,17 @@ def main():
         point_data.append([point_db[i][0][1], point_shp[i][0], point_shp[i][1]])
 
     cells = [i for i in range(15, 61, 15)]
-    bws = [i for i in range(2, 6)]
+    bws = [i for i in range(20, 60, 10)]
 
     d = {year: data.add_coordinates(pop_data[year], point_data)
          for year in pop_data}
-
     results = []
 
     for y, d in d.items():
         for c in cells:
             for bw in bws:
                 ana = SegregationAnalysis(d, c, 'distance_decay', bw)
+                print(ana.indices)
                 results.append(ana.indices)
 
     print(results)
