@@ -13,7 +13,6 @@ def km(p_gn):
                                    np.nansum(p_gn, axis=1, keepdims=True))
 
     index = np.abs(p_gn / (p_g * p_n) - 1) * p_n * p_g
-    print(index)
     return np.nansum(index)
 
 
