@@ -103,25 +103,6 @@ def main():
     point_shp = pysal.open("points.shp")
     point_db = pysal.open("points.dbf", 'r')
 
-    pp = [[point_db[i][0][1], point_shp[i][0], point_shp[i][1]]
-          for i in range(len(point_shp))]
-
-    v80 = aggregate_sum(reform(pd.read_csv('1880.csv', sep='\t')))
-    v00 = aggregate_sum(reform(pd.read_csv('1900.csv', sep='\t')))
-    v20 = aggregate_sum(reform(pd.read_csv('1920.csv', sep='\t')))
-
-    d80 = add_coordinates(v80, pp)
-    d00 = add_coordinates(v00, pp)
-    d20 = add_coordinates(v20, pp)
-
-    data = {
-        1880: d80,
-        1900: d00,
-        1920: d20
-    }
-
-    print(data[1880])
-
 
 if __name__ == '__main__':
     main()

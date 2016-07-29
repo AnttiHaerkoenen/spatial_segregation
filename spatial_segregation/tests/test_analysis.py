@@ -8,7 +8,7 @@ from spatial_segregation import kde, data, segregation_indices, segregation_anal
 
 DATA_DIR = 'data'
 
-os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+os.chdir(os.path.pardir)
 os.chdir(os.path.join(os.path.abspath(os.path.pardir), DATA_DIR))
 
 v80 = data.aggregate_sum(data.reform(pd.read_csv('1880.csv', sep='\t')))
@@ -39,7 +39,7 @@ results = []
 
 class TestAnalysis(unittest.TestCase):
     def test_analysis(self):
-        ana = segregation_analysis.SegregationAnalysis(pop_data[1880], 50, 50, 'distance_decay', 1)
+        ana = segregation_analysis.SegregationAnalysis(d[1880], 50, 50, 'distance_decay', 1)
 
 
 if __name__ == '__main__':
