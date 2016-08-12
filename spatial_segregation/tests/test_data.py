@@ -9,9 +9,6 @@ from spatial_segregation import data
 df = pd.DataFrame(np.random.rand(18, 2), columns=list('xy'))
 df = df.append(pd.DataFrame([[0, 0], [1, 1]], columns=list('xy')), ignore_index=True)
 
-pop_data = None
-loc_data = None
-
 
 class TestData(unittest.TestCase):
     def test_add_coordinates(self):
