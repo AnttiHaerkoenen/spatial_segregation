@@ -6,6 +6,9 @@ import numpy as np
 
 from spatial_segregation import data
 
+df = pd.DataFrame(np.random.rand(18, 2), columns=list('xy'))
+df = df.append(pd.DataFrame([[0, 0], [1, 1]], columns=list('xy')), ignore_index=True)
+
 pop_data = [[1, 2, 0], [2, 9, 0], [2, 5, 0],
             [2, 8, 0], [2, 1, 0], [3, 0, 0],
             [4, 2, 0], [5, 1, 0], [5, 1, 0],
