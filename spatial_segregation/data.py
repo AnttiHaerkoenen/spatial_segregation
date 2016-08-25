@@ -25,7 +25,7 @@ def add_coordinates(population_data, point_data):
     for key in bad_keys:
         del data_dict[key]
 
-    return pd.DataFrame.from_dict(data_dict, orient='index')
+    return pd.DataFrame.from_dict(data_dict, orient='index').reindex_axis("x y host other".split(), axis='columns')
 
 
 def shuffle_data(data_frame):
@@ -100,9 +100,18 @@ def main():
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
     os.chdir(os.path.join(os.path.abspath(os.path.pardir), DATA_DIR))
 
+    print(reform(pd.read_csv('1880.csv', sep='\t')))
+
+    pop_data = aggregate_sum(reform(pd.read_csv('1880.csv', sep='\t')))
+
     point_shp = pysal.open("points.shp")
     point_db = pysal.open("points.dbf", 'r')
 
+    point_data = []
+    for i in range(len(point_shp)):
+        point_data.append([point_db[i][0][1], point_shp[i][0], point_shp[i][1]])
+
+    d = add_coordinates(pop_data, point_data)
 
 if __name__ == '__main__':
     main()
