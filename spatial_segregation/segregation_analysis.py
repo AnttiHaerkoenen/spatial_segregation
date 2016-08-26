@@ -9,7 +9,7 @@ DATA_DIR = 'data'
 
 
 class SegregationAnalysis:
-    def __init__(self, data_frame, cell_size, kernel, bw, alpha=1):
+    def __init__(self, data_frame, cell_size, bw, kernel, alpha=1):
         self.data = data_frame
         self.cell_size = cell_size
         self.kernel = kernel
@@ -19,19 +19,19 @@ class SegregationAnalysis:
         kd = kde.create_kde_surface(data_frame, self.cell_size, self.kernel, self.bw, self.alpha)
         self.indices = segregation_indices.calc_indices(kd[['host', 'other']].values)
 
-        self.simulations = []
+        self._simulations_list = []
 
     def simulate(self, rep=1000):
-        self.simulations = []
+        self._simulations_list = []
 
         for _ in range(rep):
             data_frame = data.shuffle_data(self.data)
             kd = kde.create_kde_surface(data_frame, self.cell_size, self.kernel, self.bw, self.alpha)
-            self.simulations.append(segregation_indices.calc_indices(kd[['host', 'other']].values))
+            self._simulations_list.append(segregation_indices.calc_indices(kd[['host', 'other']].values))
 
     @property
     def simulated(self):
-        return pd.DataFrame.from_list(self.simulations)
+        return pd.DataFrame(self._simulations_list)
 
 ########################################################################################################################
 
@@ -64,14 +64,16 @@ def main():
          for year in pop_data}
     results = []
 
-    for y, d in d.items():
-        for c in cells:
-            for bw in bws:
-                ana = SegregationAnalysis(d, c, 'distance_decay', bw)
-                print(ana.indices)
-                results.append(ana.indices)
+    ana = SegregationAnalysis(d[1880], 50, 50, 'distance_decay')
+    ana.simulate(10)
+    print(ana.simulated)
 
-    print(results)
+    # for y, d in d.items():
+    #     for c in cells:
+    #         for bw in bws:
+    #             ana = SegregationAnalysis(d, c, bw, 'distance_decay')
+    #             print(ana.indices)
+    #             results.append(ana.indices)
 
 
 if __name__ == "__main__":

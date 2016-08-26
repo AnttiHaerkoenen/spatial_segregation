@@ -44,6 +44,13 @@ class TestAddCoordinates(unittest.TestCase):
 
 class TestAggregateSum(unittest.TestCase):
     def test_aggregate_sum(self):
+        # TODO
+        pass
+
+
+class TestShuffle(unittest.TestCase):
+    def test_shuffle(self):
+        # TODO
         pass
 
 
