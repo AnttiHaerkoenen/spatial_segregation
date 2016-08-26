@@ -30,7 +30,7 @@ class SegregationAnalysis:
             self._simulations_list.append(segregation_indices.calc_indices(kd[['host', 'other']].values))
 
     @property
-    def simulated(self):
+    def simulations(self):
         return pd.DataFrame(self._simulations_list)
 
 ########################################################################################################################
@@ -66,7 +66,7 @@ def main():
 
     ana = SegregationAnalysis(d[1880], 50, 50, 'distance_decay')
     ana.simulate(10)
-    print(ana.simulated)
+    print(ana.simulations)
 
     # for y, d in d.items():
     #     for c in cells:

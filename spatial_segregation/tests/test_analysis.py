@@ -50,12 +50,12 @@ class TestSimulation(unittest.TestCase):
 
     def test_simulations_empty(self):
         ana = segregation_analysis.SegregationAnalysis(d[1880], 50, 50, 'distance_decay', 1)
-        self.assertTrue(ana.simulated.empty)
+        self.assertTrue(ana.simulations.empty)
 
     def test_simulated_size(self):
         ana = segregation_analysis.SegregationAnalysis(d[1880], 50, 50, 'distance_decay', 1)
         ana.simulate(N_SIMULATIONS)
-        self.assertEqual(ana.simulated.shape[0], N_SIMULATIONS)
+        self.assertEqual(ana.simulations.shape[0], N_SIMULATIONS)
 
 
 if __name__ == '__main__':
