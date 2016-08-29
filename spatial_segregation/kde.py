@@ -1,8 +1,13 @@
+import collections
+
 import numpy as np
 import pandas as pd
+import scipy.spatial
 
 from spatial_segregation import kernel_functions, data
 
+Point = collections.namedtuple('Point', 'x y')
+Polygon = collections.namedtuple('Polygon', 'x y')
 
 kernel_dict = {
     'distance_decay': kernel_functions.distance_decay
@@ -24,6 +29,8 @@ def create_kde_surface(df, cell_size=20, kernel='distance_decay', bw=25, a=1):
         'x': xx.flatten(),
         'y': yy.flatten(),
     }
+
+    d_dict = select_by_location(d_dict)
 
     d = calc_d(df, d_dict)
     w = calc_w(d, kernel, bw, a)
@@ -64,6 +71,24 @@ def calc_w(d, kernel='distance_decay', bw=10, a=1):
         x[...] = kernel_dict[kernel](x, bw, a)
 
     return d
+
+
+def select_by_location(xy_dict):
+    xx = xy_dict['x']
+    yy = xy_dict['y']
+    xy = np.hstack((xx.reshape(xx.shape[0], 1),
+                    yy.reshape(yy.shape[0], 1)))
+
+    mcp = scipy.spatial.ConvexHull(xy)
+
+    x = [xx[i] for i in mcp.vertices]
+    y = [yy[i] for i in mcp.vertices]
+
+    mcp = Polygon(x=tuple(x), y=tuple(y), n=len(mcp.vertices))
+
+
+def is_in_polygon(point, polygon):
+    pass
 
 
 def main():
