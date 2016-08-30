@@ -1,20 +1,15 @@
-import collections
-
 import numpy as np
 import pandas as pd
-import scipy.spatial
+import shapely.geometry
 
 from spatial_segregation import kernel_functions, data
-
-Point = collections.namedtuple('Point', 'x y')
-Polygon = collections.namedtuple('Polygon', 'x y')
 
 kernel_dict = {
     'distance_decay': kernel_functions.distance_decay
 }
 
 
-def create_kde_surface(df, cell_size=20, kernel='distance_decay', bw=25, a=1):
+def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=500, a=1):
     ymax, ymin = data.get_y_limits(df)
     xmax, xmin = data.get_x_limits(df)
     ymax += bw
@@ -30,7 +25,9 @@ def create_kde_surface(df, cell_size=20, kernel='distance_decay', bw=25, a=1):
         'y': yy.flatten(),
     }
 
-    d_dict = select_by_location(d_dict)
+    mcp = get_convex_hull(df)
+
+    d_dict = select_by_location(d_dict, mcp)
 
     d = calc_d(df, d_dict)
     w = calc_w(d, kernel, bw, a)
@@ -73,22 +70,36 @@ def calc_w(d, kernel='distance_decay', bw=10, a=1):
     return d
 
 
-def select_by_location(xy_dict):
+def select_by_location(xy_dict, polygon):
     xx = xy_dict['x']
     yy = xy_dict['y']
-    xy = np.hstack((xx.reshape(xx.shape[0], 1),
-                    yy.reshape(yy.shape[0], 1)))
+    xy = []
 
-    mcp = scipy.spatial.ConvexHull(xy)
+    for i in range(len(xx)):
+        xy.append((xx[i], yy[i]))
 
-    x = [xx[i] for i in mcp.vertices]
-    y = [yy[i] for i in mcp.vertices]
+    points = [p for p in xy if polygon.contains(shapely.geometry.Point(p))]
 
-    mcp = Polygon(x=tuple(x), y=tuple(y), n=len(mcp.vertices))
+    x = [p(0) for p in points]
+    y = [p(1) for p in points]
+
+    return {
+        'x': np.array(x),
+        'y': np.array(y)
+    }
 
 
-def is_in_polygon(point, polygon):
-    pass
+def get_convex_hull(data):
+    x = data['x']
+    y = data['y']
+    xy = []
+
+    for i in range(len(x)):
+        xy.append((x[i], y[i]))
+
+    convex_hull = shapely.geometry.MultiPoint(xy).convex_hull
+
+    return convex_hull
 
 
 def main():

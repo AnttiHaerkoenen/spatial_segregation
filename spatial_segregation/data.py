@@ -30,6 +30,7 @@ def add_coordinates(population_data, point_data):
 
 def shuffle_data(data_frame):
     data = data_frame.copy()
+
     for _ in data.index:
         i1 = random.choice(data.index)
         i2 = random.choice(data.index)
@@ -41,16 +42,12 @@ def shuffle_data(data_frame):
 
 def get_x_limits(data_frame):
     x = data_frame['x']
-    maxi = max(x)
-    mini = min(x)
-    return maxi, mini
+    return max(x), min(x)
 
 
 def get_y_limits(data_frame):
     y = data_frame['y']
-    maxi = max(y)
-    mini = min(y)
-    return maxi, mini
+    return max(y), min(y)
 
 
 def aggregate_sum(data, group=0):
