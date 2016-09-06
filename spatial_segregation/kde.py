@@ -9,7 +9,16 @@ kernel_dict = {
 }
 
 
-def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=500, a=1):
+def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=100, a=1):
+    """
+    Creates a data frame representing kde surface clipped to minimum convex polygon of input data points.
+    :param df: input data with x and y coordinates representing points
+    :param cell_size: cell size in meters, default 15
+    :param kernel: kernel type, default 'distance_decay'
+    :param bw: bandwidth in meters, default 100
+    :param a: second parameter for biweight kernel, default 1
+    :return: data frame with columns x, y, host and other
+    """
     ymax, ymin = data.get_y_limits(df)
     xmax, xmin = data.get_x_limits(df)
     ymax += bw
@@ -40,6 +49,12 @@ def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=500, a=1):
 
 
 def calc_d(d_a, d_b):
+    """
+    Calculates distance matrix between two sets of points.
+    :param d_a: first points, dict of arrays
+    :param d_b: second points, dict of arrays
+    :return: matrix of distances between points
+    """
     for df in d_a, d_b:
         if type(df) == 'pandas.core.series.Series':
             df = df.to_dict(orient='list')
@@ -60,7 +75,15 @@ def calc_d(d_a, d_b):
     return d
 
 
-def calc_w(d, kernel='distance_decay', bw=10, a=1):
+def calc_w(d, kernel='distance_decay', bw=100, a=1):
+    """
+    Calculates relative weights based on distance and kernel function.
+    :param d: matrix of distances
+    :param kernel: kernel function to be used, default 'distance_decay'
+    :param bw: kernel bandwidth in meters, default 100
+    :param a: second parameter for biweight kernel, default 1
+    :return: matrix of relative weights w
+    """
     if kernel not in kernel_dict:
         raise ValueError("Kernel not found")
 
@@ -71,6 +94,12 @@ def calc_w(d, kernel='distance_decay', bw=10, a=1):
 
 
 def select_by_location(xy_dict, polygon):
+    """
+    Select points inside a polygon.
+    :param xy_dict: dictionary of arrays of x and y
+    :param polygon: instance of shapely.geometry.Polygon
+    :return: dictionary of arrays of x and y
+    """
     xx = xy_dict['x']
     yy = xy_dict['y']
     xy = []
@@ -78,10 +107,10 @@ def select_by_location(xy_dict, polygon):
     for i in range(len(xx)):
         xy.append((xx[i], yy[i]))
 
-    points = [p for p in xy if polygon.contains(shapely.geometry.Point(p))]
+    points = [p for p in xy if polygon.intersects(shapely.geometry.Point(p))]
 
-    x = [p(0) for p in points]
-    y = [p(1) for p in points]
+    x = [p[0] for p in points]
+    y = [p[1] for p in points]
 
     return {
         'x': np.array(x),
@@ -89,9 +118,14 @@ def select_by_location(xy_dict, polygon):
     }
 
 
-def get_convex_hull(data):
-    x = data['x']
-    y = data['y']
+def get_convex_hull(point_data):
+    """
+    Create a convex hull based on points
+    :param point_data: dict of arrays of coordinates
+    :return: instance of shapely.geometry.Polygon
+    """
+    x = point_data['x']
+    y = point_data['y']
     xy = []
 
     for i in range(len(x)):
