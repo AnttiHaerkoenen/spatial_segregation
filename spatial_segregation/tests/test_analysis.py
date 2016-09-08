@@ -35,8 +35,6 @@ bws = [i for i in range(20, 60)]
 d = {year: data.add_coordinates(pop_data[year], point_data)
      for year in pop_data}
 
-results = []
-
 
 class TestAnalysis(unittest.TestCase):
     def test_analysis(self):
