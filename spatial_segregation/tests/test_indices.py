@@ -1,30 +1,26 @@
-import unittest
-
+from hypothesis import given
+import hypothesis.strategies as st
+from hypothesis.extra.numpy import arrays
 import numpy as np
 
 import spatial_segregation.segregation_indices as si
 
-rand = np.random.rand(1, 50)
-zeros = np.zeros((1, 50))
-data_a = np.hstack((np.vstack((rand, zeros)), np.vstack((zeros, rand)))).T
-data_b = np.tile(rand, (2, 2)).T
+
+@given(arrays(dtype=np.float32, shape=(50, 2)))
+def test_km_identical(data):
+    assert si.km(data) == si.km(data)
 
 
-class TestKM(unittest.TestCase):
-    def test_km_identical(self):
-        self.assertEqual(si.km(data_a), si.km(data_a))
-
-    def test_km_total_segregation(self):
-        self.assertAlmostEqual(si.km(data_a), 1)
-
-    def test_km_no_segregation(self):
-        self.assertAlmostEqual(si.km(data_b), 0)
+@given(st.integers())
+def test_km_total_segregation(data):
+    pass
 
 
-class TestCalcIndices(unittest.TestCase):
-    def test_index_identical(self):
-        self.assertEqual(si.calc_indices(data_a), si.calc_indices(data_a))
+@given()
+def test_km_no_segregation(data):
+    pass
 
 
-if __name__ == '__main__':
-    unittest.main()
+@given(arrays(dtype=np.float64, shape=(50, 2)))
+def test_index_identical(data):
+    assert si.calc_indices(data) == si.calc_indices(data)
