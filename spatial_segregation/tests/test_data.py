@@ -13,6 +13,18 @@ def test_add_coordinates():
     pass
 
 
+@given()
+def test_aggregate_sum():
+    pass
+
+
+def test_get_y_lim():
+    pass
+
+
+def test_get_x_lim():
+    pass
+
 # df = pd.DataFrame(np.random.rand(18, 2), columns=list('xy'))
 # df = df.append(pd.DataFrame([[0, 0], [1, 1]], columns=list('xy')), ignore_index=True)
 #

@@ -57,14 +57,9 @@ def shuffle_data(data_frame):
     return shuffled
 
 
-def get_x_limits(data_frame):
-    x = data_frame['x']
+def get_limits(data_frame, variable):
+    x = data_frame[variable]
     return max(x), min(x)
-
-
-def get_y_limits(data_frame):
-    y = data_frame['y']
-    return max(y), min(y)
 
 
 def aggregate_sum(data, group_index=0):
@@ -103,6 +98,10 @@ def reform(population_data):
                             pop_data['other.christian'] - pop_data['other.religion'])
     pop_data = pop_data.loc[:, ['plot.number', 'lutheran', 'orthodox']]
     return [i for i in map(list, pop_data.values)]
+
+
+def plot_points(point_data):
+    pass
 
 
 ########################################################################################################################

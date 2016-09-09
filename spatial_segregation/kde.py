@@ -19,8 +19,8 @@ def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=100, a=1):
     :param a: second parameter for biweight kernel, default 1
     :return: data frame with columns x, y, host and other
     """
-    ymax, ymin = data.get_y_limits(df)
-    xmax, xmin = data.get_x_limits(df)
+    ymax, ymin = data.get_limits(df, 'y')
+    xmax, xmin = data.get_limits(df, 'x')
     ymax += bw
     ymin -= bw
     xmax += bw

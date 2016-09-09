@@ -32,24 +32,24 @@ d = {year: data.add_coordinates(pop_data[year], point_data)
      for year in pop_data}
 
 
-class TestAnalysis(unittest.TestCase):
-    def test_analysis(self):
-        ana = segregation_analysis.SegregationAnalysis(d[1880], 50, 50, 'distance_decay', 1)
-
-
-class TestSimulation(unittest.TestCase):
-    def test_simulation(self):
-        ana = segregation_analysis.SegregationAnalysis(d[1880], 50, 50, 'distance_decay', 1)
-        ana.simulate(N_SIMULATIONS)
-
-    def test_simulations_empty(self):
-        ana = segregation_analysis.SegregationAnalysis(d[1880], 50, 50, 'distance_decay', 1)
-        self.assertTrue(ana.simulations.empty)
-
-    def test_simulated_size(self):
-        ana = segregation_analysis.SegregationAnalysis(d[1880], 50, 50, 'distance_decay', 1)
-        ana.simulate(N_SIMULATIONS)
-        self.assertEqual(ana.simulations.shape[0], N_SIMULATIONS)
+# class TestAnalysis(unittest.TestCase):
+#     def test_analysis(self):
+#         ana = segregation_analysis.SegregationAnalysis(d[1880], 50, 50, 'distance_decay', 1)
+#
+#
+# class TestSimulation(unittest.TestCase):
+#     def test_simulation(self):
+#         ana = segregation_analysis.SegregationAnalysis(d[1880], 50, 50, 'distance_decay', 1)
+#         ana.simulate(N_SIMULATIONS)
+#
+#     def test_simulations_empty(self):
+#         ana = segregation_analysis.SegregationAnalysis(d[1880], 50, 50, 'distance_decay', 1)
+#         self.assertTrue(ana.simulations.empty)
+#
+#     def test_simulated_size(self):
+#         ana = segregation_analysis.SegregationAnalysis(d[1880], 50, 50, 'distance_decay', 1)
+#         ana.simulate(N_SIMULATIONS)
+#         self.assertEqual(ana.simulations.shape[0], N_SIMULATIONS)
 
 
 if __name__ == '__main__':
