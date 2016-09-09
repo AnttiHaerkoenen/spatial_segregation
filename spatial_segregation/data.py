@@ -2,25 +2,37 @@ import random
 import os
 
 import pandas as pd
-import pysal
+import json
 
 DATA_DIR = 'data'
+X, Y = 0, 1
 
 
-def add_coordinates(population_data, point_data):
+def add_coordinates(population_data, point_data, pop_index=0, host=1, other=2, point_index='NUMBER'):
+    """
+    Combines coordinate data with population data
+    :param pop_index:
+    :param point_index:
+    :param host:
+    :param other:
+    :param population_data: list of lists of population
+    :param point_data: dict derived from geojson-file of points
+    :return: data frame with columns x, y, host, other
+    """
     data_dict = {}
 
-    for row in point_data:
-        data_dict[row[0]] = {'x': row[1], 'y': row[2]}
+    for feature in point_data['features']:
+        index = feature['properties'][point_index]
+        x, y = feature['geometry']['coordinates']
+        data_dict[index] = {'x': x, 'y': y}
 
     for r in population_data:
-        if r[0] in data_dict.keys():
-            data_dict[r[0]]['host'] = r[1]
-            data_dict[r[0]]['other'] = r[2]
+        if r[pop_index] in data_dict.keys():
+            data_dict[r[pop_index]]['host'] = r[host]
+            data_dict[r[pop_index]]['other'] = r[other]
 
-    bad_keys = [key
-                for key in data_dict
-                if key not in [r[0] for r in population_data]]
+    bad_keys = [key for key in data_dict
+                if key not in [r[pop_index]for r in population_data]]
 
     for key in bad_keys:
         del data_dict[key]
@@ -29,15 +41,20 @@ def add_coordinates(population_data, point_data):
 
 
 def shuffle_data(data_frame):
-    data = data_frame.copy()
+    """
+    Fisher-Yates shuffle for switching coordinates
+    :param data_frame: original data_frame
+    :return: new, shuffled data frame
+    """
+    shuffled = data_frame.copy()
+    n = len(shuffled.index)
 
-    for _ in data.index:
-        i1 = random.choice(data.index)
-        i2 = random.choice(data.index)
+    for i in range(n - 2):
+        j = random.randint(i, n)
         for c in list('xy'):
-            data.loc[i1, c] = data.loc[i2, c]
+            shuffled.loc[i, c] = shuffled.loc[j, c]
 
-    return data
+    return shuffled
 
 
 def get_x_limits(data_frame):
@@ -50,26 +67,25 @@ def get_y_limits(data_frame):
     return max(y), min(y)
 
 
-def aggregate_sum(data, group=0):
+def aggregate_sum(data, group_index=0):
     """
     Calculates aggregate sums so that all the records with from the same address are summed up.
-
     :param data: list of lists
-    :param group: index of group position
+    :param group_index: index of group position
     :return: list of lists
     """
     cols = len(data[0])
-    data_rows = [i for i in range(cols) if i != group]
+    data_rows = [i for i in range(cols) if i != group_index]
     aggregated_data = []
     last_id = None
 
     for row in data:
-        if row[group] == last_id:
+        if row[group_index] == last_id:
             for k in data_rows:
                 aggregated_data[-1][k] += row[k]
         else:
             aggregated_data.append(row)
-        last_id = row[group]
+        last_id = row[group_index]
 
     return aggregated_data
 
@@ -77,9 +93,8 @@ def aggregate_sum(data, group=0):
 def reform(population_data):
     """
     Cleans population data for use in segregation analysis.
-
     :param population_data:
-    :return: Reformed list of lists
+    :return: aggregated sum, list of lists
     """
     pop_data = population_data.fillna(value=0)
     pop_data = pop_data.loc[:, ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian',
@@ -97,16 +112,10 @@ def main():
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
     os.chdir(os.path.join(os.path.abspath(os.path.pardir), DATA_DIR))
 
-    print(reform(pd.read_csv('1880.csv', sep='\t')))
-
     pop_data = aggregate_sum(reform(pd.read_csv('1880.csv', sep='\t')))
 
-    point_shp = pysal.open("points.shp")
-    point_db = pysal.open("points.dbf", 'r')
-
-    point_data = []
-    for i in range(len(point_shp)):
-        point_data.append([point_db[i][0][1], point_shp[i][0], point_shp[i][1]])
+    with open('points.geojson') as f:
+        point_data = json.load(f)
 
     d = add_coordinates(pop_data, point_data)
 

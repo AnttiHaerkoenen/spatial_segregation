@@ -1,8 +1,8 @@
 import unittest
 import os
+import json
 
 import pandas as pd
-import pysal
 
 from spatial_segregation import kde, data, segregation_indices, segregation_analysis
 
@@ -22,12 +22,8 @@ pop_data = {
     1920: v20
 }
 
-point_shp = pysal.open("points.shp")
-point_db = pysal.open("points.dbf", 'r')
-
-point_data = []
-for i in range(len(point_shp)):
-    point_data.append([point_db[i][0][1], point_shp[i][0], point_shp[i][1]])
+with open('points.geojson') as f:
+    point_data = json.load(f)
 
 cells = [i for i in range(15, 61, 15)]
 bws = [i for i in range(20, 60)]

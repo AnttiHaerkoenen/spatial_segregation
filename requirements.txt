@@ -2,5 +2,4 @@ hypothesis
 shapely
 pandas
 numpy
-pysal
-scikit-learn
+matplotlib

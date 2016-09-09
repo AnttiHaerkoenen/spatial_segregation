@@ -2,6 +2,7 @@
   <dictionary name="antth">
     <words>
       <w>biweight</w>
+      <w>matplotlib</w>
     </words>
   </dictionary>
 </component>
