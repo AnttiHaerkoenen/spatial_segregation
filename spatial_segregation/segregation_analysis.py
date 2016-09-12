@@ -9,14 +9,24 @@ DATA_DIR = 'data'
 
 
 class SegregationAnalysis:
-    def __init__(self, data_frame, cell_size, bw, kernel, alpha=1):
+    def __init__(self, data_frame, cell_size, bw, kernel, alpha=1, convex_hull=True, buffer=0):
         self.data = data_frame
         self.cell_size = cell_size
         self.kernel = kernel
         self.bw = bw
         self.alpha = alpha
+        self.convex_hull=convex_hull
+        self.buffer = buffer
 
-        kd = kde.create_kde_surface(data_frame, self.cell_size, self.kernel, self.bw, self.alpha)
+        kd = kde.create_kde_surface(
+            self.data,
+            self.cell_size,
+            self.kernel,
+            self.bw,
+            self.alpha,
+            self.convex_hull,
+            self.buffer
+        )
         self.indices = segregation_indices.calc_indices(kd[['host', 'other']].values)
 
         self._simulations_list = []
