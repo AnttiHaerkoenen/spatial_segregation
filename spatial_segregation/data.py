@@ -51,7 +51,7 @@ def shuffle_data(data_frame):
 
     for i in range(n - 2):
         j = random.randint(i, n)
-        shuffled.loc[i, list('xy')] = shuffled.loc[j, list('xy')]
+        shuffled.loc[i, 'x'] = shuffled.loc[j, 'x']
 
     return shuffled
 
