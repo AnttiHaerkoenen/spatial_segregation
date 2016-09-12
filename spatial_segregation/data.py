@@ -46,12 +46,12 @@ def shuffle_data(data_frame):
     :param data_frame: original data_frame
     :return: new, shuffled data frame
     """
-    shuffled = data_frame.copy()
+    shuffled = data_frame.copy(deep=True)
     n = len(shuffled.index)
 
     for i in range(n - 2):
         j = random.randint(i, n)
-        shuffled.loc[i, 'x'] = shuffled.loc[j, 'x']
+        shuffled.loc[i, list('xy')] = shuffled.loc[j, list('xy')]
 
     return shuffled
 
