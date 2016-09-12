@@ -2,6 +2,7 @@ import random
 import os
 
 import pandas as pd
+import numpy as np
 import json
 
 DATA_DIR = 'data'
@@ -42,18 +43,14 @@ def add_coordinates(population_data, point_data, pop_index=0, host=1, other=2, p
 
 def shuffle_data(data_frame):
     """
-    Fisher-Yates shuffle for switching coordinates
+    Shuffle coordinates
     :param data_frame: original data_frame
     :return: new, shuffled data frame
     """
-    shuffled = data_frame.copy(deep=True)
-    n = len(shuffled.index)
-
-    for i in range(n - 2):
-        j = random.randint(i, n)
-        shuffled.loc[i, list('xy')] = shuffled.loc[j, list('xy')]
-
-    return shuffled
+    xy = data_frame.loc[:, list('xy')].values
+    pop = data_frame.loc[:, 'host other'.split()].values
+    np.random.shuffle(xy)
+    return pd.DataFrame(np.hstack((xy, pop)), columns='x y host other'.split())
 
 
 def get_limits(data_frame, variable):
@@ -97,10 +94,6 @@ def reform(population_data):
                             pop_data['other.christian'] - pop_data['other.religion'])
     pop_data = pop_data.loc[:, ['plot.number', 'lutheran', 'orthodox']]
     return [i for i in map(list, pop_data.values)]
-
-
-def plot_points(point_data):
-    pass
 
 
 ########################################################################################################################
