@@ -18,7 +18,7 @@ class SegregationAnalysis:
         self.convex_hull=convex_hull
         self.buffer = buffer
 
-        kd = kde.create_kde_surface(
+        self.surface = kde.create_kde_surface(
             self.data,
             self.cell_size,
             self.kernel,
@@ -27,7 +27,7 @@ class SegregationAnalysis:
             self.convex_hull,
             self.buffer
         )
-        self.indices = segregation_indices.calc_indices(kd[['host', 'other']].values)
+        self.indices = segregation_indices.calc_indices(self.surface[['host', 'other']].values)
 
         self._simulations_list = []
 
