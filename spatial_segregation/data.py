@@ -51,7 +51,7 @@ def shuffle_data(data_frame):
 
     for i in range(n - 2):
         j = random.randint(i, n)
-        shuffled.iloc[i, 0:1] = shuffled.iloc[j, 0:1]
+        shuffled.iloc[i, 0:2] = shuffled.iloc[j, 0:2]
 
     return shuffled
 
