@@ -9,9 +9,11 @@ kernel_dict = {
 }
 
 
-def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=100, a=1):
+def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=100, a=1, convex_hull=True, convex_hull_buffer=0):
     """
     Creates a data frame representing kde surface clipped to minimum convex polygon of input data points.
+    :param convex_hull_buffer: buffer around convex hull, meters
+    :param convex_hull: Whether or not to use convex hull to clip kde surface
     :param df: input data with x and y coordinates representing points
     :param cell_size: cell size in meters, default 15
     :param kernel: kernel type, default 'distance_decay'
@@ -34,9 +36,9 @@ def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=100, a=1):
         'y': yy.flatten(),
     }
 
-    mcp = get_convex_hull(df)
-
-    d_dict = select_by_location(d_dict, mcp)
+    if convex_hull:
+        mcp = get_convex_hull(df, convex_hull_buffer)
+        d_dict = select_by_location(d_dict, mcp)
 
     d = calc_d(df, d_dict)
     w = calc_w(d, kernel, bw, a)
@@ -118,9 +120,10 @@ def select_by_location(xy_dict, polygon):
     }
 
 
-def get_convex_hull(point_data):
+def get_convex_hull(point_data, convex_hull_buffer=0):
     """
     Create a convex hull based on points
+    :param convex_hull_buffer: buffer around convex hull, meters
     :param point_data: dict of arrays of coordinates
     :return: instance of shapely.geometry.Polygon
     """
@@ -133,12 +136,12 @@ def get_convex_hull(point_data):
 
     convex_hull = shapely.geometry.MultiPoint(xy).convex_hull
 
-    return convex_hull
+    return convex_hull.buffer(convex_hull_buffer)
 
 
 def main():
     data2 = pd.DataFrame(np.ones((2, 4)), columns='x y host other'.split())
-    create_kde_surface(data2)
+    kde = create_kde_surface(data2, convex_hull_buffer=10)
 
 
 if __name__ == '__main__':
