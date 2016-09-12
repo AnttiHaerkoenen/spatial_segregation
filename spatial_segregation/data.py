@@ -51,8 +51,7 @@ def shuffle_data(data_frame):
 
     for i in range(n - 2):
         j = random.randint(i, n)
-        for c in list('xy'):
-            shuffled.loc[i, c] = shuffled.loc[j, c]
+        shuffled.loc[i, 'x':'y'] = shuffled.loc[j, 'x':'y']
 
     return shuffled
 
@@ -113,7 +112,7 @@ def main():
 
     pop_data = aggregate_sum(reform(pd.read_csv('1880.csv', sep='\t')))
 
-    with open('points.geojson') as f:
+    with open('points1878.geojson') as f:
         point_data = json.load(f)
 
     d = add_coordinates(pop_data, point_data)

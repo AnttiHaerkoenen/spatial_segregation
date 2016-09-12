@@ -60,7 +60,7 @@ def main():
         1920: v20
     }
 
-    with open('points.geojson') as f:
+    with open('points1878.geojson') as f:
         point_data = json.load(f)
 
     cells = [i for i in range(15, 61, 15)]
