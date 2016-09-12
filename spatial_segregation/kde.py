@@ -31,7 +31,8 @@ def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=100, a=1, c
     y = np.arange(ymin, ymax, cell_size)
     xx, yy = np.meshgrid(x, y)
 
-    d_frame = pd.DataFrame(np.hstack((xx, yy)), columns=list('xy'))
+    flatten_ = xx.flatten()[:,np.newaxis], yy.flatten()[:,np.newaxis]
+    d_frame = pd.DataFrame(np.hstack(flatten_), columns=list('xy'))
 
     if convex_hull:
         mcp = get_convex_hull(df, convex_hull_buffer)
