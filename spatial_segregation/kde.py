@@ -31,42 +31,34 @@ def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=100, a=1, c
     y = np.arange(ymin, ymax, cell_size)
     xx, yy = np.meshgrid(x, y)
 
-    d_dict = {
-        'x': xx.flatten(),
-        'y': yy.flatten(),
-    }
+    d_frame = pd.DataFrame(np.hstack((xx, yy)), columns=list('xy'))
 
     if convex_hull:
         mcp = get_convex_hull(df, convex_hull_buffer)
-        d_dict = select_by_location(d_dict, mcp)
+        d_frame = select_by_location(d_frame, mcp)
 
-    d = calc_d(df, d_dict)
+    d = calc_d(df, d_frame)
     w = calc_w(d, kernel, bw, a)
 
     for group in 'host', 'other':
         pop = np.broadcast_to(df[group][np.newaxis:, ], w.shape) * w
-        d_dict[group] = np.sum(pop, axis=1)
+        d_frame[group] = pd.Series(np.sum(pop, axis=1), index=d_frame.index)
 
-    return pd.DataFrame(d_dict)
+    return d_frame
 
 
 def calc_d(d_a, d_b):
     """
     Calculates distance matrix between two sets of points.
-    :param d_a: first points, dict of arrays
-    :param d_b: second points, dict of arrays
+    :param d_a: first points, data frame
+    :param d_b: second points, data frame
     :return: matrix of distances between points
     """
-    for df in d_a, d_b:
-        if type(df) == 'pandas.core.series.Series':
-            df = df.to_dict(orient='list')
-            df['y'] = np.array(df['y'])
-            df['x'] = np.array(df['x'])
 
-    y_a = d_a['y']
-    x_a = d_a['x']
-    y_b = d_b['y']
-    x_b = d_b['x']
+    y_a = d_a.loc[:, 'y'].values
+    x_a = d_a.loc[:, 'x'].values
+    y_b = d_b.loc[:, 'y'].values
+    x_b = d_b.loc[:, 'x'].values
 
     y1, y2 = tuple(np.meshgrid(y_a, y_b))
     x1, x2 = tuple(np.meshgrid(x_a, x_b))
@@ -95,44 +87,28 @@ def calc_w(d, kernel='distance_decay', bw=100, a=1):
     return d
 
 
-def select_by_location(xy_dict, polygon):
+def select_by_location(point_data, polygon):
     """
     Select points inside a polygon.
-    :param xy_dict: dictionary of arrays of x and y
+    :param point_data: data frame of coordinates
     :param polygon: instance of shapely.geometry.Polygon
-    :return: dictionary of arrays of x and y
+    :return: data frame of coordinates
     """
-    xx = xy_dict['x']
-    yy = xy_dict['y']
-    xy = []
-
-    for i in range(len(xx)):
-        xy.append((xx[i], yy[i]))
+    xy = [(row.x, row.y) for row in point_data.itertuples()]
 
     points = [p for p in xy if polygon.intersects(shapely.geometry.Point(p))]
 
-    x = [p[0] for p in points]
-    y = [p[1] for p in points]
-
-    return {
-        'x': np.array(x),
-        'y': np.array(y)
-    }
+    return pd.DataFrame(np.asarray(points), columns=list('xy'))
 
 
 def get_convex_hull(point_data, convex_hull_buffer=0):
     """
     Create a convex hull based on points
     :param convex_hull_buffer: buffer around convex hull, meters
-    :param point_data: dict of arrays of coordinates
-    :return: instance of shapely.geometry.Polygon
+    :param point_data: data frame of coordinates
+    :return: a shapely.geometry.Polygon
     """
-    x = point_data['x']
-    y = point_data['y']
-    xy = []
-
-    for i in range(len(x)):
-        xy.append((x[i], y[i]))
+    xy = [(row.x, row.y) for row in point_data.itertuples()]
 
     convex_hull = shapely.geometry.MultiPoint(xy).convex_hull
 
