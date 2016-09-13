@@ -2,6 +2,9 @@ import os
 import json
 
 import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.style.use('ggplot')
 
 from spatial_segregation import kde, data, segregation_indices
 
@@ -50,6 +53,17 @@ class SegregationAnalysis:
     @property
     def simulations(self):
         return pd.DataFrame(self._simulations_list)
+
+    def plot(self, index='km'):
+        if len(self.simulations) == 0:
+            raise ValueError("No simulations to plot")
+        if index not in self.indices:
+            raise ValueError("Index not calculated")
+
+        self.simulations.plot()
+        plt.axvline(self.indices[index])
+        plt.title('Simulated segregation indices, n={}'.format(len(self.simulations)))
+        plt.show()
 
 ########################################################################################################################
 
