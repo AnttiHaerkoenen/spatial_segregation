@@ -62,6 +62,7 @@ class SegregationAnalysis:
 
         self.simulations.plot.kde()
         plt.axvline(self.indices[index], label=index)
+        plt.legend()
         plt.title('Simulated {0} index, n={1}'.format(index, len(self.simulations)))
         plt.show()
 
