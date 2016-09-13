@@ -60,7 +60,7 @@ class SegregationAnalysis:
         if index not in self.indices:
             raise ValueError("Index not calculated")
 
-        self.simulations.plot.kde(label="simulated {0}".format(index))
+        self.simulations.plot.kde(legend="simulated {0}".format(index))
         plt.axvline(self.indices[index], label="actual {0}".format(index))
         plt.legend()
         plt.title('Simulated {0} index, n={1}'.format(index, len(self.simulations)))
