@@ -61,8 +61,8 @@ class SegregationAnalysis:
             raise ValueError("Index not calculated")
 
         self.simulations.plot.kde()
-        plt.axvline(self.indices[index])
-        plt.title('Simulated segregation indices, n={}'.format(len(self.simulations)))
+        plt.axvline(self.indices[index]).set_label(index)
+        plt.title('Simulated {0} index, n={1}'.format(index, len(self.simulations)))
         plt.show()
 
 ########################################################################################################################
