@@ -55,7 +55,6 @@ def calc_d(d_a, d_b):
     :param d_b: second points, data frame
     :return: matrix of distances between points
     """
-
     y_a = d_a.loc[:, 'y'].values
     x_a = d_a.loc[:, 'x'].values
     y_b = d_b.loc[:, 'y'].values
