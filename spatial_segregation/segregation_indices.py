@@ -12,14 +12,7 @@ def km(p_gn):
                                    np.nansum(p_gn, axis=1, keepdims=True))
 
     index = np.abs(p_gn / (p_g * p_n) - 1) * p_n * p_g
-    sum_ = np.nansum(index)
-
-    if sum_ < 0:
-        return 0
-    elif sum_ > 1:
-        return 1
-    else:
-        return sum_
+    return np.nansum(index)
 
 
 def calc_indices(p_gn):
