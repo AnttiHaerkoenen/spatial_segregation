@@ -91,12 +91,15 @@ def select_by_location(point_data, polygon):
     """
     Select points inside a polygon.
     :param point_data: data frame of coordinates
-    :param polygon: instance of shapely.geometry.Polygon
+    :param polygon: instance of shapely.geometry.polygon.Polygon
     :return: data frame of coordinates
     """
+    print(polygon)
     xy = [(row.x, row.y) for row in point_data.itertuples()]
+    print(xy)
 
-    points = [p for p in xy if polygon.intersects(shapely.geometry.Point(p))]
+    points = [p for p in xy if polygon.contains(shapely.geometry.point.Point(p[0], p[1]))]
+    print(points)
 
     return pd.DataFrame(np.asarray(points), columns=list('xy'))
 
@@ -106,7 +109,7 @@ def get_convex_hull(point_data, convex_hull_buffer=0):
     Create a convex hull based on points
     :param convex_hull_buffer: buffer around convex hull, meters
     :param point_data: data frame of coordinates
-    :return: a shapely.geometry.Polygon
+    :return: a shapely.geometry.polygon.Polygon
     """
     xy = [(row.x, row.y) for row in point_data.itertuples()]
 

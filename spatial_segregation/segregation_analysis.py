@@ -3,8 +3,6 @@ import json
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib
-matplotlib.style.use('ggplot')
 
 from spatial_segregation import kde, data, segregation_indices
 
@@ -55,15 +53,16 @@ class SegregationAnalysis:
         return pd.DataFrame(self._simulations_list)
 
     def plot(self, index='km'):
+
         if len(self.simulations) == 0:
             raise ValueError("No simulations to plot")
         if index not in self.indices:
             raise ValueError("Index not calculated")
 
-        self.simulations.plot.kde()
+        self.simulations[index].plot.kde(color='red', label="simulated {0}".format(index))
         plt.axvline(self.indices[index], label="actual {0}".format(index))
         plt.legend()
-        plt.title('Simulated {0} index distribution, n={1}'.format(index, len(self.simulations)))
+        plt.title("Simulated {0} index distribution, n={1}".format(index, len(self.simulations)))
         plt.show()
 
 ########################################################################################################################
@@ -96,6 +95,7 @@ def main():
     ana = SegregationAnalysis(d[1880], 50, 50, 'distance_decay')
     ana.simulate(10)
     print(ana.simulations)
+    ana.plot()
 
     # for y, d in d.items():
     #     for c in cells:
