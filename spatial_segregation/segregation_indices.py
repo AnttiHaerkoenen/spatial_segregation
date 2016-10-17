@@ -15,9 +15,20 @@ def km(p_gn):
     return np.nansum(index)
 
 
-def calc_indices(p_gn):
-    index = dict()
+def mi(p_gn):
+    p_gn /= np.nansum(p_gn)
+    p_g, p_n = np.broadcast_arrays(np.nansum(p_gn, axis=0, keepdims=True),
+                                   np.nansum(p_gn, axis=1, keepdims=True))
 
-    index['km'] = km(p_gn)
+    index = p_gn * np.log(p_gn / (p_g * p_n))
+    return np.nansum(index)
+
+
+def calc_indices(p_gn):
+
+    index = {
+        'km': km(p_gn),
+        'mi': mi(p_gn)
+    }
 
     return index

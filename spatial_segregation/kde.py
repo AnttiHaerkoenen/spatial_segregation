@@ -94,12 +94,9 @@ def select_by_location(point_data, polygon):
     :param polygon: instance of shapely.geometry.polygon.Polygon
     :return: data frame of coordinates
     """
-    print(polygon)
     xy = [(row.x, row.y) for row in point_data.itertuples()]
-    print(xy)
 
     points = [p for p in xy if polygon.contains(shapely.geometry.point.Point(p[0], p[1]))]
-    print(points)
 
     return pd.DataFrame(np.asarray(points), columns=list('xy'))
 
