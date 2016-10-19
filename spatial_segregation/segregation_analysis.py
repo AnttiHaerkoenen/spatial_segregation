@@ -93,7 +93,7 @@ def main():
     results = []
 
     ana = SegregationAnalysis(d[1880], 50, 50, 'distance_decay')
-    ana.simulate(10)
+    ana.simulate(100)
     print(ana.simulations)
     ana.plot('km')
     ana.plot('mi')
