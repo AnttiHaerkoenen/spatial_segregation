@@ -53,9 +53,9 @@ class SegregationAnalysis:
         return pd.DataFrame(self._simulations_list)
 
     def plot(self, index='km'):
-
         if len(self.simulations) == 0:
             raise ValueError("No simulations to plot")
+
         if index not in self.indices:
             raise ValueError("Index not calculated")
 
@@ -97,6 +97,8 @@ def main():
     print(ana.simulations)
     ana.plot('km')
     ana.plot('mi')
+    ana.plot('exposure')
+    ana.plot('isolation')
 
     # for y, d in d.items():
     #     for c in cells:
