@@ -8,7 +8,7 @@ def calc_indices(pop, indices='all', host_col=0, other_col=1, exposure_matrix=Fa
     :param indices: which indices to calculate, default 'all' ('km', 'mi', 'exposure', 'isolation')
     :param host_col: which column contains host group
     :param other_col: which column contains 'the other'
-    :param exposure_matrix: whether or not to return full exposure matrix
+    :param exposure_matrix: whether or not to return a full exposure matrix
     :return: dictionary of indices
     """
     try:

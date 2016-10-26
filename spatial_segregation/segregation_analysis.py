@@ -32,7 +32,7 @@ class SegregationAnalysis:
 
         self._simulations_list = []
 
-    def simulate(self, rep=1000):
+    def simulate(self, rep=500):
         self._simulations_list = []
 
         for _ in range(rep):
@@ -52,17 +52,44 @@ class SegregationAnalysis:
     def simulations(self):
         return pd.DataFrame(self._simulations_list)
 
-    def plot(self, index='km'):
+    def plot(self, index='all', style='classic'):
         if len(self.simulations) == 0:
             raise ValueError("No simulations to plot")
 
-        if index not in self.indices:
-            raise ValueError("Index not calculated")
+        if index == 'all':
+            pass
+        elif index not in self.indices:
+            raise ValueError("Index not computed.")
 
-        self.simulations[index].plot.kde(color='red', label="simulated {0}".format(index))
-        plt.axvline(self.indices[index], label="actual {0}".format(index))
-        plt.legend()
-        plt.title("Simulated {0} index distribution, n={1}".format(index, len(self.simulations)))
+        plt.style.use(style)
+
+        def plot_(i):
+            self.simulations[i].plot.kde(color='red', label="simulated {0}".format(i))
+            plt.axvline(self.indices[i], label="actual {0}".format(i))
+            plt.legend()
+            plt.title("Simulated {0} index distribution, n={1}".format(i, len(self.simulations)))
+
+        if index == 'all':
+            plt.subplot(221)
+            plot_('km')
+            plt.subplot(222)
+            plot_('mi')
+            plt.subplot(223)
+            plot_('exposure')
+            plt.subplot(224)
+            plot_('isolation')
+        else:
+            plot_(index)
+
+        plt.show()
+
+    def plot_kde(self, style='classic'):
+        plt.style.use(style)
+
+        size = self.surface['host'] + self.surface['other']
+        proportion = self.surface['other'] / size
+        self.surface.plot.scatter(x='x', y='y', s=size, c=proportion)
+        plt.title("KDE surface")
         plt.show()
 
 ########################################################################################################################
@@ -92,9 +119,11 @@ def main():
          for year in pop_data}
     results = []
 
-    ana = SegregationAnalysis(d[1880], 50, 50, 'distance_decay')
-    ana.simulate(100)
+    ana = SegregationAnalysis(d[1880], 20, 50, 'distance_decay')
+    ana.simulate(10)
     print(ana.simulations)
+    ana.plot_kde()
+    ana.plot(style='ggplot')
     ana.plot('km')
     ana.plot('mi')
     ana.plot('exposure')
@@ -104,8 +133,10 @@ def main():
     #     for c in cells:
     #         for bw in bws:
     #             ana = SegregationAnalysis(d, c, bw, 'distance_decay')
-    #             print(ana.indices)
     #             results.append(ana.indices)
+    #             ana.plot_kde(style='ggplot')
+    #
+    # print(pd.DataFrame(results))
 
 
 if __name__ == "__main__":

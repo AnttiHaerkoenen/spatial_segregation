@@ -48,11 +48,6 @@ def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=100, a=1, c
     return d_frame
 
 
-def plot_kde(kde):
-    # TODO
-    pass
-
-
 def calc_d(d_a, d_b):
     """
     Calculates distance matrix between two sets of points.
