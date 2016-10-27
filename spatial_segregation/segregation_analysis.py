@@ -10,7 +10,7 @@ DATA_DIR = 'data'
 
 
 class SegregationAnalysis:
-    def __init__(self, data_frame, cell_size, bw, kernel, alpha=1, convex_hull=True, buffer=0):
+    def __init__(self, data_frame, cell_size, bw, kernel, which_indices='all', alpha=1, convex_hull=True, buffer=0):
         self.data = data_frame
         self.cell_size = cell_size
         self.kernel = kernel
@@ -18,6 +18,7 @@ class SegregationAnalysis:
         self.alpha = alpha
         self.convex_hull=convex_hull
         self.buffer = buffer
+        self.which_indices = which_indices
 
         self.surface = kde.create_kde_surface(
             self.data,
@@ -28,7 +29,9 @@ class SegregationAnalysis:
             self.convex_hull,
             self.buffer
         )
-        self.indices = segregation_indices.calc_indices(self.surface[['host', 'other']].values)
+        self.indices = segregation_indices.calc_indices(
+            self.surface[['host', 'other']].values,
+            which_indices=self.which_indices)
 
         self._simulations_list = []
 
@@ -46,11 +49,18 @@ class SegregationAnalysis:
                 self.convex_hull,
                 self.buffer
             )
-            self._simulations_list.append(segregation_indices.calc_indices(kd[['host', 'other']].values))
+            indices = segregation_indices.calc_indices(kd[['host', 'other']].values,
+                                                       which_indices=self.which_indices)
+
+            self._simulations_list.append(indices)
 
     @property
     def simulations(self):
         return pd.DataFrame(self._simulations_list)
+
+    @property
+    def p(self):
+        return {}
 
     def plot(self, index='all', style='classic'):
         if len(self.simulations) == 0:
@@ -122,7 +132,7 @@ def main():
     ana = SegregationAnalysis(d[1880], 20, 50, 'distance_decay')
     ana.simulate(10)
     print(ana.simulations)
-    ana.plot_kde()
+    ana.plot_kde(style='ggplot')
     ana.plot(style='ggplot')
     ana.plot('km')
     ana.plot('mi')
