@@ -60,7 +60,14 @@ class SegregationAnalysis:
 
     @property
     def p(self):
-        return {}
+        p = dict()
+        n = self.simulations.shape[0]
+
+        for i, col in self.simulations.iteritems():
+            greater = [1 for k, v in col.iteritems() if v > self.indices[i]]
+            p[i] = sum(greater) / n
+
+        return p
 
     def plot(self, index='all', style='classic'):
         if len(self.simulations) == 0:
@@ -132,6 +139,7 @@ def main():
     ana = SegregationAnalysis(d[1880], 20, 50, 'distance_decay')
     ana.simulate(10)
     print(ana.simulations)
+    print(ana.p)
     ana.plot_kde(style='ggplot')
     ana.plot(style='ggplot')
     ana.plot('km')
