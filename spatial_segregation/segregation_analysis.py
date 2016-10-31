@@ -55,6 +55,23 @@ class SegregationAnalysis:
             self._simulations_list.append(indices)
 
     @property
+    def param(self):
+        param = {
+            'cell size': self.cell_size,
+            'bandwidth': self.bw,
+            'kernel': self.kernel,
+            'convex hull': self.convex_hull
+        }
+
+        if self.kernel == 'distance_decay':
+            param['alpha'] = self.alpha
+
+        if self.convex_hull:
+            param['buffer'] = self.buffer
+
+        return param
+
+    @property
     def simulations(self):
         return pd.DataFrame(self._simulations_list)
 
@@ -63,9 +80,12 @@ class SegregationAnalysis:
         p = dict()
         n = self.simulations.shape[0]
 
-        for i, col in self.simulations.iteritems():
-            greater = [1 for k, v in col.iteritems() if v > self.indices[i]]
-            p[i] = sum(greater) / n
+        if n < 5:
+            raise ValueError("Not enough simulations")
+
+        for index, col in self.simulations.iteritems():
+            greater = col > self.indices[index]
+            p[index] = round(sum(greater.astype(int)) / n, 4)
 
         return p
 
@@ -136,25 +156,26 @@ def main():
          for year in pop_data}
     results = []
 
-    ana = SegregationAnalysis(d[1880], 20, 50, 'distance_decay')
-    ana.simulate(10)
-    print(ana.simulations)
-    print(ana.p)
-    ana.plot_kde(style='ggplot')
-    ana.plot(style='ggplot')
-    ana.plot('km')
-    ana.plot('mi')
-    ana.plot('exposure')
-    ana.plot('isolation')
+    # ana = SegregationAnalysis(d[1880], 20, 50, 'distance_decay')
+    # ana.simulate(100)
+    # print(ana.simulations)
+    # print(ana.p)
+    # ana.plot_kde(style='ggplot')
+    # ana.plot(style='ggplot')
+    # ana.plot('km', style='ggplot')
+    # ana.plot('mi', style='ggplot')
+    # ana.plot('exposure', style='ggplot')
+    # ana.plot('isolation', style='ggplot')
 
-    # for y, d in d.items():
-    #     for c in cells:
-    #         for bw in bws:
-    #             ana = SegregationAnalysis(d, c, bw, 'distance_decay')
-    #             results.append(ana.indices)
-    #             ana.plot_kde(style='ggplot')
-    #
-    # print(pd.DataFrame(results))
+    for y, d in d.items():
+        for c in cells:
+            for bw in bws:
+                ana = SegregationAnalysis(d, c, bw, 'distance_decay')
+                ana.simulate(1000)
+                results.append({**ana.p, **ana.param})
+                # ana.plot_kde(style='ggplot')
+
+    print(pd.DataFrame(results))
 
 
 if __name__ == "__main__":
