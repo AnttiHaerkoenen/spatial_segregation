@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from spatial_segregation import kde, data, segregation_indices
+from spatial_segregation import kde, data, segregation_indices, utils
 
 DATA_DIR = 'data'
 
@@ -14,7 +14,7 @@ class SegregationAnalysis:
         self.data = data_frame
         self.cell_size = cell_size
         self.kernel = kernel
-        self.bw = bw
+        self.bw = round(bw * cell_size)
         self.alpha = alpha
         self.convex_hull=convex_hull
         self.buffer = buffer
@@ -29,11 +29,25 @@ class SegregationAnalysis:
             self.convex_hull,
             self.buffer
         )
+        print("KDE surface created (bandwidth={0}, cell size={1})".format(self.bw, self.cell_size))
         self.indices = segregation_indices.calc_indices(
             self.surface[['host', 'other']].values,
             which_indices=self.which_indices)
 
         self._simulations_list = []
+
+    def __str__(self):
+        strings = ["Spatial segregation analysis", ""]
+
+        for k, v in self.param.items():
+            strings.append("{0:>12}: {1:}".format(k, v))
+
+        strings.append("")
+
+        for i, v in self.indices.items():
+            strings.append("{0:>12}: {1} p-value: {2} {3}".format(i, v, self.p[i], utils.get_stars(self.p[i])))
+
+        return "\n".join(strings)
 
     def simulate(self, rep=500):
         self._simulations_list = []
@@ -53,6 +67,8 @@ class SegregationAnalysis:
                                                        which_indices=self.which_indices)
 
             self._simulations_list.append(indices)
+
+        print("Simulation complete (n={0})".format(rep))
 
     @property
     def param(self):
@@ -80,12 +96,12 @@ class SegregationAnalysis:
         p = dict()
         n = self.simulations.shape[0]
 
-        if n < 5:
-            raise ValueError("Not enough simulations")
+        if n < 20:
+            return {index: None for index in self.indices}
 
         for index, col in self.simulations.iteritems():
             greater = col > self.indices[index]
-            p[index] = round(sum(greater.astype(int)) / n, 4)
+            p[index] = round(sum(greater.astype(int)) / n, 3)
 
         return p
 
@@ -149,33 +165,31 @@ def main():
     with open('points1878.geojson') as f:
         point_data = json.load(f)
 
-    cells = [i for i in range(15, 61, 15)]
-    bws = [i for i in range(20, 60, 10)]
+    cells = [i for i in range(20, 81, 15)]
+    bws = (1, 1.5, 2)
 
     d = {year: data.add_coordinates(pop_data[year], point_data)
          for year in pop_data}
     results = []
 
-    # ana = SegregationAnalysis(d[1880], 20, 50, 'distance_decay')
-    # ana.simulate(100)
-    # print(ana.simulations)
-    # print(ana.p)
-    # ana.plot_kde(style='ggplot')
-    # ana.plot(style='ggplot')
-    # ana.plot('km', style='ggplot')
-    # ana.plot('mi', style='ggplot')
-    # ana.plot('exposure', style='ggplot')
-    # ana.plot('isolation', style='ggplot')
+    ana = SegregationAnalysis(d[1880], 50, 1.5, 'distance_decay')
+    ana.simulate(100)
+    print(ana.simulations)
+    print(ana)
+    ana.plot_kde(style='ggplot')
+    ana.plot(style='ggplot')
 
-    for y, d in d.items():
-        for c in cells:
-            for bw in bws:
-                ana = SegregationAnalysis(d, c, bw, 'distance_decay')
-                ana.simulate(1000)
-                results.append({**ana.p, **ana.param})
-                # ana.plot_kde(style='ggplot')
-
-    print(pd.DataFrame(results))
+    # for y, d in d.items():
+    #     for c in cells:
+    #         for bw in bws:
+    #             ana = SegregationAnalysis(d, c, bw, 'distance_decay', which_indices='km', buffer=20)
+    #             ana.simulate(100)
+    #             results.append({**ana.p,
+    #                             **ana.param,
+    #                             "year": y})
+    #             # ana.plot_kde(style='ggplot')
+    #
+    # print(pd.DataFrame(results))
 
 
 if __name__ == "__main__":

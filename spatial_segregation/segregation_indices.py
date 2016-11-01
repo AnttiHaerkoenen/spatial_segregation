@@ -37,17 +37,17 @@ def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_mat
 
     if 'km' in which_indices:
         km = np.nansum(np.abs(p_gn / (p_g * p_n) - 1) * p_n * p_g)
-        index['km'] = round(km, 4)
+        index['km'] = round(km, 3)
 
     if 'mi' in which_indices:
         mi = np.nansum(p_gn * np.log(p_gn / (p_g * p_n)))
-        index['mi'] = round(mi, 4)
+        index['mi'] = round(mi, 3)
 
     if 'exposure' in which_indices:
-        index['exposure'] = exposure[host_col, other_col]
+        index['exposure'] = round(exposure[host_col, other_col], 3)
 
     if 'isolation' in which_indices:
-        index['isolation'] = exposure[other_col, other_col]
+        index['isolation'] = round(exposure[other_col, other_col], 3)
 
     if exposure_matrix:
         index['P'] = exposure
