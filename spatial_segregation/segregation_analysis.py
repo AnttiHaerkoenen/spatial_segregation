@@ -1,5 +1,6 @@
 import os
 import json
+import datetime
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -9,9 +10,18 @@ from spatial_segregation import kde, data, segregation_indices, utils
 DATA_DIR = 'data'
 
 
-class SegregationAnalysis:
-    def __init__(self, data_frame, cell_size, bw, kernel, which_indices='all', alpha=1, convex_hull=True, buffer=0):
-        self.data = data_frame
+class SegregationSurfaceAnalysis:
+    def __init__(self,
+                 data_dict,
+                 cell_size,
+                 bw,
+                 kernel,
+                 which_indices='all',
+                 alpha=1,
+                 convex_hull=True,
+                 buffer=0,
+                 data_id=None):
+        self.data = data_dict
         self.cell_size = cell_size
         self.kernel = kernel
         self.bw = round(bw * cell_size)
@@ -19,6 +29,7 @@ class SegregationAnalysis:
         self.convex_hull=convex_hull
         self.buffer = buffer
         self.which_indices = which_indices
+        self.data_id = data_id
 
         self.surface = kde.create_kde_surface(
             self.data,
@@ -38,6 +49,9 @@ class SegregationAnalysis:
 
     def __str__(self):
         strings = ["Spatial segregation analysis", ""]
+
+        if self.data_id:
+            strings.append("Data: {0}".format(self.data_id))
 
         for k, v in self.param.items():
             strings.append("{0:>12}: {1:}".format(k, v))
@@ -96,12 +110,12 @@ class SegregationAnalysis:
         p = dict()
         n = self.simulations.shape[0]
 
-        if n < 20:
-            return {index: None for index in self.indices}
+        if n < 10:
+            return {"p_{0}".format(index): None for index in self.indices}
 
         for index, col in self.simulations.iteritems():
             greater = col > self.indices[index]
-            p[index] = round(sum(greater.astype(int)) / n, 3)
+            p["p_{0}".format(index)] = round(sum(greater.astype(int)) / n, 3)
 
         return p
 
@@ -145,6 +159,88 @@ class SegregationAnalysis:
         plt.title("KDE surface")
         plt.show()
 
+
+########################################################################################################################
+
+class SegregationAnalyses:
+    def __init__(self,
+                 data_frame,
+                 cell_sizes=(50,),
+                 bws=(2,),
+                 kernels=('distance_decay',),
+                 which_indices='all',
+                 buffers=None,
+                 alphas=(1,),
+                 convex_hull=True,
+                 simulations=0):
+        self.data = data_frame
+        self.cell_sizes = cell_sizes
+        self.bws = bws
+        self.kernels = kernels
+        self.which_indices = which_indices
+        self.alphas = alphas
+        self.convex_hull = convex_hull
+        self.simulations = simulations
+
+        if buffers:
+            self.buffers = buffers
+        else:
+            self.buffers = self.bws[0],
+
+        self._results = []
+
+        for y, d in self.data.items():
+            for c in self.cell_sizes:
+                for bw in self.bws:
+                    for kern in self.kernels:
+                        for b in self.buffers:
+                            for a in self.alphas:
+                                ana = SegregationSurfaceAnalysis(
+                                        d,
+                                        c,
+                                        bw,
+                                        kern,
+                                        which_indices=self.which_indices,
+                                        alpha=a,
+                                        buffer=b,
+                                        convex_hull=self.convex_hull,
+                                        data_id=y
+                                )
+                                ana.simulate(self.simulations)
+                                self._results.append({
+                                    "year": y,
+                                    **ana.param,
+                                    **ana.indices,
+                                    **ana.p
+                                })
+
+    def __str__(self):
+        pass
+
+    @property
+    def results(self):
+        return pd.DataFrame(self._results)
+
+    def plot(self):
+        pass
+
+    def save(self, file=None):
+
+        if not file:
+            file = "SegAnalysis_{0}".format(datetime.date.today())
+
+        self.results.to_csv(file)
+
+    def load(self, file=None):
+
+        if not file:
+            file = "SegAnalysis_{0}".format(datetime.date.today())
+
+        try:
+            self._results = pd.DataFrame.from_csv(file)
+        except IOError:
+            print("File not found")
+
 ########################################################################################################################
 
 
@@ -170,26 +266,17 @@ def main():
 
     d = {year: data.add_coordinates(pop_data[year], point_data)
          for year in pop_data}
-    results = []
 
-    ana = SegregationAnalysis(d[1880], 50, 1.5, 'distance_decay')
-    ana.simulate(100)
-    print(ana.simulations)
-    print(ana)
-    ana.plot_kde(style='ggplot')
-    ana.plot(style='ggplot')
+    # ana = SegregationSurfaceAnalysis(d[1880], 50, 1.5, 'distance_decay')
+    # ana.simulate(100)
+    # print(ana.simulations)
+    # print(ana)
+    # ana.plot_kde(style='ggplot')
+    # ana.plot(style='ggplot')
 
-    # for y, d in d.items():
-    #     for c in cells:
-    #         for bw in bws:
-    #             ana = SegregationAnalysis(d, c, bw, 'distance_decay', which_indices='km', buffer=20)
-    #             ana.simulate(100)
-    #             results.append({**ana.p,
-    #                             **ana.param,
-    #                             "year": y})
-    #             # ana.plot_kde(style='ggplot')
-    #
-    # print(pd.DataFrame(results))
+    ana = SegregationAnalyses(d, cell_sizes=cells, bws=bws, simulations=500)
+    print(ana.results)
+    ana.save()
 
 
 if __name__ == "__main__":

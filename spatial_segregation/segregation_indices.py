@@ -3,13 +3,13 @@ import numpy as np
 
 def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_matrix=False):
     """
-    Calculates spatial forms of Karmel-MacLachlan index, Mutual information index and Exposure indices.
+    Calculates spatial forms of Karmel-MacLachlan index, Mutual information index and Exposure which_indices.
     :param pop: 2-dim array with groups as columns, or something that can be coerced with np.asarray
-    :param which_indices: which indices to calculate, default 'all' ('km', 'mi', 'exposure', 'isolation')
+    :param which_indices: which which_indices to calculate, default 'all' ('km', 'mi', 'exposure', 'isolation')
     :param host_col: which column contains host group
     :param other_col: which column contains 'the other'
     :param exposure_matrix: whether or not to return a full exposure matrix
-    :return: dictionary of indices
+    :return: dictionary of which_indices
     """
     try:
         pop = np.asarray_chkfinite(pop)
