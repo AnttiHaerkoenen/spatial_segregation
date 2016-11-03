@@ -274,7 +274,7 @@ def main():
     # ana.plot_kde(style='ggplot')
     # ana.plot(style='ggplot')
 
-    ana = SegregationAnalyses(d, cell_sizes=cells, bws=bws, simulations=500)
+    ana = SegregationAnalyses(d, cell_sizes=cells, bws=bws, simulations=50)
     print(ana.results)
     ana.save()
 
