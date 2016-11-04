@@ -217,6 +217,16 @@ class SegregationAnalyses:
     def __str__(self):
         pass
 
+    def __getitem__(self, item):
+        try:
+            self.results[item]
+        except IndexError as e:
+            print("IndexError!")
+            raise
+        except TypeError as e:
+            print("Key is of wrong type!")
+            raise
+
     @property
     def results(self):
         return pd.DataFrame(self._results)
@@ -229,7 +239,10 @@ class SegregationAnalyses:
         if not file:
             file = "SegAnalysis_{0}".format(datetime.date.today())
 
-        self.results.to_csv(file)
+        try:
+            self.results.to_csv(file)
+        except IOError:
+            print("Error! Saving failed.")
 
     def load(self, file=None):
 
