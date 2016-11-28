@@ -9,7 +9,13 @@ kernel_dict = {
 }
 
 
-def create_kde_surface(df, cell_size=15, kernel='distance_decay', bw=100, a=1, convex_hull=True, convex_hull_buffer=0):
+def create_kde_surface(df,
+                       cell_size=15,
+                       kernel='distance_decay',
+                       bw=100,
+                       a=1,
+                       convex_hull=True,
+                       convex_hull_buffer=0):
     """
     Creates a data frame representing kde surface clipped to minimum convex polygon of input data points.
     :param convex_hull_buffer: buffer around convex hull, meters
