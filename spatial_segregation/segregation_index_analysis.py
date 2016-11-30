@@ -10,7 +10,7 @@ from spatial_segregation import kde, data, segregation_indices, utils
 DATA_DIR = 'data'
 
 
-class SegregationSurfaceAnalysis:
+class SurfaceIndexAnalysis:
     def __init__(self,
                  data_dict,
                  cell_size,
@@ -195,7 +195,7 @@ class SegregationAnalyses:
                     for kern in self.kernels:
                         for b in self.buffers:
                             for a in self.alphas:
-                                ana = SegregationSurfaceAnalysis(
+                                ana = SurfaceIndexAnalysis(
                                         d,
                                         c,
                                         bw,
@@ -261,9 +261,9 @@ def main():
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
     os.chdir(os.path.join(os.path.abspath(os.path.pardir), DATA_DIR))
 
-    v80 = data.aggregate_sum(data.reform(pd.read_csv('1880.csv', sep='\t')))
-    v00 = data.aggregate_sum(data.reform(pd.read_csv('1900.csv', sep='\t')))
-    v20 = data.aggregate_sum(data.reform(pd.read_csv('1920.csv', sep='\t')))
+    v80 = data.aggregate_sum(data.reform(pd.read_csv('1880.csv')))
+    v00 = data.aggregate_sum(data.reform(pd.read_csv('1900.csv')))
+    v20 = data.aggregate_sum(data.reform(pd.read_csv('1920.csv')))
 
     pop_data = {
         1880: v80,
@@ -274,20 +274,20 @@ def main():
     with open('points1878.geojson') as f:
         point_data = json.load(f)
 
-    cells = [i for i in range(20, 81, 15)]
-    bws = (1, 1.5, 2)
+    cells = [i for i in range(20, 81, 20)]
+    bws = (1.5, 2, 2.5)
 
-    d = {year: data.add_coordinates(pop_data[year], point_data)
+    d = {year: data.add_coordinates(pop_data[year], point_data, coordinates_to_meters=False)
          for year in pop_data}
 
-    # ana = SegregationSurfaceAnalysis(d[1880], 50, 1.5, 'distance_decay')
+    # ana = SurfaceIndexAnalysis(d[1880], 50, 1.5, 'distance_decay')
     # ana.simulate(100)
     # print(ana.simulations)
     # print(ana)
     # ana.plot_kde(style='ggplot')
     # ana.plot(style='ggplot')
 
-    ana = SegregationAnalyses(d, cell_sizes=cells, bws=bws, simulations=50)
+    ana = SegregationAnalyses(d, cell_sizes=cells, bws=bws, kernels=("uniform", "distance_decay"), simulations=99)
     print(ana.results)
     ana.save()
 

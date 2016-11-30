@@ -5,14 +5,15 @@ import shapely.geometry
 from spatial_segregation import kernel_functions, data
 
 kernel_dict = {
-    'distance_decay': kernel_functions.distance_decay
+    'distance_decay': kernel_functions.distance_decay,
+    'uniform': kernel_functions.uniform
 }
 
 
 def create_kde_surface(df,
                        cell_size=15,
                        kernel='distance_decay',
-                       bw=100,
+                       bw=50,
                        a=1,
                        convex_hull=True,
                        convex_hull_buffer=0):
@@ -23,7 +24,7 @@ def create_kde_surface(df,
     :param df: input data with x and y coordinates representing points
     :param cell_size: cell size in meters, default 15
     :param kernel: kernel type, default 'distance_decay'
-    :param bw: bandwidth in meters, default 100
+    :param bw: bandwidth in meters, default 50
     :param a: second parameter for biweight kernel, default 1
     :return: data frame with columns x, y, host and other
     """
@@ -87,8 +88,12 @@ def calc_w(d, kernel='distance_decay', bw=100, a=1):
     if kernel not in kernel_dict:
         raise ValueError("Kernel not found")
 
-    for x in np.nditer(d, op_flags=['readwrite']):
-        x[...] = kernel_dict[kernel](x, bw, a)
+    if kernel == 'distance_decay':
+        for x in np.nditer(d, op_flags=['readwrite']):
+            x[...] = kernel_dict[kernel](x, bw, a)
+    else:
+        for x in np.nditer(d, op_flags=['readwrite']):
+            x[...] = kernel_dict[kernel](x, bw)
 
     return d
 

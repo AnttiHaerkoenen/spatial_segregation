@@ -20,14 +20,17 @@ def add_coordinates(population_data,
                     false_easting=0,
                     false_northing=0):
     """
-    Combines coordinate data with population data
+    Adds coordinates
+    :param population_data:
+    :param point_data:
     :param pop_index:
-    :param point_index:
     :param host:
     :param other:
-    :param population_data: list of lists of population
-    :param point_data: dict derived from geojson-file of points
-    :return: data frame with columns x, y, host, other
+    :param point_index:
+    :param coordinates_to_meters:
+    :param false_easting:
+    :param false_northing:
+    :return:
     """
     data_dict = {}
 
@@ -92,12 +95,18 @@ def aggregate_sum(data, group_index=0):
     return aggregated_data
 
 
-def reform(population_data):
+def reform(population_data, districts=(1,)):
     """
     Cleans population data for use in segregation analysis.
+    :param districts: which districts to use
     :param population_data:
     :return: aggregated sum, list of lists
     """
+    try:
+        population_data = population_data[population_data['district'].isin(districts)]
+    except KeyError:
+        print("District column not found!")
+
     pop_data = population_data.fillna(value=0)
     pop_data = pop_data.loc[:, ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian',
                                 'other.religion']].astype(int)
