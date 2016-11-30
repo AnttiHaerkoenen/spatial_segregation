@@ -5,7 +5,7 @@ def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_mat
     """
     Calculates spatial forms of Karmel-MacLachlan index, Mutual information index and Exposure which_indices.
     :param pop: 2-dim array with groups as columns, or something that can be coerced with np.asarray
-    :param which_indices: which which_indices to calculate, default 'all' ('km', 'mi', 'exposure', 'isolation')
+    :param which_indices: which which_indices to calculate, default 'all' ('km', 'information', 'exposure', 'isolation')
     :param host_col: which column contains host group
     :param other_col: which column contains 'the other'
     :param exposure_matrix: whether or not to return a full exposure matrix
@@ -39,9 +39,9 @@ def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_mat
         km = np.nansum(np.abs(p_gn / (p_g * p_n) - 1) * p_n * p_g)
         index['km'] = round(km, 3)
 
-    if 'mi' in which_indices:
+    if 'information' in which_indices:
         mi = np.nansum(p_gn * np.log(p_gn / (p_g * p_n)))
-        index['mi'] = round(mi, 3)
+        index['information'] = round(mi, 3)
 
     if 'exposure' in which_indices:
         index['exposure'] = round(exposure[host_col, other_col], 3)
