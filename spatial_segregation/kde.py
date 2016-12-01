@@ -1,5 +1,9 @@
+import datetime
+
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+
 import shapely.geometry
 
 from spatial_segregation import kernel_functions, data
@@ -9,50 +13,164 @@ kernel_dict = {
     'uniform': kernel_functions.uniform
 }
 
+########################################################################################################################
 
-def create_kde_surface(df,
-                       cell_size=15,
-                       kernel='distance_decay',
-                       bw=50,
-                       a=1,
-                       convex_hull=True,
-                       convex_hull_buffer=0):
-    """
-    Creates a data frame representing kde surface clipped to minimum convex polygon of input data points.
-    :param convex_hull_buffer: buffer around convex hull, meters
-    :param convex_hull: Whether or not to use convex hull to clip kde surface
-    :param df: input data with x and y coordinates representing points
-    :param cell_size: cell size in meters, default 15
-    :param kernel: kernel type, default 'distance_decay'
-    :param bw: bandwidth in meters, default 50
-    :param a: second parameter for biweight kernel, default 1
-    :return: data frame with columns x, y, host and other
-    """
-    ymax, ymin = data.get_limits(df, 'y')
-    xmax, xmin = data.get_limits(df, 'x')
-    ymax += bw
-    ymin -= bw
-    xmax += bw
-    xmin -= bw
-    x = np.arange(xmin, xmax, cell_size)
-    y = np.arange(ymin, ymax, cell_size)
-    xx, yy = np.meshgrid(x, y)
 
-    flatten_ = xx.flatten()[:,np.newaxis], yy.flatten()[:,np.newaxis]
-    d_frame = pd.DataFrame(np.hstack(flatten_), columns=list('xy'))
+class KernelDensitySurface:
+    def __init__(self,
+                 df,
+                 groups=("host", "other"),
+                 cell_size=15,
+                 kernel='distance_decay',
+                 bw=50,
+                 a=1,
+                 convex_hull=True,
+                 convex_hull_buffer=0):
+        """
+        Creates a data frame representing kde surface clipped to minimum convex polygon of input data points.
+        :param groups: population groups to be compared
+        :param convex_hull_buffer: buffer around convex hull, meters
+        :param convex_hull: Whether or not to use convex hull to clip kde surface
+        :param df: input data with x and y coordinates representing points
+        :param cell_size: cell size in meters, default 15
+        :param kernel: kernel type, default 'distance_decay'
+        :param bw: bandwidth in meters, default 50
+        :param a: second parameter for biweight kernel, default 1
+        :return: data frame with columns x, y and groups
+        """
+        self.bw = bw
+        self.a = a
+        self.kernel = kernel
+        self.cell_size = cell_size
+        self.groups = groups
 
-    if convex_hull:
-        mcp = get_convex_hull(df, convex_hull_buffer)
-        d_frame = select_by_location(d_frame, mcp)
+        ymax, ymin = data.get_limits(df, 'y')
+        xmax, xmin = data.get_limits(df, 'x')
+        self.ymax = ymax + self.bw
+        self.ymin = ymin - self.bw
+        self.xmax = xmax + self.bw
+        self.xmin = xmin - self.bw
+        print(self.ymax, self.ymin, self.xmax, self.xmin, self.cell_size)
 
-    d = calc_d(df, d_frame)
-    w = calc_w(d, kernel, bw, a)
+        x = np.arange(self.xmin, self.xmax, self.cell_size)
+        y = np.arange(self.ymin, self.ymax, self.cell_size)
+        xx, yy = np.meshgrid(x, y)
 
-    for group in 'host', 'other':
-        pop = np.broadcast_to(df[group][np.newaxis:, ], w.shape) * w
-        d_frame[group] = pd.Series(np.sum(pop, axis=1), index=d_frame.index)
+        flat = xx.flatten()[:,np.newaxis], yy.flatten()[:,np.newaxis]
+        self.data_frame = pd.DataFrame(np.hstack(flat), columns=list('xy'))
 
-    return d_frame
+        if convex_hull:
+            mcp = get_convex_hull(df, convex_hull_buffer)
+            self.data_frame = select_by_location(self.data_frame, mcp)
+
+        self.d = calc_d(df, self.data_frame)
+        self.w = calc_w(self.d, self.kernel, self.bw, self.a)
+
+        for group in self.groups:
+            pop = np.broadcast_to(df[group][np.newaxis:, ], self.w.shape) * self.w
+            self.data_frame[group] = pd.Series(np.sum(pop, axis=1), index=self.data_frame.index)
+
+    def __str__(self):
+        return(
+            "KDE surface (bandwidth={0}, "
+            "cell size={1}, "
+            "kernel={2})".format(
+                self.bw,
+                self.cell_size,
+                self.kernel
+            )
+        )
+
+    def __getitem__(self, item):
+        try:
+            self.data_frame[item]
+        except IndexError as e:
+            print("IndexError!")
+            raise e
+        except TypeError as e:
+            print("Key is of wrong type!")
+            raise e
+
+    @property
+    def values(self):
+        return self.data_frame.values
+
+    @property
+    def population_values(self):
+        return self.data_frame.isin(self.groups).values
+
+    def plot(self, style='classic'):
+        plt.style.use(style)
+
+        size = self.data_frame['host'] + self.data_frame['other']
+        proportion = self.data_frame['other'] / size
+        self.data_frame.plot.scatter(x='x', y='y', s=size, c=proportion)
+        plt.title("KDE surface")
+        plt.show()
+
+    def save(self, file=None):
+        if not file:
+            file = "KDE {0}".format(datetime.datetime.today())
+        try:
+            self.data_frame.to_csv(file)
+        except IOError:
+            print("Error! Saving failed.")
+
+    def load(self, file=None):
+        if not file:
+            file = "KDE {0}".format(datetime.datetime.today())
+        try:
+            self.data_frame = pd.DataFrame.from_csv(file)
+        except IOError:
+            print("File not found")
+
+########################################################################################################################
+
+
+# def create_kde_surface(df,
+#                        cell_size=15,
+#                        kernel='distance_decay',
+#                        bw=50,
+#                        a=1,
+#                        convex_hull=True,
+#                        convex_hull_buffer=0):
+#     """
+#     Creates a data frame representing kde surface clipped to minimum convex polygon of input data points.
+#     :param convex_hull_buffer: buffer around convex hull, meters
+#     :param convex_hull: Whether or not to use convex hull to clip kde surface
+#     :param df: input data with x and y coordinates representing points
+#     :param cell_size: cell size in meters, default 15
+#     :param kernel: kernel type, default 'distance_decay'
+#     :param bw: bandwidth in meters, default 50
+#     :param a: second parameter for biweight kernel, default 1
+#     :return: data frame with columns x, y, host and other
+#     """
+#
+#     ymax, ymin = data.get_limits(df, 'y')
+#     xmax, xmin = data.get_limits(df, 'x')
+#     ymax += bw
+#     ymin -= bw
+#     xmax += bw
+#     xmin -= bw
+#     x = np.arange(xmin, xmax, cell_size)
+#     y = np.arange(ymin, ymax, cell_size)
+#     xx, yy = np.meshgrid(x, y)
+#
+#     flatten_ = xx.flatten()[:,np.newaxis], yy.flatten()[:,np.newaxis]
+#     data_frame = pd.DataFrame(np.hstack(flatten_), columns=list('xy'))
+#
+#     if convex_hull:
+#         mcp = get_convex_hull(df, convex_hull_buffer)
+#         data_frame = select_by_location(data_frame, mcp)
+#
+#     d = calc_d(df, data_frame)
+#     w = calc_w(d, kernel, bw, a)
+#
+#     for group in 'host', 'other':
+#         pop = np.broadcast_to(df[group][np.newaxis:, ], w.shape) * w
+#         data_frame[group] = pd.Series(np.sum(pop, axis=1), index=data_frame.index)
+#
+#     return data_frame
 
 
 def calc_d(d_a, d_b):
@@ -128,7 +246,6 @@ def get_convex_hull(point_data, convex_hull_buffer=0):
 
 def main():
     data2 = pd.DataFrame(np.ones((2, 4)), columns='x y host other'.split())
-    kde = create_kde_surface(data2, convex_hull_buffer=10)
 
 
 if __name__ == '__main__':

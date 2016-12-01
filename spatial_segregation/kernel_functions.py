@@ -18,7 +18,7 @@ def distance_decay(d, bw, a=1):
 
 def uniform(d, bw):
     """
-    Tophat (uniform) kernel
+    Top hat (uniform) kernel
     :param d: actual distance between points
     :param bw: kernel parameters bandwidth
     :return: weight of a point

@@ -123,7 +123,7 @@ def main():
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
     os.chdir(os.path.join(os.path.abspath(os.path.pardir), DATA_DIR))
 
-    pop_data = aggregate_sum(reform(pd.read_csv('1880.csv', sep='\t')))
+    pop_data = aggregate_sum(reform(pd.read_csv('1880.csv')))
 
     with open('points1878.geojson') as f:
         point_data = json.load(f)

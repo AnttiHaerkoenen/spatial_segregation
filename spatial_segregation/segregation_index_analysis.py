@@ -20,7 +20,8 @@ class SurfaceIndexAnalysis:
                  alpha=1,
                  convex_hull=True,
                  buffer=0,
-                 data_id=None):
+                 data_id=None,
+                 groups=("host", "other")):
         self.data = data_dict
         self.cell_size = cell_size
         self.kernel = kernel
@@ -30,20 +31,23 @@ class SurfaceIndexAnalysis:
         self.buffer = buffer
         self.which_indices = which_indices
         self.data_id = data_id
+        self.groups = groups
 
-        self.surface = kde.create_kde_surface(
+        self.surface = kde.KernelDensitySurface(
             self.data,
-            self.cell_size,
-            self.kernel,
-            self.bw,
-            self.alpha,
-            self.convex_hull,
-            self.buffer
+            groups=groups,
+            cell_size=self.cell_size,
+            kernel=self.kernel,
+            bw=self.bw,
+            a=self.alpha,
+            convex_hull=self.convex_hull,
+            convex_hull_buffer=self.buffer
         )
-        print("KDE surface created (bandwidth={0}, cell size={1})".format(self.bw, self.cell_size))
+
         self.indices = segregation_indices.calc_indices(
-            self.surface[['host', 'other']].values,
-            which_indices=self.which_indices)
+            self.surface.population_values,
+            which_indices=self.which_indices
+        )
 
         self._simulations_list = []
 
@@ -68,16 +72,17 @@ class SurfaceIndexAnalysis:
 
         for _ in range(rep):
             data_frame = data.shuffle_data(self.data)
-            kd = kde.create_kde_surface(
+            kd = kde.KernelDensitySurface(
                 data_frame,
-                self.cell_size,
-                self.kernel,
-                self.bw,
-                self.alpha,
-                self.convex_hull,
-                self.buffer
+                cell_size=self.cell_size,
+                kernel=self.kernel,
+                bw=self.bw,
+                a=self.alpha,
+                convex_hull=self.convex_hull,
+                convex_hull_buffer=self.buffer,
+                groups=self.groups
             )
-            indices = segregation_indices.calc_indices(kd[['host', 'other']].values,
+            indices = segregation_indices.calc_indices(kd.population_values,
                                                        which_indices=self.which_indices)
 
             self._simulations_list.append(indices)
@@ -150,15 +155,6 @@ class SurfaceIndexAnalysis:
 
         plt.show()
 
-    def plot_kde(self, style='classic'):
-        plt.style.use(style)
-
-        size = self.surface['host'] + self.surface['other']
-        proportion = self.surface['other'] / size
-        self.surface.plot.scatter(x='x', y='y', s=size, c=proportion)
-        plt.title("KDE surface")
-        plt.show()
-
 
 ########################################################################################################################
 
@@ -197,9 +193,9 @@ class SegregationAnalyses:
                             for a in self.alphas:
                                 ana = SurfaceIndexAnalysis(
                                         d,
-                                        c,
-                                        bw,
-                                        kern,
+                                        cell_size=c,
+                                        bw=bw,
+                                        kernel=kern,
                                         which_indices=self.which_indices,
                                         alpha=a,
                                         buffer=b,
@@ -222,10 +218,10 @@ class SegregationAnalyses:
             self.results[item]
         except IndexError as e:
             print("IndexError!")
-            raise
+            raise e
         except TypeError as e:
             print("Key is of wrong type!")
-            raise
+            raise e
 
     @property
     def results(self):
@@ -237,7 +233,7 @@ class SegregationAnalyses:
     def save(self, file=None):
 
         if not file:
-            file = "SegAnalysis_{0}".format(datetime.date.today())
+            file = "SegAnalysis {0}".format(datetime.datetime.today())
 
         try:
             self.results.to_csv(file)
@@ -247,7 +243,7 @@ class SegregationAnalyses:
     def load(self, file=None):
 
         if not file:
-            file = "SegAnalysis_{0}".format(datetime.date.today())
+            file = "SegAnalysis {0}".format(datetime.datetime.today())
 
         try:
             self._results = pd.DataFrame.from_csv(file)
@@ -287,7 +283,7 @@ def main():
     # ana.plot_kde(style='ggplot')
     # ana.plot(style='ggplot')
 
-    ana = SegregationAnalyses(d, cell_sizes=cells, bws=bws, kernels=("uniform", "distance_decay"), simulations=99)
+    ana = SegregationAnalyses(d, cell_sizes=cells, bws=bws, kernels=("uniform", "distance_decay"), simulations=49)
     print(ana.results)
     ana.save()
 
