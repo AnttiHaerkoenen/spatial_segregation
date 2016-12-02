@@ -87,3 +87,12 @@ def get_convex_hull(point_data, convex_hull_buffer=0):
     convex_hull = shapely.geometry.MultiPoint(xy).convex_hull
 
     return convex_hull.buffer(convex_hull_buffer)
+
+
+def normalise(data_frame, columns="all"):
+    if columns == "all":
+        cols = data_frame.columns.values.tolist()
+    else:
+        cols = list(columns)
+
+    # TODO

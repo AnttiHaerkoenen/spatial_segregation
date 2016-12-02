@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import json
 
-from spatial_segregation import utils
+from spatial_segregation import util
 
 DATA_DIR = 'data'
 X, Y = 0, 1
@@ -38,7 +38,7 @@ def add_coordinates(population_data,
         index = feature['properties'][point_index]
         x, y = feature['geometry']['coordinates']
         if coordinates_to_meters:
-            x, y = utils.degrees_to_meters(x, y, false_easting=false_easting, false_northing=false_northing)
+            x, y = util.degrees_to_meters(x, y, false_easting=false_easting, false_northing=false_northing)
         data_dict[index] = {'x': x, 'y': y}
 
     for r in population_data:
@@ -119,7 +119,7 @@ def reform(population_data, districts=(1,)):
 ########################################################################################################################
 
 
-def main():
+if __name__ == '__main__':
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
     os.chdir(os.path.join(os.path.abspath(os.path.pardir), DATA_DIR))
 
@@ -129,7 +129,3 @@ def main():
         point_data = json.load(f)
 
     d = add_coordinates(pop_data, point_data)
-
-
-if __name__ == '__main__':
-    main()

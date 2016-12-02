@@ -5,9 +5,7 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from spatial_segregation import kde, data, segregation_indices, utils
-
-DATA_DIR = 'data'
+from spatial_segregation import kde, data, segregation_indices, util
 
 
 class SurfaceIndexAnalysis:
@@ -63,7 +61,7 @@ class SurfaceIndexAnalysis:
         strings.append("")
 
         for i, v in self.indices.items():
-            strings.append("{0:>12}: {1} p-value: {2} {3}".format(i, v, self.p[i], utils.get_stars(self.p[i])))
+            strings.append("{0:>12}: {1} p-value: {2} {3}".format(i, v, self.p[i], util.get_stars(self.p[i])))
 
         return "\n".join(strings)
 
@@ -158,7 +156,7 @@ class SurfaceIndexAnalysis:
 
 ########################################################################################################################
 
-class SegregationAnalyses:
+class SegregationIndexAnalyses:
     def __init__(self,
                  data_frame,
                  cell_sizes=(50,),
@@ -231,20 +229,16 @@ class SegregationAnalyses:
         pass
 
     def save(self, file=None):
-
         if not file:
             file = "SegAnalysis_{0}".format(datetime.date.today())
-
         try:
             self.results.to_csv(file)
         except IOError:
             print("Error! Saving failed.")
 
     def load(self, file=None):
-
         if not file:
             file = "SegAnalysis_{0}".format(datetime.datetime.today())
-
         try:
             self._results = pd.DataFrame.from_csv(file)
         except IOError:
@@ -253,9 +247,9 @@ class SegregationAnalyses:
 ########################################################################################################################
 
 
-def main():
+if __name__ == '__main__':
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
-    os.chdir(os.path.join(os.path.abspath(os.path.pardir), DATA_DIR))
+    os.chdir(os.path.join(os.path.abspath(os.path.pardir), data.DATA_DIR))
 
     v80 = data.aggregate_sum(data.reform(pd.read_csv('1880.csv')))
     v00 = data.aggregate_sum(data.reform(pd.read_csv('1900.csv')))
@@ -283,10 +277,6 @@ def main():
     # ana.plot_kde(style='ggplot')
     # ana.plot(style='ggplot')
 
-    ana = SegregationAnalyses(d, cell_sizes=cells, bws=bws, kernels=("uniform", "distance_decay"), simulations=49)
+    ana = SegregationIndexAnalyses(d, cell_sizes=cells, bws=bws, kernels=("uniform", "distance_decay"), simulations=49)
     print(ana.results)
     ana.save()
-
-
-if __name__ == "__main__":
-    main()

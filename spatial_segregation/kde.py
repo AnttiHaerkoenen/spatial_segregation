@@ -53,6 +53,7 @@ class KernelDensitySurface:
 
         x = np.arange(self.xmin, self.xmax, self.cell_size)
         y = np.arange(self.ymin, self.ymax, self.cell_size)
+        y = np.flipud(y)
         self.x, self.y = np.meshgrid(x, y)
 
         flat = self.x.flatten()[:, np.newaxis], self.y.flatten()[:, np.newaxis]
@@ -238,9 +239,5 @@ def calc_w(d, kernel='distance_decay', bw=100, a=1):
     return d
 
 
-def main():
-    data2 = pd.DataFrame(np.ones((2, 4)), columns='x y host other'.split())
-
-
 if __name__ == '__main__':
-    main()
+    data2 = pd.DataFrame(np.ones((2, 4)), columns='x y host other'.split())
