@@ -58,7 +58,7 @@ def add_coordinates(population_data,
 def shuffle_data(data_frame):
     """
     Shuffle coordinates
-    :param data_frame: original data_frame
+    :param data_frame: original _data_frame
     :return: new, shuffled data frame
     """
     xy = data_frame.loc[:, list('xy')].values

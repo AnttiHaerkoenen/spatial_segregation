@@ -3,7 +3,6 @@ import datetime
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import shapely.geometry
 
 from spatial_segregation import kernel_functions, data
 
@@ -54,23 +53,22 @@ class KernelDensitySurface:
 
         x = np.arange(self.xmin, self.xmax, self.cell_size)
         y = np.arange(self.ymin, self.ymax, self.cell_size)
-        xx, yy = np.meshgrid(x, y)
+        self.x, self.y = np.meshgrid(x, y)
 
-        flat = xx.flatten()[:, np.newaxis], \
-               yy.flatten()[:, np.newaxis]
-        self.data_frame = pd.DataFrame(np.hstack(flat), columns=list('xy'))
+        flat = self.x.flatten()[:, np.newaxis], self.y.flatten()[:, np.newaxis]
+        self._data_frame = pd.DataFrame(np.hstack(flat), columns=list('xy'))
 
-        # TODO change to mask
-        # if convex_hull:
-        #     mcp = get_convex_hull(df, self.convex_hull_buffer)
-        #     self.data_frame = select_by_location(self.data_frame, mcp)
-
-        self.d = calc_d(df, self.data_frame)
+        self.d = calc_d(df, self._data_frame)
         self.w = calc_w(self.d, self.kernel, self.bw, self.a)
 
         for group in self.groups:
             pop = np.broadcast_to(df[group][np.newaxis:, ], self.w.shape) * self.w
-            self.data_frame[group] = pd.Series(np.sum(pop, axis=1), index=self.data_frame.index)
+            self._data_frame[group] = pd.Series(np.sum(pop, axis=1), index=self._data_frame.index)
+
+        # TODO change to mask
+        # if convex_hull:
+        #     mcp = get_convex_hull(df, self.convex_hull_buffer)
+        #     self._data_frame = select_by_location(self._data_frame, mcp)
 
     def __str__(self):
         return (
@@ -85,7 +83,8 @@ class KernelDensitySurface:
 
     def __getitem__(self, item):
         try:
-            self.data_frame[item]
+            col = self._data_frame[item]
+            return col.values.reshape(self.shape)
         except IndexError as e:
             print("IndexError!")
             raise e
@@ -94,12 +93,20 @@ class KernelDensitySurface:
             raise e
 
     @property
+    def shape(self):
+        return self.x.shape
+
+    @property
     def values(self):
-        return self.data_frame.values
+        return self._data_frame.values
 
     @property
     def population_values(self):
-        return self.data_frame[self.groups].values
+        return self._data_frame[self.groups].values
+
+    @property
+    def population_matrices(self):
+        return [self._data_frame[g].values.reshape(self.shape) for g in self.groups]
 
     @property
     def max(self):
@@ -109,12 +116,16 @@ class KernelDensitySurface:
     def min(self):
         return np.nanmin(self.population_values, axis=1)
 
+    @property
+    def flat(self):
+        return self._data_frame
+
     def plot(self, style='classic'):
         plt.style.use(style)
 
-        size = self.data_frame['host'] + self.data_frame['other']
-        proportion = self.data_frame['other'] / size
-        self.data_frame.plot.scatter(x='x', y='y', s=size, c=proportion)
+        size = self._data_frame['host'] + self._data_frame['other']
+        proportion = self._data_frame['other'] / size
+        self._data_frame.plot.scatter(x='x', y='y', s=size, c=proportion)
         plt.title("KDE surface")
         plt.show()
 
@@ -122,7 +133,7 @@ class KernelDensitySurface:
         if not file:
             file = "KDE_{0}".format(datetime.date.today())
         try:
-            self.data_frame.to_csv(file)
+            self._data_frame.to_csv(file)
         except IOError:
             print("Error! Saving failed.")
 
@@ -130,7 +141,7 @@ class KernelDensitySurface:
         if not file:
             file = "KDE_{0}".format(datetime.date.today())
         try:
-            self.data_frame = pd.DataFrame.from_csv(file)
+            self._data_frame = pd.DataFrame.from_csv(file)
         except IOError:
             print("File not found")
 
@@ -168,20 +179,20 @@ class KernelDensitySurface:
 #     xx, yy = np.meshgrid(x, y)
 #
 #     flatten_ = xx.flatten()[:,np.newaxis], yy.flatten()[:,np.newaxis]
-#     data_frame = pd.DataFrame(np.hstack(flatten_), columns=list('xy'))
+#     _data_frame = pd.DataFrame(np.hstack(flatten_), columns=list('xy'))
 #
 #     if convex_hull:
 #         mcp = get_convex_hull(df, convex_hull_buffer)
-#         data_frame = select_by_location(data_frame, mcp)
+#         _data_frame = select_by_location(_data_frame, mcp)
 #
-#     d = calc_d(df, data_frame)
+#     d = calc_d(df, _data_frame)
 #     w = calc_w(d, kernel, bw, a)
 #
 #     for group in 'host', 'other':
 #         pop = np.broadcast_to(df[group][np.newaxis:, ], w.shape) * w
-#         data_frame[group] = pd.Series(np.sum(pop, axis=1), index=data_frame.index)
+#         _data_frame[group] = pd.Series(np.sum(pop, axis=1), index=_data_frame.index)
 #
-#     return data_frame
+#     return _data_frame
 
 
 def calc_d(d_a, d_b):
@@ -225,47 +236,6 @@ def calc_w(d, kernel='distance_decay', bw=100, a=1):
             x[...] = kernel_dict[kernel](x, bw)
 
     return d
-
-
-# def select_by_location(point_data, polygon):
-#     """
-#     Select points inside a polygon.
-#     :param point_data: data frame of coordinates
-#     :param polygon: instance of shapely.geometry.polygon.Polygon
-#     :return: data frame of coordinates
-#     """
-#     xy = [(row.x, row.y) for row in point_data.itertuples()]
-#
-#     points = [p for p in xy if polygon.contains(shapely.geometry.point.Point(p[0], p[1]))]
-#
-#     return pd.DataFrame(np.asarray(points), columns=list('xy'))
-
-
-def make_mask(kde, polygon):
-    """
-    Returns a mask for kde
-    :param kde: kernel density surface
-    :type kde: shapely.geometry.polygon.Polygon
-    :param polygon: a polygon area to be analysed
-    :type polygon: KernelDensitySurface
-    :return: 2 dim numpy boolean array
-    """
-    # TODO
-    pass
-
-
-def get_convex_hull(point_data, convex_hull_buffer=0):
-    """
-    Create a convex hull based on points
-    :param convex_hull_buffer: buffer around convex hull, meters
-    :param point_data: data frame of coordinates
-    :return: a shapely.geometry.polygon.Polygon
-    """
-    xy = [(row.x, row.y) for row in point_data.itertuples()]
-
-    convex_hull = shapely.geometry.MultiPoint(xy).convex_hull
-
-    return convex_hull.buffer(convex_hull_buffer)
 
 
 def main():
