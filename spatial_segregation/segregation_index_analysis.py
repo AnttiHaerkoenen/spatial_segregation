@@ -27,7 +27,7 @@ class SurfaceIndexAnalysis:
         self.kernel = kernel
         self.bw = round(bw * cell_size)
         self.alpha = alpha
-        self.convex_hull=convex_hull
+        self.convex_hull = convex_hull
         self.buffer = buffer
         self.which_indices = which_indices
         self.data_id = data_id
@@ -233,7 +233,7 @@ class SegregationAnalyses:
     def save(self, file=None):
 
         if not file:
-            file = "SegAnalysis {0}".format(datetime.datetime.today())
+            file = "SegAnalysis_{0}".format(datetime.date.today())
 
         try:
             self.results.to_csv(file)
@@ -243,7 +243,7 @@ class SegregationAnalyses:
     def load(self, file=None):
 
         if not file:
-            file = "SegAnalysis {0}".format(datetime.datetime.today())
+            file = "SegAnalysis_{0}".format(datetime.datetime.today())
 
         try:
             self._results = pd.DataFrame.from_csv(file)

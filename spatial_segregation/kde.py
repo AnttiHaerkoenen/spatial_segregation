@@ -3,7 +3,6 @@ import datetime
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 import shapely.geometry
 
 from spatial_segregation import kernel_functions, data
@@ -12,6 +11,7 @@ kernel_dict = {
     'distance_decay': kernel_functions.distance_decay,
     'uniform': kernel_functions.uniform
 }
+
 
 ########################################################################################################################
 
@@ -27,7 +27,7 @@ class KernelDensitySurface:
                  convex_hull=True,
                  convex_hull_buffer=0):
         """
-        Creates a data frame representing kde surface clipped to minimum convex polygon of input data points.
+        Creates a data frame representing KDE surface clipped to minimum convex polygon of input data points.
         :param groups: population groups to be compared
         :param convex_hull_buffer: buffer around convex hull, meters
         :param convex_hull: Whether or not to use convex hull to clip kde surface
@@ -42,7 +42,8 @@ class KernelDensitySurface:
         self.a = a
         self.kernel = kernel
         self.cell_size = cell_size
-        self.groups = groups
+        self.groups = list(groups)
+        self.convex_hull_buffer = convex_hull_buffer * self.bw
 
         ymax, ymin = data.get_limits(df, 'y')
         xmax, xmin = data.get_limits(df, 'x')
@@ -50,18 +51,19 @@ class KernelDensitySurface:
         self.ymin = ymin - self.bw
         self.xmax = xmax + self.bw
         self.xmin = xmin - self.bw
-        print(self.ymax, self.ymin, self.xmax, self.xmin, self.cell_size)
 
         x = np.arange(self.xmin, self.xmax, self.cell_size)
         y = np.arange(self.ymin, self.ymax, self.cell_size)
         xx, yy = np.meshgrid(x, y)
 
-        flat = xx.flatten()[:,np.newaxis], yy.flatten()[:,np.newaxis]
+        flat = xx.flatten()[:, np.newaxis], \
+               yy.flatten()[:, np.newaxis]
         self.data_frame = pd.DataFrame(np.hstack(flat), columns=list('xy'))
 
-        if convex_hull:
-            mcp = get_convex_hull(df, convex_hull_buffer)
-            self.data_frame = select_by_location(self.data_frame, mcp)
+        # TODO change to mask
+        # if convex_hull:
+        #     mcp = get_convex_hull(df, self.convex_hull_buffer)
+        #     self.data_frame = select_by_location(self.data_frame, mcp)
 
         self.d = calc_d(df, self.data_frame)
         self.w = calc_w(self.d, self.kernel, self.bw, self.a)
@@ -71,7 +73,7 @@ class KernelDensitySurface:
             self.data_frame[group] = pd.Series(np.sum(pop, axis=1), index=self.data_frame.index)
 
     def __str__(self):
-        return(
+        return (
             "KDE surface (bandwidth={0}, "
             "cell size={1}, "
             "kernel={2})".format(
@@ -97,7 +99,15 @@ class KernelDensitySurface:
 
     @property
     def population_values(self):
-        return self.data_frame.isin(self.groups).values
+        return self.data_frame[self.groups].values
+
+    @property
+    def max(self):
+        return np.nanmax(self.population_values, axis=1)
+
+    @property
+    def min(self):
+        return np.nanmin(self.population_values, axis=1)
 
     def plot(self, style='classic'):
         plt.style.use(style)
@@ -110,7 +120,7 @@ class KernelDensitySurface:
 
     def save(self, file=None):
         if not file:
-            file = "KDE {0}".format(datetime.datetime.today())
+            file = "KDE_{0}".format(datetime.date.today())
         try:
             self.data_frame.to_csv(file)
         except IOError:
@@ -118,11 +128,12 @@ class KernelDensitySurface:
 
     def load(self, file=None):
         if not file:
-            file = "KDE {0}".format(datetime.datetime.today())
+            file = "KDE_{0}".format(datetime.date.today())
         try:
             self.data_frame = pd.DataFrame.from_csv(file)
         except IOError:
             print("File not found")
+
 
 ########################################################################################################################
 
@@ -216,18 +227,31 @@ def calc_w(d, kernel='distance_decay', bw=100, a=1):
     return d
 
 
-def select_by_location(point_data, polygon):
-    """
-    Select points inside a polygon.
-    :param point_data: data frame of coordinates
-    :param polygon: instance of shapely.geometry.polygon.Polygon
-    :return: data frame of coordinates
-    """
-    xy = [(row.x, row.y) for row in point_data.itertuples()]
+# def select_by_location(point_data, polygon):
+#     """
+#     Select points inside a polygon.
+#     :param point_data: data frame of coordinates
+#     :param polygon: instance of shapely.geometry.polygon.Polygon
+#     :return: data frame of coordinates
+#     """
+#     xy = [(row.x, row.y) for row in point_data.itertuples()]
+#
+#     points = [p for p in xy if polygon.contains(shapely.geometry.point.Point(p[0], p[1]))]
+#
+#     return pd.DataFrame(np.asarray(points), columns=list('xy'))
 
-    points = [p for p in xy if polygon.contains(shapely.geometry.point.Point(p[0], p[1]))]
 
-    return pd.DataFrame(np.asarray(points), columns=list('xy'))
+def make_mask(kde, polygon):
+    """
+    Returns a mask for kde
+    :param kde: kernel density surface
+    :type kde: shapely.geometry.polygon.Polygon
+    :param polygon: a polygon area to be analysed
+    :type polygon: KernelDensitySurface
+    :return: 2 dim numpy boolean array
+    """
+    # TODO
+    pass
 
 
 def get_convex_hull(point_data, convex_hull_buffer=0):
