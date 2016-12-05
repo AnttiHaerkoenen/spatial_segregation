@@ -61,10 +61,11 @@ def shuffle_data(data_frame):
     :param data_frame: original _data_frame
     :return: new, shuffled data frame
     """
+    cols = data_frame.columns.values.tolist()
     xy = data_frame.loc[:, list('xy')].values
-    pop = data_frame.loc[:, 'host other'.split()].values
+    pop = data_frame.loc[:, 2:].values
     np.random.shuffle(xy)
-    return pd.DataFrame(np.hstack((xy, pop)), columns='x y host other'.split())
+    return pd.DataFrame(np.hstack((xy, pop)), columns=cols)
 
 
 def get_limits(data_frame, variable):

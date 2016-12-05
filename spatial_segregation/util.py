@@ -50,7 +50,7 @@ def get_stars(p):
 
 def select_by_location(point_data, polygon):
     """
-    Select points inside a polygon.
+    Select points inside a polygon. CRS must be the same for all inputs!
     :param point_data: data frame of coordinates
     :param polygon: instance of shapely.geometry.polygon.Polygon
     :return: data frame of coordinates
@@ -89,10 +89,12 @@ def get_convex_hull(point_data, convex_hull_buffer=0):
     return convex_hull.buffer(convex_hull_buffer)
 
 
-def normalise(data_frame, columns="all"):
-    if columns == "all":
-        cols = data_frame.columns.values.tolist()
-    else:
-        cols = list(columns)
+def pop_to_fraction(data_frame, columns=("host", "other")):
+    colums = list(columns)
 
-    # TODO
+    xy = data_frame[:, list("xy")].values
+    pop = data_frame[:, colums].values
+    pop_sum = pop.nansum(axis=1, keepdims=True)
+    pop = pop / pop_sum
+
+    return pd.DataFrame(np.hstack((xy, pop)), columns=list("xy") + columns)

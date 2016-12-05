@@ -19,7 +19,7 @@ class SegregationSurfaceAnalysis:
                  data_id=None,
                  groups=("host", "other")):
         self.groups = groups
-        self.data = util.normalise(df, columns=self.groups)
+        self.data = util.pop_to_fraction(df, columns=self.groups)
         self.cell_size = cell_size
         self.kernel = kernel
         self.bw = round(bw * cell_size)
