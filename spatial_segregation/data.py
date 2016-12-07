@@ -55,15 +55,17 @@ def add_coordinates(population_data,
     return pd.DataFrame.from_dict(data_dict, orient='index').reindex_axis("x y host other".split(), axis='columns')
 
 
-def shuffle_data(data_frame):
+def shuffle_data(data_frame, columns=("host", "other")):
     """
     Shuffle coordinates
     :param data_frame: original _data_frame
+    :param columns: columns containing population data
     :return: new, shuffled data frame
     """
+    pop_columns = list(columns)
     cols = data_frame.columns.values.tolist()
     xy = data_frame.loc[:, list('xy')].values
-    pop = data_frame.loc[:, 2:].values
+    pop = data_frame.loc[:, pop_columns].values
     np.random.shuffle(xy)
     return pd.DataFrame(np.hstack((xy, pop)), columns=cols)
 

@@ -5,10 +5,10 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from spatial_segregation import kde, data, segregation_indices, util
+from spatial_segregation import analyses, kde, data, segregation_indices, util
 
 
-class SurfaceIndexAnalysis:
+class SegregationIndexAnalysis:
     def __init__(self,
                  data_dict,
                  cell_size,
@@ -61,7 +61,7 @@ class SurfaceIndexAnalysis:
         strings.append("")
 
         for i, v in self.indices.items():
-            strings.append("{0:>12}: {1} p-value: {2} {3}".format(i, v, self.p[i], util.get_stars(self.p[i])))
+            strings.append("{0:>12}: {1}".format(i, v))
 
         return "\n".join(strings)
 
@@ -118,131 +118,24 @@ class SurfaceIndexAnalysis:
 
         for index, col in self.simulations.iteritems():
             greater = col > self.indices[index]
-            p["p_{0}".format(index)] = round(sum(greater.astype(int)) / n, 3)
+            p_val = sum(greater.astype(int)) / n
+            p["p_{0}".format(index)] = round(p_val, 3)
 
         return p
 
-    def plot(self, index='all', style='classic'):
+    def plot(self, index):
         if len(self.simulations) == 0:
             raise ValueError("No simulations to plot")
 
-        if index == 'all':
-            pass
-        elif index not in self.indices:
+        if index not in self.indices:
             raise ValueError("Index not computed.")
 
-        plt.style.use(style)
+        fig = self.simulations[index].plot.kde(color='red', label="simulated {0}".format(index))
+        fig.axvline(self.indices[index], label="actual {0}".format(index))
+        fig.legend()
+        fig.set_title("Simulated {0} index distribution, n={1}".format(index, len(self.simulations)))
+        return fig
 
-        def plot_(i):
-            self.simulations[i].plot.kde(color='red', label="simulated {0}".format(i))
-            plt.axvline(self.indices[i], label="actual {0}".format(i))
-            plt.legend()
-            plt.title("Simulated {0} index distribution, n={1}".format(i, len(self.simulations)))
-
-        if index == 'all':
-            plt.subplot(221)
-            plot_('km')
-            plt.subplot(222)
-            plot_('mi')
-            plt.subplot(223)
-            plot_('exposure')
-            plt.subplot(224)
-            plot_('isolation')
-        else:
-            plot_(index)
-
-        plt.show()
-
-
-########################################################################################################################
-
-class SegregationIndexAnalyses:
-    def __init__(self,
-                 data_frame,
-                 cell_sizes=(50,),
-                 bws=(2,),
-                 kernels=('distance_decay',),
-                 which_indices='all',
-                 buffers=None,
-                 alphas=(1,),
-                 convex_hull=True,
-                 simulations=0):
-        self.data = data_frame
-        self.cell_sizes = cell_sizes
-        self.bws = bws
-        self.kernels = kernels
-        self.which_indices = which_indices
-        self.alphas = alphas
-        self.convex_hull = convex_hull
-        self.simulations = simulations
-
-        if buffers:
-            self.buffers = buffers
-        else:
-            self.buffers = self.bws[0],
-
-        self._results = []
-
-        for y, d in self.data.items():
-            for c in self.cell_sizes:
-                for bw in self.bws:
-                    for kern in self.kernels:
-                        for b in self.buffers:
-                            for a in self.alphas:
-                                ana = SurfaceIndexAnalysis(
-                                        d,
-                                        cell_size=c,
-                                        bw=bw,
-                                        kernel=kern,
-                                        which_indices=self.which_indices,
-                                        alpha=a,
-                                        buffer=b,
-                                        convex_hull=self.convex_hull,
-                                        data_id=y
-                                )
-                                ana.simulate(self.simulations)
-                                self._results.append({
-                                    "year": y,
-                                    **ana.param,
-                                    **ana.indices,
-                                    **ana.p
-                                })
-
-    def __str__(self):
-        pass
-
-    def __getitem__(self, item):
-        try:
-            self.results[item]
-        except IndexError as e:
-            print("IndexError!")
-            raise e
-        except TypeError as e:
-            print("Key is of wrong type!")
-            raise e
-
-    @property
-    def results(self):
-        return pd.DataFrame(self._results)
-
-    def plot(self):
-        pass
-
-    def save(self, file=None):
-        if not file:
-            file = "SegAnalysis_{0}".format(datetime.date.today())
-        try:
-            self.results.to_csv(file)
-        except IOError:
-            print("Error! Saving failed.")
-
-    def load(self, file=None):
-        if not file:
-            file = "SegAnalysis_{0}".format(datetime.datetime.today())
-        try:
-            self._results = pd.DataFrame.from_csv(file)
-        except IOError:
-            print("File not found")
 
 ########################################################################################################################
 
@@ -270,13 +163,13 @@ if __name__ == '__main__':
     d = {year: data.add_coordinates(pop_data[year], point_data, coordinates_to_meters=False)
          for year in pop_data}
 
-    # ana = SurfaceIndexAnalysis(d[1880], 50, 1.5, 'distance_decay')
-    # ana.simulate(100)
-    # print(ana.simulations)
-    # print(ana)
-    # ana.plot_kde(style='ggplot')
-    # ana.plot(style='ggplot')
+    ana = SegregationIndexAnalysis(d[1880], 50, 1.5, 'distance_decay')
+    ana.simulate(100)
+    print(ana.simulations)
+    print(ana)
+    ana.plot("km")
+    plt.show()
 
-    ana = SegregationIndexAnalyses(d, cell_sizes=cells, bws=bws, kernels=("uniform", "distance_decay"), simulations=49)
-    print(ana.results)
-    ana.save()
+    # ana = analyses.SegregationIndexAnalyses(d, cell_sizes=cells, bws=bws, kernels=("uniform", "distance_decay"), simulations=49)
+    # print(ana.results)
+    # ana.save()

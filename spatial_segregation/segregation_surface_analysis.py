@@ -49,10 +49,15 @@ class SegregationSurfaceAnalysis:
                 self.kernel)
         )
 
-    def plot(self, group, style="classic"):
-        plt.style.use(style)
-        plt.imshow(self.surface[group])
-        plt.show()
+    def plot(self, group, arg_dict=None):
+        if not arg_dict:
+            arg_dict = dict()
+        return plt.imshow(self.surface[group], **arg_dict)
+
+    def plot_diff(self, group_1="host", group_2="other", arg_dict=None):
+        if not arg_dict:
+            arg_dict = dict()
+        return plt.imshow(self.surface[group_1] - self.surface[group_2], **arg_dict)
 
 
 ########################################################################################################################
@@ -81,6 +86,8 @@ if __name__ == '__main__':
     d = {year: data.add_coordinates(pop_data[year], point_data, coordinates_to_meters=False)
          for year in pop_data}
 
+    s = []
+
     for y, df in d.items():
         for c in cells:
             for bw in bws:
@@ -93,4 +100,8 @@ if __name__ == '__main__':
                         alpha=1,
                         data_id=y
                     )
-                    ana.plot("host")
+                    s.append(ana.s)
+                    ana.plot_diff()
+                    plt.show()
+
+    print(s)

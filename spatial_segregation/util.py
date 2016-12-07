@@ -66,13 +66,13 @@ def make_mask(kde, polygon):
     """
     Returns a mask for kde
     :param kde: kernel density surface
-    :type kde: shapely.geometry.polygon.Polygon
+    :type kde: KernelDensitySurface
     :param polygon: a polygon area to be analysed
-    :type polygon: KernelDensitySurface
+    :type polygon: shapely.geometry.polygon.Polygon
     :return: 2 dim numpy boolean array
     """
-    # TODO
-    pass
+    mask = select_by_location(kde.coordinates, polygon)
+    return mask.values.reshape(kde.shape)
 
 
 def get_convex_hull(point_data, convex_hull_buffer=0):
@@ -90,11 +90,11 @@ def get_convex_hull(point_data, convex_hull_buffer=0):
 
 
 def pop_to_fraction(data_frame, columns=("host", "other")):
-    colums = list(columns)
+    pop_columns = list(columns)
 
-    xy = data_frame[:, list("xy")].values
-    pop = data_frame[:, colums].values
-    pop_sum = pop.nansum(axis=1, keepdims=True)
+    xy = data_frame.loc[:, list("xy")].values
+    pop = data_frame.loc[:, pop_columns].values
+    pop_sum = np.nansum(pop, axis=0, keepdims=True)
     pop = pop / pop_sum
 
-    return pd.DataFrame(np.hstack((xy, pop)), columns=list("xy") + columns)
+    return pd.DataFrame(np.hstack((xy, pop)), columns=list("xy") + pop_columns)

@@ -86,12 +86,19 @@ class KernelDensitySurface:
         try:
             col = self._data_frame[item]
             return col.values.reshape(self.shape)
-        except IndexError as e:
+        except IndexError as ie:
             print("IndexError!")
-            raise e
-        except TypeError as e:
+            raise ie
+        except TypeError as te:
             print("Key is of wrong type!")
+            raise te
+        except Exception as e:
+            print("Something went wrong")
             raise e
+
+    @property
+    def n_cells(self):
+        return self.shape[0] * self.shape[1]
 
     @property
     def shape(self):
@@ -110,6 +117,10 @@ class KernelDensitySurface:
         return [self._data_frame[g].values.reshape(self.shape) for g in self.groups]
 
     @property
+    def coordinates(self):
+        return self._data_frame[:, list('xy')]
+
+    @property
     def max(self):
         return np.nanmax(self.population_values, axis=1)
 
@@ -120,6 +131,9 @@ class KernelDensitySurface:
     @property
     def flat(self):
         return self._data_frame
+
+    def iter_points(self):
+        return self._data_frame.loc[:, list('xy')].itertuples()
 
     def plot(self, style='classic'):
         plt.style.use(style)
