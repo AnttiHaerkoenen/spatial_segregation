@@ -57,22 +57,30 @@ def select_by_location(point_data, polygon):
     """
     xy = [(row.x, row.y) for row in point_data.itertuples()]
 
-    points = [p for p in xy if polygon.contains(shapely.geometry.point.Point(p[0], p[1]))]
+    points = [p for p in xy
+              if polygon.contains(shapely.geometry.point.Point(p[0], p[1]))]
 
     return pd.DataFrame(np.asarray(points), columns=list('xy'))
 
 
-def make_mask(kde, polygon):
+def make_mask(kde, polygon, outside=True):
     """
     Returns a mask for kde
     :param kde: kernel density surface
     :type kde: KernelDensitySurface
     :param polygon: a polygon area to be analysed
     :type polygon: shapely.geometry.polygon.Polygon
+    :param outside: sets cells outside of polygon this value
+    :type outside: bool
     :return: 2 dim numpy boolean array
     """
-    mask = select_by_location(kde.coordinates, polygon)
-    return mask.values.reshape(kde.shape)
+    arr = [0 if polygon.contains(shapely.geometry.Point(p.x, p.y)) else 1 for p in kde.itertuples()]
+    arr = np.array(arr)
+
+    if not outside:
+        arr = abs(arr - 1)
+
+    return arr.reshape(kde.shape)
 
 
 def get_convex_hull(point_data, convex_hull_buffer=0):

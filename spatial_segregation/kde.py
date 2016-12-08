@@ -6,11 +6,6 @@ import matplotlib.pyplot as plt
 
 from spatial_segregation import kernel_functions, data
 
-kernel_dict = {
-    'distance_decay': kernel_functions.distance_decay,
-    'uniform': kernel_functions.uniform
-}
-
 
 ########################################################################################################################
 
@@ -21,7 +16,7 @@ class KernelDensitySurface:
                  groups=("host", "other"),
                  cell_size=15,
                  kernel='distance_decay',
-                 bw=50,
+                 bw='silverman',
                  a=1,
                  convex_hull=True,
                  convex_hull_buffer=0):
@@ -33,7 +28,7 @@ class KernelDensitySurface:
         :param df: input data with x and y coordinates representing points
         :param cell_size: cell size in meters, default 15
         :param kernel: kernel type, default 'distance_decay'
-        :param bw: bandwidth in meters, default 50
+        :param bw: bandwidth in meters OR method of calculating bandwidth (default 'silverman')
         :param a: second parameter for biweight kernel, default 1
         :return: data frame with columns x, y and groups
         """
@@ -135,14 +130,12 @@ class KernelDensitySurface:
     def iter_points(self):
         return self._data_frame.loc[:, list('xy')].itertuples()
 
-    def plot(self, style='classic'):
-        plt.style.use(style)
-
+    def plot(self):
         size = self._data_frame['host'] + self._data_frame['other']
         proportion = self._data_frame['other'] / size
-        self._data_frame.plot.scatter(x='x', y='y', s=size, c=proportion)
-        plt.title("KDE surface")
-        plt.show()
+        fig = self._data_frame.plot.scatter(x='x', y='y', s=size, c=proportion)
+        fig.set_title("KDE surface")
+        return fig
 
     def save(self, file=None):
         if not file:
@@ -231,24 +224,31 @@ def calc_d(d_a, d_b):
     return d
 
 
-def calc_w(d, kernel='distance_decay', bw=100, a=1):
+def calc_w(d, kernel='distance_decay', bw='silverman', a=1):
     """
     Calculates relative weights based on distance and kernel function.
     :param d: matrix of distances
     :param kernel: kernel function to be used, default 'distance_decay'
-    :param bw: kernel bandwidth in meters, default 100
+    :param bw: either kernel bandwidth in meters OR method in ('silverman', 'scott'), default silverman
+    :param bw: int OR str
     :param a: second parameter for biweight kernel, default 1
     :return: matrix of relative weights w
     """
-    if kernel not in kernel_dict:
+    if kernel not in kernel_functions.KERNELS:
         raise ValueError("Kernel not found")
+
+    n = d.size
+    if bw == 'silverman':
+        bw = round((4 * n / 4) ** (-1 / 6), 0)
+    if bw == 'scott':
+        bw = round(n ** (-1/6), 0)
 
     if kernel == 'distance_decay':
         for x in np.nditer(d, op_flags=['readwrite']):
-            x[...] = kernel_dict[kernel](x, bw, a)
+            x[...] = kernel_functions.KERNELS[kernel](x, bw, a)
     else:
         for x in np.nditer(d, op_flags=['readwrite']):
-            x[...] = kernel_dict[kernel](x, bw)
+            x[...] = kernel_functions.KERNELS[kernel](x, bw)
 
     return d
 
