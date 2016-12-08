@@ -26,7 +26,7 @@ class SegregationIndexAnalysis:
         self.bw = round(bw * cell_size)
         self.alpha = alpha
         self.convex_hull = convex_hull
-        self.buffer = buffer
+        self.buffer = buffer * self.bw
         self.which_indices = which_indices
         self.data_id = data_id
         self.groups = groups
