@@ -240,7 +240,7 @@ def calc_w(d, kernel='distance_decay', bw='silverman', a=1):
     n = d.size
     if bw == 'silverman':
         bw = round((4 * n / 4) ** (-1 / 6), 0)
-    if bw == 'scott':
+    elif bw == 'scott':
         bw = round(n ** (-1/6), 0)
 
     if kernel == 'distance_decay':
