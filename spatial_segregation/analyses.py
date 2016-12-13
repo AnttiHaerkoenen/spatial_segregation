@@ -88,19 +88,48 @@ class SegregationSurfaceAnalyses(Analyses):
                  simulations=0,
                  convex_hull=True,
                  buffers=(1,)):
-        Analyses.__init__(self,
-                          segregation_surface_analysis.SegregationSurfaceAnalysis,
-                          data_frame,
-                          cell_sizes=cell_sizes,
-                          kernels=kernels,
-                          bws=bws,
-                          alphas=alphas,
-                          simulations=simulations
-                          )
+        Analyses.__init__(
+            self,
+            segregation_surface_analysis.SegregationSurfaceAnalysis,
+            data_frame,
+            cell_sizes=cell_sizes,
+            kernels=kernels,
+            bws=bws,
+            alphas=alphas,
+            simulations=simulations
+        )
         self.convex_hull = convex_hull
         self.buffers = buffers
 
     def analyse(self):
+        for y, d in self.data.items():
+            for c in self.cell_sizes:
+                for bw in self.bws:
+                    for kern in self.kernels:
+                        for b in self.buffers:
+                            for a in self.alphas:
+                                ana = self.analysis(
+                                    d,
+                                    cell_size=c,
+                                    bw=bw,
+                                    kernel=kern,
+                                    alpha=a,
+                                    buffer=b,
+                                    convex_hull=self.convex_hull,
+                                    data_id=y
+                                )
+                                self._results.append(
+                                    {
+                                        "year": y,
+                                        "s": ana.s,
+                                        **ana.param
+                                    }
+                                )
+
+    def plot(self, x="year", arg_dict=None):
+        if not arg_dict:
+            arg_dict = dict()
+        # TODO
         pass
 
 ########################################################################################################################
@@ -117,15 +146,16 @@ class SegregationIndexAnalyses(Analyses):
                  which_indices="all",
                  convex_hull=True,
                  buffers=(1,)):
-        Analyses.__init__(self,
-                          segregation_index_analysis.SegregationIndexAnalysis,
-                          data_frame,
-                          cell_sizes=cell_sizes,
-                          kernels=kernels,
-                          bws=bws,
-                          alphas=alphas,
-                          simulations=simulations
-                          )
+        Analyses.__init__(
+            self,
+            segregation_index_analysis.SegregationIndexAnalysis,
+            data_frame,
+            cell_sizes=cell_sizes,
+            kernels=kernels,
+            bws=bws,
+            alphas=alphas,
+            simulations=simulations
+        )
         self.which_indices = which_indices
         self.convex_hull = convex_hull
         self.buffers = buffers

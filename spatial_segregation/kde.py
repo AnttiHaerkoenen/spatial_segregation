@@ -109,11 +109,12 @@ class KernelDensitySurface:
 
     @property
     def population_matrices(self):
-        return [self._data_frame[g].values.reshape(self.shape) for g in self.groups]
+        return [self._data_frame[g].values.reshape(self.shape)
+                for g in self.groups]
 
     @property
     def coordinates(self):
-        return self._data_frame[:, list('xy')]
+        return self._data_frame[:, ['x', 'y']]
 
     @property
     def max(self):
