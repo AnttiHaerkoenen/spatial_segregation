@@ -9,15 +9,15 @@ from spatial_segregation import kde, data, util
 
 class SegregationSurfaceAnalysis:
     def __init__(self,
-                 df,
+                 df: pd.DataFrame,
                  cell_size,
                  bw,
                  kernel,
                  alpha=1,
-                 convex_hull=True,
+                 convex_hull: bool =True,
                  buffer=0,
                  data_id=None,
-                 groups=("host", "other")):
+                 groups: tuple=("host", "other")):
         self.groups = groups
         self.data = util.pop_to_fraction(df, columns=self.groups)
         self.cell_size = cell_size

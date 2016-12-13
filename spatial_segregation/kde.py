@@ -12,10 +12,10 @@ from spatial_segregation import kernel_functions, data
 
 class KernelDensitySurface:
     def __init__(self,
-                 df,
-                 groups=("host", "other"),
-                 cell_size=15,
-                 kernel='distance_decay',
+                 df: pd.DataFrame,
+                 groups: tuple =("host", "other"),
+                 cell_size =15,
+                 kernel: str ='distance_decay',
                  bw='silverman',
                  a=1,
                  convex_hull=True,
