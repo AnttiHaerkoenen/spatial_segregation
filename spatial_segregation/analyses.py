@@ -10,22 +10,17 @@ from spatial_segregation import segregation_index_analysis, segregation_surface_
 
 class Analyses:
     def __init__(self,
-                 analysis,
                  data_frame,
                  cell_sizes=(25,),
                  kernels=("distance_decay",),
                  bws=(1,),
                  alphas=(1,),
                  simulations=0):
-        self.analysis = analysis
         self.data = data_frame
-
         self.cell_sizes = cell_sizes
-
         self.kernels = kernels
         self.bws = bws
         self.alphas = alphas
-
         self.simulations = simulations
 
         self._results = None
@@ -66,14 +61,13 @@ class Analyses:
                 self.__class__.__name__,
                 datetime.date.today()
             )
-
         try:
             self._results = pd.DataFrame.from_csv(file)
         except IOError:
             print("File not found")
 
     def analyse(self):
-        print("Placeholder method!")
+        pass
 
 ########################################################################################################################
 
@@ -90,7 +84,6 @@ class SegregationSurfaceAnalyses(Analyses):
                  buffers=(1,)):
         Analyses.__init__(
             self,
-            segregation_surface_analysis.SegregationSurfaceAnalysis,
             data_frame,
             cell_sizes=cell_sizes,
             kernels=kernels,
@@ -100,6 +93,7 @@ class SegregationSurfaceAnalyses(Analyses):
         )
         self.convex_hull = convex_hull
         self.buffers = buffers
+        self.analysis = segregation_surface_analysis.SegregationSurfaceAnalysis
 
     def analyse(self):
         for y, d in self.data.items():
@@ -122,7 +116,7 @@ class SegregationSurfaceAnalyses(Analyses):
                                     {
                                         "year": y,
                                         "s": ana.s,
-                                        **ana.param
+                                        **ana.surface.param
                                     }
                                 )
 
@@ -148,7 +142,6 @@ class SegregationIndexAnalyses(Analyses):
                  buffers=(1,)):
         Analyses.__init__(
             self,
-            segregation_index_analysis.SegregationIndexAnalysis,
             data_frame,
             cell_sizes=cell_sizes,
             kernels=kernels,
@@ -159,6 +152,7 @@ class SegregationIndexAnalyses(Analyses):
         self.which_indices = which_indices
         self.convex_hull = convex_hull
         self.buffers = buffers
+        self.analysis = segregation_index_analysis.SegregationIndexAnalysis
 
     def analyse(self):
         for y, d in self.data.items():
@@ -181,7 +175,7 @@ class SegregationIndexAnalyses(Analyses):
                                 ana.simulate(self.simulations)
                                 self._results.append({
                                     "year": y,
-                                    **ana.param,
+                                    **ana.surface.param,
                                     **ana.indices,
                                     **ana.p
                                 })
