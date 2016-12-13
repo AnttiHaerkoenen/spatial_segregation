@@ -1,5 +1,3 @@
-import unittest
-
 import pandas as pd
 import pandas.util.testing as pdt
 import numpy as np
@@ -39,31 +37,6 @@ combined_data = pd.DataFrame(
     }, index=range(1, 6), columns="x y host other".split())
 
 
-class TestAddCoordinates(unittest.TestCase):
-    def test_add_coordinates(self):
-        df1 = data.add_coordinates(pop_data_aggregate, loc_data)
-        df2 = combined_data
-        pdt.assert_frame_equal(df1, df2)
-
-
-class TestAggregateSum(unittest.TestCase):
-    def test_aggregate_sum(self):
-        pass
-
-
-class TestShuffle(unittest.TestCase):
-    def test_shuffle(self):
-        pass
-
-
-class TestRange(unittest.TestCase):
-    def test_get_x_lim(self):
-        self.assertEqual(data.get_limits(df, 'x'), (1, 0))
-
-    def test_get_y_lim(self):
-        self.assertEqual(data.get_limits(df, 'y'), (1, 0))
-
-
 @given()
 def test_add_coordinates():
     pass
@@ -71,6 +44,3 @@ def test_add_coordinates():
 
 def test_shuffle(df):
     assert df.mean() == data.shuffle_data(df).mean()
-
-if __name__ == '__main__':
-    test_shuffle()
