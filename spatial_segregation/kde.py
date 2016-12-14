@@ -130,7 +130,8 @@ class KernelDensitySurface:
 
     @property
     def param(self):
-        return dict() # TODO parameter getter
+        # TODO parameter getter
+        return dict()
 
     def iter_points(self):
         return self._data_frame.loc[:, list('xy')].itertuples()

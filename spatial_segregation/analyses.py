@@ -123,7 +123,7 @@ class SegregationSurfaceAnalyses(Analyses):
     def plot(self, x="year", arg_dict=None):
         if not arg_dict:
             arg_dict = dict()
-        # TODO
+        # TODO plotting
         pass
 
 ########################################################################################################################

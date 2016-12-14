@@ -32,10 +32,7 @@ def uniform(d, bw):
     :param bw: kernel bandwidth
     :return: weight of a point
     """
-    if d < bw:
-        return 1 / (math.pi * bw ** 2)
-    else:
-        return 0
+    return 1 if d < bw else 0
 
 
 KERNELS = {
