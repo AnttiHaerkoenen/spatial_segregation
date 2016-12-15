@@ -33,10 +33,3 @@ def uniform(d, bw):
     :return: weight of a point
     """
     return 1 if d < bw else 0
-
-
-KERNELS = {
-    'distance_decay': distance_decay,
-    'gaussian': gaussian,
-    'uniform': uniform
-}

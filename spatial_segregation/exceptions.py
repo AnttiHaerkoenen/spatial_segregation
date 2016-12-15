@@ -1,6 +1,6 @@
-class SpatialSegregationError(Exception):
+class SpatialSegregationException(Exception):
     pass
 
 
-class KernelError(SpatialSegregationError):
+class KDEError(SpatialSegregationException):
     pass

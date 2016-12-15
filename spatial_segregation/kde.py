@@ -2,19 +2,26 @@ import datetime
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 from spatial_segregation import kernel_functions, data
+from spatial_segregation.exceptions import KDEError
 
 
 ########################################################################################################################
+
+
+KERNELS = dict(
+    distance_decay=kernel_functions.distance_decay,
+    gaussian=kernel_functions.gaussian,
+    uniform=kernel_functions.uniform
+)
 
 
 class KernelDensitySurface:
     def __init__(self,
                  df: pd.DataFrame,
                  groups: tuple =("host", "other"),
-                 cell_size =15,
+                 cell_size=15,
                  kernel: str ='distance_decay',
                  bw='silverman',
                  a=1,
@@ -37,6 +44,7 @@ class KernelDensitySurface:
         self.kernel = kernel
         self.cell_size = cell_size
         self.groups = list(groups)
+        self.convex_hull = convex_hull
         self.convex_hull_buffer = convex_hull_buffer * self.bw
 
         ymax, ymin = data.get_limits(df, 'y')
@@ -82,14 +90,11 @@ class KernelDensitySurface:
             col = self._data_frame[item]
             return col.values.reshape(self.shape)
         except IndexError as ie:
-            print("IndexError!")
             raise ie
         except TypeError as te:
-            print("Key is of wrong type!")
             raise te
-        except Exception as e:
-            print("Something went wrong")
-            raise e
+        except Exception:
+            raise KDEError("Something went wrong")
 
     @property
     def n_cells(self):
@@ -130,8 +135,14 @@ class KernelDensitySurface:
 
     @property
     def param(self):
-        # TODO parameter getter
-        return dict()
+        return dict(
+            bw=self.bw,
+            alpha=self.a,
+            kernel=self.kernel,
+            cell_size=self.cell_size,
+            convex_hull=self.convex_hull,
+            convex_hull_buffer=self.convex_hull_buffer
+        )
 
     def iter_points(self):
         return self._data_frame.loc[:, list('xy')].itertuples()
@@ -221,6 +232,9 @@ def calc_d(d_a, d_b):
     y_b = d_b.loc[:, 'y'].values
     x_b = d_b.loc[:, 'x'].values
 
+    if y_a.shape != x_a.shape or y_b.shape != x_b.shape:
+        raise KDEError("Mismatching coordinates")
+
     y1, y2 = tuple(np.meshgrid(y_a, y_b))
     x1, x2 = tuple(np.meshgrid(x_a, x_b))
 
@@ -240,8 +254,8 @@ def calc_w(d, kernel='distance_decay', bw='silverman', a=1):
     :param a: second parameter for biweight kernel, default 1
     :return: matrix of relative weights w
     """
-    if kernel not in kernel_functions.KERNELS:
-        raise ValueError("Kernel not found")
+    if kernel not in KERNELS:
+        raise KDEError("Kernel not found")
 
     n = d.size
     if bw == 'silverman':
@@ -251,10 +265,10 @@ def calc_w(d, kernel='distance_decay', bw='silverman', a=1):
 
     if kernel == 'distance_decay':
         for x in np.nditer(d, op_flags=['readwrite']):
-            x[...] = kernel_functions.KERNELS[kernel](x, bw, a)
+            x[...] = KERNELS[kernel](x, bw, a)
     else:
         for x in np.nditer(d, op_flags=['readwrite']):
-            x[...] = kernel_functions.KERNELS[kernel](x, bw)
+            x[...] = KERNELS[kernel](x, bw)
 
     return d
 
