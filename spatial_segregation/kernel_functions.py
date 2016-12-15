@@ -32,4 +32,4 @@ def uniform(d, bw):
     :param bw: kernel bandwidth
     :return: weight of a point
     """
-    return 1 if d < bw else 0
+    return 1/bw if d < bw else 0

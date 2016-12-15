@@ -78,7 +78,7 @@ def make_mask(kde, polygon, outside=True):
     arr = np.array(arr)
 
     if not outside:
-        arr = abs(arr - 1)
+        arr = np.abs(arr - 1)
 
     return arr.reshape(kde.shape)
 
