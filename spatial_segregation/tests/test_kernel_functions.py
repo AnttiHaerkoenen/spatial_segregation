@@ -4,21 +4,24 @@ import hypothesis.strategies as st
 import spatial_segregation.kernel_functions as kf
 
 
-@given(bw=st.integers(0, 1000000),
-       a=st.integers(0, 1000000),
-       c=st.integers(0, 1000000))
-def test_dd_zero(bw, a, c):
-    assert kf.distance_decay(d=bw, bw=bw, a=a) == 0
-    assert kf.distance_decay(d=bw + c, bw=bw, a=a) == 0
+@given(bw=st.floats(0.1, 100000),
+       a=st.floats(0, 1000),
+       c=st.floats(0, 100000))
+def test_distance_decay(bw, a, c):
+    assert kf.distance_decay(d=bw, bw=bw, a=a) == 0, "d = bw"
+    assert kf.distance_decay(d=bw + c, bw=bw, a=a) == 0, "d > bw"
+    assert abs(kf.distance_decay(0, bw, a) - 1) < 0.0001, "d = 0"
+    assert abs(kf.distance_decay(d=bw/2, bw=bw, a=a) - 0.6 ** a) < 0.0001, "d = bw/2"
 
 
-@given(bw=st.integers(0, 1000000),
-       a=st.integers(0, 1000000))
-def test_dd_center(bw, a):
-    assert kf.distance_decay(0, bw, a) - 1 < 0.00001
+@given(bw=st.floats(0.1, 10000),
+       c1=st.floats(0, 10000),
+       c2=st.floats(0.001, 100))
+def test_gauss(bw, c1, c2):
+    assert abs(kf.gaussian(0, bw) - 1) < 0.0001, "d = 0"
+    assert kf.gaussian(c1, bw) > kf.gaussian(c1 + c2, bw)
 
 
-@given(bw=st.integers(0, 1000000),
-       a=st.integers(0, 1000000))
-def test_dd_halfway(bw, a):
-    assert kf.distance_decay(d=bw/2, bw=bw, a=a) - 0.6**a < 0.00001
+if __name__ == '__main__':
+    test_distance_decay()
+    test_gauss()
