@@ -13,7 +13,9 @@ from spatial_segregation.exceptions import KDEError
 KERNELS = dict(
     distance_decay=kernel_functions.distance_decay,
     gaussian=kernel_functions.gaussian,
-    uniform=kernel_functions.uniform
+    uniform=kernel_functions.uniform,
+    epanechnikov=kernel_functions.epanechnikov,
+    triangle=kernel_functions.triangle
 )
 
 

@@ -2,6 +2,7 @@
   <dictionary name="antth">
     <words>
       <w>biweight</w>
+      <w>epanechnikov</w>
       <w>matplotlib</w>
       <w>northing</w>
       <w>silverman</w>

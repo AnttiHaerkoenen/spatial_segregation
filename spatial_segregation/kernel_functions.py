@@ -1,14 +1,40 @@
-import math
+import numpy as np
 
 
-def gaussian(d, bw):
+def epanechnikov(d, bw):
     """
-    Gaussian kernel function.
+    Epanechnikov kernel, after Epanechnikov 1969
     :param d: distance between points
     :param bw: kernel bandwidth
     :return: weight of a point
     """
-    pass  # TODO gaussian kernel
+    if d < bw:
+        return 0.75 * (1 - (d / bw) ** 2)
+    else:
+        return 0
+
+
+def triangle(d, bw):
+    """
+    Triangle-shaped kernel
+    :param d: distance between points
+    :param bw: kernel bandwidth
+    :return: weight of a point
+    """
+    if d < bw:
+        return 1 - d / bw
+    else:
+        return 0
+
+
+def gaussian(d, sigma):
+    """
+    Gaussian kernel function.
+    :param d: distance between points
+    :param sigma: kernel bandwidth
+    :return: weight of a point
+    """
+    return 1 / (np.sqrt(2 * np.pi) * sigma ** 2) * np.exp(- d ** 2 / (2 * sigma ** 2))
 
 
 def distance_decay(d, bw, a=1):
