@@ -6,26 +6,26 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from spatial_segregation import segregation_index_analysis, segregation_surface_analysis, data
-from .exceptions import AnalysesException
+from spatial_segregation.exceptions import AnalysesException
 
 
 class Analyses:
     def __init__(self,
-                 data_frame,
-                 cell_sizes=(25,),
-                 kernels=("distance_decay",),
-                 bws=(1,),
-                 alphas=(1,),
-                 simulations=0):
-        self.data = data_frame
+                 data_dict,
+                 cell_sizes,
+                 kernels,
+                 bws,
+                 alphas,
+                 simulations):
+        self.data_dict = data_dict
         self.cell_sizes = cell_sizes
         self.kernels = kernels
         self.bws = bws
         self.alphas = alphas
         self.simulations = simulations
 
-        self._results = None
-        self.analyse()
+        self._results = []
+        self.analysis = None
 
     def __getitem__(self, item):
         try:
@@ -49,7 +49,7 @@ class Analyses:
         try:
             self.results.to_csv(file)
         except IOError:
-            print("Error! Saving failed.")
+            raise AnalysesException("Error! Saving failed.")
 
     def load(self, file=None):
         if not file:
@@ -60,17 +60,17 @@ class Analyses:
         try:
             self._results = pd.DataFrame.from_csv(file)
         except IOError:
-            print("File not found")
+            raise AnalysesException("File not found")
 
     def analyse(self):
-        pass
+        raise AnalysesException("Not implemented")
 
 ########################################################################################################################
 
 
 class SegregationSurfaceAnalyses(Analyses):
     def __init__(self,
-                 data_frame,
+                 data_dict,
                  cell_sizes=(25,),
                  kernels=("distance_decay",),
                  bws=(1,),
@@ -79,7 +79,7 @@ class SegregationSurfaceAnalyses(Analyses):
                  convex_hull=True,
                  buffers=(1,)):
         super().__init__(
-            data_frame=data_frame,
+            data_dict=data_dict,
             cell_sizes=cell_sizes,
             kernels=kernels,
             bws=bws,
@@ -89,9 +89,10 @@ class SegregationSurfaceAnalyses(Analyses):
         self.convex_hull = convex_hull
         self.buffers = buffers
         self.analysis = segregation_surface_analysis.SegregationSurfaceAnalysis
+        self.analyse()
 
     def analyse(self):
-        for y, d in self.data.items():
+        for y, d in self.data_dict.items():
             for c in self.cell_sizes:
                 for bw in self.bws:
                     for kern in self.kernels:
@@ -115,18 +116,13 @@ class SegregationSurfaceAnalyses(Analyses):
                                     }
                                 )
 
-    def plot(self, x="year", arg_dict=None):
-        if not arg_dict:
-            arg_dict = dict()
-        # TODO plotting
-        pass
 
 ########################################################################################################################
 
 
 class SegregationIndexAnalyses(Analyses):
     def __init__(self,
-                 data_frame,
+                 data_dict,
                  cell_sizes=(25,),
                  kernels=("distance_decay",),
                  bws=(1,),
@@ -136,7 +132,7 @@ class SegregationIndexAnalyses(Analyses):
                  convex_hull=True,
                  buffers=(1,)):
         super().__init__(
-            data_frame=data_frame,
+            data_dict=data_dict,
             cell_sizes=cell_sizes,
             kernels=kernels,
             bws=bws,
@@ -147,9 +143,10 @@ class SegregationIndexAnalyses(Analyses):
         self.convex_hull = convex_hull
         self.buffers = buffers
         self.analysis = segregation_index_analysis.SegregationIndexAnalysis
+        self.analyse()
 
     def analyse(self):
-        for y, d in self.data.items():
+        for y, d in self.data_dict.items():
             for c in self.cell_sizes:
                 for bw in self.bws:
                     for kern in self.kernels:
@@ -174,9 +171,6 @@ class SegregationIndexAnalyses(Analyses):
                                     **ana.p
                                 })
 
-    def plot(self):
-        pass
-
 ########################################################################################################################
 
 
@@ -189,9 +183,9 @@ if __name__ == '__main__':
     v20 = data.aggregate_sum(data.reform(pd.read_csv('1920.csv')))
 
     pop_data = {
-        1880: v80,
-        1900: v00,
-        1920: v20
+        '1880': v80,
+        '1900': v00,
+        '1920': v20
     }
 
     with open('points1878.geojson') as f:
@@ -200,5 +194,15 @@ if __name__ == '__main__':
     cells = [i for i in range(20, 81, 20)]
     bandwidths = (1.5, 2, 2.5)
 
-    d = {year: data.add_coordinates(pop_data[year], point_data, coordinates_to_meters=False)
-         for year in pop_data}
+    data = {year: data.add_coordinates(value, point_data, coordinates_to_meters=False)
+            for year, value in pop_data.items()}
+
+    ana = SegregationSurfaceAnalyses(
+        data_dict=data,
+        cell_sizes=(60,),
+        kernels=("distance_decay",),
+        bws=(2,)
+    )
+    print(ana.results)
+    ana.results.plot(kind="bar", x="year", y="s")
+    plt.show()

@@ -3,8 +3,8 @@ import datetime
 import numpy as np
 import pandas as pd
 
-from . import kernel_functions, data
-from .exceptions import KDEException
+from spatial_segregation import kernel_functions, data
+from spatial_segregation.exceptions import KDEException
 
 
 ########################################################################################################################
@@ -25,7 +25,7 @@ class KernelDensitySurface:
                  groups: tuple =("host", "other"),
                  cell_size=15,
                  kernel: str ='distance_decay',
-                 bw='silverman',
+                 bw=2,
                  a=1,
                  convex_hull=True,
                  convex_hull_buffer=0):
@@ -37,11 +37,12 @@ class KernelDensitySurface:
         :param df: input data with x and y coordinates representing points
         :param cell_size: cell size in meters, default 15
         :param kernel: kernel type, default 'distance_decay'
-        :param bw: bandwidth in meters OR method of calculating bandwidth (default 'silverman')
+        :param bw: bandwidth measured by cell sizes
         :param a: second parameter for biweight kernel, default 1
         :return: data frame with columns x, y and groups
         """
-        self.bw = bw
+        self.data = df
+        self.bw = round(bw * cell_size, 0)
         self.a = a
         self.kernel = kernel
         self.cell_size = cell_size
@@ -71,7 +72,6 @@ class KernelDensitySurface:
             pop = np.broadcast_to(df[group][np.newaxis:, ], self.w.shape) * self.w
             self._data_frame[group] = pd.Series(np.sum(pop, axis=1), index=self._data_frame.index)
 
-        # TODO change to mask
         # if convex_hull:
         #     mcp = get_convex_hull(df, self.convex_hull_buffer)
         #     self._data_frame = select_by_location(self._data_frame, mcp)
@@ -246,24 +246,17 @@ def calc_d(d_a, d_b):
     return d
 
 
-def calc_w(d, kernel='distance_decay', bw='silverman', a=1):
+def calc_w(d, kernel='distance_decay', bw=2.5, a=1):
     """
     Calculates relative weights based on distance and kernel function.
     :param d: matrix of distances
     :param kernel: kernel function to be used, default 'distance_decay'
-    :param bw: either kernel bandwidth in meters OR method in ('silverman', 'scott'), default silverman
-    :param bw: int OR str
+    :param bw: either kernel bandwidth in meters
     :param a: second parameter for biweight kernel, default 1
     :return: matrix of relative weights w
     """
     if kernel not in KERNELS:
         raise KDEException("Kernel not found")
-
-    n = d.size
-    if bw == 'silverman':
-        bw = round((4 * n / 4) ** (-1 / 6), 0)
-    elif bw == 'scott':
-        bw = round(n ** (-1/6), 0)
 
     if kernel == 'distance_decay':
         for x in np.nditer(d, op_flags=['readwrite']):

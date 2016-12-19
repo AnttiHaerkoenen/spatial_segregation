@@ -5,8 +5,8 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from . import analyses, kde, data, segregation_indices, utils
-from .exceptions import SegregationIndexAnalysisException
+from spatial_segregation import analyses, kde, data, segregation_indices, utils
+from spatial_segregation.exceptions import SegregationIndexAnalysisException
 
 
 class SegregationIndexAnalysis:
@@ -24,7 +24,7 @@ class SegregationIndexAnalysis:
         self.data = data_dict
         self.cell_size = cell_size
         self.kernel = kernel
-        self.bw = round(bw * cell_size)
+        self.bw = bw
         self.alpha = alpha
         self.convex_hull = convex_hull
         self.buffer = buffer * self.bw

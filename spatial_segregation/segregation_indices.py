@@ -1,6 +1,6 @@
 import numpy as np
 
-from .exceptions import SegregationIndicesException
+from spatial_segregation.exceptions import SegregationIndicesException
 
 
 def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_matrix=False):

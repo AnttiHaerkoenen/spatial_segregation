@@ -5,7 +5,7 @@ import numpy as np
 import json
 
 from spatial_segregation import utils
-from .exceptions import DataException
+from spatial_segregation.exceptions import DataException
 
 DATA_DIR = 'data'
 X, Y = 0, 1

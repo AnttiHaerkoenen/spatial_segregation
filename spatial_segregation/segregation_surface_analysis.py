@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from spatial_segregation import kde, data, utils
-from .exceptions import SegregationSurfaceAnalysisException
+from spatial_segregation.exceptions import SegregationSurfaceAnalysisException
 
 
 class SegregationSurfaceAnalysis:
@@ -23,7 +23,7 @@ class SegregationSurfaceAnalysis:
         self.data = utils.pop_to_fraction(df, columns=self.groups)
         self.cell_size = cell_size
         self.kernel = kernel
-        self.bw = round(bw * cell_size)
+        self.bw = bw
         self.alpha = alpha
         self.convex_hull = convex_hull
         self.buffer = buffer * self.bw
