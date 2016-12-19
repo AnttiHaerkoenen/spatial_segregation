@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from spatial_segregation import segregation_index_analysis, segregation_surface_analysis, data
+from .exceptions import AnalysesException
 
 
 class Analyses:
@@ -30,14 +31,9 @@ class Analyses:
         try:
             self.results[item]
         except IndexError as ie:
-            print("IndexError!")
             raise ie
         except TypeError as te:
-            print("Key is of wrong type!")
             raise te
-        except Exception as e:
-            print("Something went wrong")
-            raise e
 
     @property
     def results(self):
@@ -82,9 +78,8 @@ class SegregationSurfaceAnalyses(Analyses):
                  simulations=0,
                  convex_hull=True,
                  buffers=(1,)):
-        Analyses.__init__(
-            self,
-            data_frame,
+        super().__init__(
+            data_frame=data_frame,
             cell_sizes=cell_sizes,
             kernels=kernels,
             bws=bws,
@@ -140,9 +135,8 @@ class SegregationIndexAnalyses(Analyses):
                  which_indices="all",
                  convex_hull=True,
                  buffers=(1,)):
-        Analyses.__init__(
-            self,
-            data_frame,
+        super().__init__(
+            data_frame=data_frame,
             cell_sizes=cell_sizes,
             kernels=kernels,
             bws=bws,

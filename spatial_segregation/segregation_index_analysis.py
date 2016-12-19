@@ -5,7 +5,8 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from spatial_segregation import analyses, kde, data, segregation_indices, util
+from . import analyses, kde, data, segregation_indices, utils
+from .exceptions import SegregationIndexAnalysisException
 
 
 class SegregationIndexAnalysis:

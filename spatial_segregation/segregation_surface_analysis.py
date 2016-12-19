@@ -4,7 +4,8 @@ import json
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from spatial_segregation import kde, data, util
+from spatial_segregation import kde, data, utils
+from .exceptions import SegregationSurfaceAnalysisException
 
 
 class SegregationSurfaceAnalysis:
@@ -19,7 +20,7 @@ class SegregationSurfaceAnalysis:
                  data_id=None,
                  groups: tuple=("host", "other")):
         self.groups = groups
-        self.data = util.pop_to_fraction(df, columns=self.groups)
+        self.data = utils.pop_to_fraction(df, columns=self.groups)
         self.cell_size = cell_size
         self.kernel = kernel
         self.bw = round(bw * cell_size)

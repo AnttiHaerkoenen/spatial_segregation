@@ -4,7 +4,8 @@ import pandas as pd
 import numpy as np
 import json
 
-from spatial_segregation import util
+from spatial_segregation import utils
+from .exceptions import DataException
 
 DATA_DIR = 'data'
 X, Y = 0, 1
@@ -38,7 +39,7 @@ def add_coordinates(population_data,
         index = feature['properties'][point_index]
         x, y = feature['geometry']['coordinates']
         if coordinates_to_meters:
-            x, y = util.degrees_to_meters(x, y, false_easting=false_easting, false_northing=false_northing)
+            x, y = utils.degrees_to_meters(x, y, false_easting=false_easting, false_northing=false_northing)
         data_dict[index] = {'x': x, 'y': y}
 
     for r in population_data:
@@ -108,7 +109,7 @@ def reform(population_data, districts=(1,)):
     try:
         population_data = population_data[population_data['district'].isin(districts)]
     except KeyError:
-        print("District column not found!")
+        raise DataException("District column not found!")
 
     pop_data = population_data.fillna(value=0)
     pop_data = pop_data.loc[:, ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian',

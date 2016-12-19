@@ -3,8 +3,8 @@ import datetime
 import numpy as np
 import pandas as pd
 
-from spatial_segregation import kernel_functions, data
-from spatial_segregation.exceptions import KDEError
+from . import kernel_functions, data
+from .exceptions import KDEException
 
 
 ########################################################################################################################
@@ -96,7 +96,7 @@ class KernelDensitySurface:
         except TypeError as te:
             raise te
         except Exception:
-            raise KDEError("Something went wrong")
+            raise KDEException("Something went wrong")
 
     @property
     def n_cells(self):
@@ -235,7 +235,7 @@ def calc_d(d_a, d_b):
     x_b = d_b.loc[:, 'x'].values
 
     if y_a.shape != x_a.shape or y_b.shape != x_b.shape:
-        raise KDEError("Mismatching coordinates")
+        raise KDEException("Mismatching coordinates")
 
     y1, y2 = tuple(np.meshgrid(y_a, y_b))
     x1, x2 = tuple(np.meshgrid(x_a, x_b))
@@ -257,7 +257,7 @@ def calc_w(d, kernel='distance_decay', bw='silverman', a=1):
     :return: matrix of relative weights w
     """
     if kernel not in KERNELS:
-        raise KDEError("Kernel not found")
+        raise KDEException("Kernel not found")
 
     n = d.size
     if bw == 'silverman':

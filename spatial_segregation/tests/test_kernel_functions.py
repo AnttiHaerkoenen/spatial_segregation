@@ -1,3 +1,5 @@
+import math
+
 from hypothesis import given
 import hypothesis.strategies as st
 
@@ -16,12 +18,15 @@ def test_distance_decay(bw, a, c):
 
 @given(bw=st.floats(0.1, 10000),
        c1=st.floats(0, 10000),
-       c2=st.floats(0.001, 100))
+       c2=st.floats(0.1, 1000))
 def test_gauss(bw, c1, c2):
-    assert abs(kf.gaussian(0, bw) - 1) < 0.0001, "d = 0"
-    assert kf.gaussian(c1, bw) > kf.gaussian(c1 + c2, bw)
+    assert kf.gaussian(0, bw) == 1 / (math.sqrt(2 * math.pi) * bw ** 2), "d = 0"
+    assert kf.gaussian(c1, bw) >= kf.gaussian(c1 + c2, bw)
 
 
 if __name__ == '__main__':
     test_distance_decay()
     test_gauss()
+    # test_uniform()
+    # test_epanechnikov()
+    # test_triangle()

@@ -1,20 +1,22 @@
 import numpy as np
 
+from .exceptions import SegregationIndicesException
+
 
 def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_matrix=False):
     """
-    Calculates spatial forms of Karmel-MacLachlan index, Mutual information index and Exposure which_indices.
+    Calculates spatial forms of Karmel-MacLachlan index, Mutual information index and Exposure indices.
     :param pop: 2-dim array with groups as columns, or something that can be coerced with np.asarray
-    :param which_indices: which which_indices to calculate, default 'all' ('km', 'information', 'exposure', 'isolation')
+    :param which_indices: which indices to calculate, default 'all' ('km', 'information', 'exposure', 'isolation')
     :param host_col: which column contains host group
     :param other_col: which column contains 'the other'
     :param exposure_matrix: whether or not to return a full exposure matrix
-    :return: dictionary of which_indices
+    :return: dictionary of indices
     """
     try:
         pop = np.asarray_chkfinite(pop)
     except ValueError:
-        raise ValueError("Incorrect input. Remove NaNs and infs.")
+        raise SegregationIndicesException("Incorrect input. Remove NaNs and infs.")
 
     if which_indices.lower() == 'all':
         which_indices = ('km', 'mi', 'exposure', 'isolation')
