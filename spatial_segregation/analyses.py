@@ -5,7 +5,7 @@ import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from spatial_segregation import segregation_index_analysis, segregation_surface_analysis, data
+from spatial_segregation import segregation_index_analysis, segregation_surface_analysis, data, kde
 from spatial_segregation.exceptions import AnalysesException
 
 
@@ -90,6 +90,7 @@ class SegregationSurfaceAnalyses(Analyses):
         self.buffers = buffers
         self.analysis = segregation_surface_analysis.SegregationSurfaceAnalysis
         self.analyse()
+        print(self.__dict__)
 
     def analyse(self):
         for y, d in self.data_dict.items():
@@ -191,18 +192,19 @@ if __name__ == '__main__':
     with open('points1878.geojson') as f:
         point_data = json.load(f)
 
-    cells = [i for i in range(20, 81, 20)]
-    bandwidths = (1.5, 2, 2.5)
+    cells = (i for i in range(20, 81, 20))
+    bandwidths = (1.5, 2, 2.5, 3, 5)
 
     data = {year: data.add_coordinates(value, point_data, coordinates_to_meters=False)
             for year, value in pop_data.items()}
 
     ana = SegregationSurfaceAnalyses(
         data_dict=data,
-        cell_sizes=(60,),
-        kernels=("distance_decay",),
-        bws=(2,)
+        cell_sizes=cells,
+        kernels=(k for k in kde.KERNELS),
+        bws=bandwidths
     )
+    ana.save("SegregationSurfaceAnalysis_kaikki")
     print(ana.results)
-    ana.results.plot(kind="bar", x="year", y="s")
-    plt.show()
+    # ana.results.plot(kind="bar", x="year", y="s")
+    # plt.show()
