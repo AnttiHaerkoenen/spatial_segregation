@@ -90,7 +90,6 @@ class SegregationSurfaceAnalyses(Analyses):
         self.buffers = buffers
         self.analysis = segregation_surface_analysis.SegregationSurfaceAnalysis
         self.analyse()
-        print(self.__dict__)
 
     def analyse(self):
         for y, d in self.data_dict.items():
@@ -164,7 +163,8 @@ class SegregationIndexAnalyses(Analyses):
                                         convex_hull=self.convex_hull,
                                         data_id=y
                                 )
-                                ana.simulate(self.simulations)
+                                if self.simulations:
+                                    ana.simulate(self.simulations)
                                 self._results.append({
                                     "year": y,
                                     **ana.surface.param,
@@ -192,8 +192,8 @@ if __name__ == '__main__':
     with open('points1878.geojson') as f:
         point_data = json.load(f)
 
-    cells = (i for i in range(20, 81, 20))
-    bandwidths = (1.5, 2, 2.5, 3, 5)
+    cells = [i for i in range(20, 81, 20)]
+    bandwidths = [i for i in range(50, 501, 150)]
 
     data = {year: data.add_coordinates(value, point_data, coordinates_to_meters=False)
             for year, value in pop_data.items()}
@@ -201,10 +201,17 @@ if __name__ == '__main__':
     ana = SegregationSurfaceAnalyses(
         data_dict=data,
         cell_sizes=cells,
-        kernels=(k for k in kde.KERNELS),
+        kernels=[k for k in kde.KERNELS],
         bws=bandwidths
     )
     ana.save("SegregationSurfaceAnalysis_kaikki")
     print(ana.results)
-    # ana.results.plot(kind="bar", x="year", y="s")
-    # plt.show()
+
+    ana2 = SegregationIndexAnalyses(
+        data_dict=data,
+        cell_sizes=cells,
+        kernels=[k for k in kde.KERNELS],
+        bws=bandwidths
+    )
+    ana2.save("SegregationIndexAnalysis_kaikki")
+    print(ana2.results)

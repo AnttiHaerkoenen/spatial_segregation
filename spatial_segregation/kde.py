@@ -25,7 +25,7 @@ class KernelDensitySurface:
                  groups: tuple =("host", "other"),
                  cell_size=15,
                  kernel: str ='distance_decay',
-                 bw=2,
+                 bw=20,
                  a=1,
                  convex_hull=True,
                  convex_hull_buffer=0):
@@ -37,18 +37,18 @@ class KernelDensitySurface:
         :param df: input data with x and y coordinates representing points
         :param cell_size: cell size in meters, default 15
         :param kernel: kernel type, default 'distance_decay'
-        :param bw: bandwidth measured by cell sizes
+        :param bw: bandwidth in meters
         :param a: second parameter for biweight kernel, default 1
         :return: data frame with columns x, y and groups
         """
         self.data = df
-        self.bw = round(bw * cell_size, 0)
+        self.bw = bw
         self.a = a
         self.kernel = kernel
         self.cell_size = cell_size
         self.groups = list(groups)
         self.convex_hull = convex_hull
-        self.convex_hull_buffer = convex_hull_buffer * self.bw
+        self.convex_hull_buffer = convex_hull_buffer
 
         ymax, ymin = data.get_limits(df, 'y')
         xmax, xmin = data.get_limits(df, 'x')

@@ -27,7 +27,7 @@ class SegregationIndexAnalysis:
         self.bw = bw
         self.alpha = alpha
         self.convex_hull = convex_hull
-        self.buffer = buffer * self.bw
+        self.buffer = buffer
         self.which_indices = which_indices
         self.data_id = data_id
         self.groups = groups
@@ -112,10 +112,10 @@ class SegregationIndexAnalysis:
     @property
     def p(self):
         p = dict()
-        n = self.simulations.shape[0]
+        n = len(self._simulations_list)
 
         if n < 10:
-            return {"p_{0}".format(index): None for index in self.indices}
+            return dict()
 
         for index, col in self.simulations.iteritems():
             greater = col > self.indices[index]
