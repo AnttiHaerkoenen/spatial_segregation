@@ -10,6 +10,8 @@ from spatial_segregation.exceptions import AnalysesException
 
 
 class Analyses:
+    _analysis = None
+
     def __init__(self,
                  data_dict,
                  cell_sizes,
@@ -25,7 +27,6 @@ class Analyses:
         self.simulations = simulations
 
         self._results = []
-        self.analysis = None
 
     def __getitem__(self, item):
         try:
@@ -41,7 +42,7 @@ class Analyses:
 
     def save(self, file=None):
         if not file:
-            file = "{0}_{1}".format(
+            file = "{0}_{1}.csv".format(
                 self.__class__.__name__,
                 datetime.date.today()
             )
@@ -53,7 +54,7 @@ class Analyses:
 
     def load(self, file=None):
         if not file:
-            file = "{0}_{1}".format(
+            file = "{0}_{1}.csv".format(
                 self.__class__.__name__,
                 datetime.date.today()
             )
@@ -69,6 +70,8 @@ class Analyses:
 
 
 class SegregationSurfaceAnalyses(Analyses):
+    _analysis = segregation_surface_analysis.SegregationSurfaceAnalysis
+
     def __init__(self,
                  data_dict,
                  cell_sizes=(25,),
@@ -88,7 +91,6 @@ class SegregationSurfaceAnalyses(Analyses):
         )
         self.convex_hull = convex_hull
         self.buffers = buffers
-        self.analysis = segregation_surface_analysis.SegregationSurfaceAnalysis
         self.analyse()
 
     def analyse(self):
@@ -98,7 +100,7 @@ class SegregationSurfaceAnalyses(Analyses):
                     for kern in self.kernels:
                         for b in self.buffers:
                             for a in self.alphas:
-                                ana = self.analysis(
+                                ana = self._analysis(
                                     d,
                                     cell_size=c,
                                     bw=bw,
@@ -121,6 +123,8 @@ class SegregationSurfaceAnalyses(Analyses):
 
 
 class SegregationIndexAnalyses(Analyses):
+    _analysis = segregation_index_analysis.SegregationIndexAnalysis
+
     def __init__(self,
                  data_dict,
                  cell_sizes=(25,),
@@ -142,7 +146,6 @@ class SegregationIndexAnalyses(Analyses):
         self.which_indices = which_indices
         self.convex_hull = convex_hull
         self.buffers = buffers
-        self.analysis = segregation_index_analysis.SegregationIndexAnalysis
         self.analyse()
 
     def analyse(self):
@@ -152,7 +155,7 @@ class SegregationIndexAnalyses(Analyses):
                     for kern in self.kernels:
                         for b in self.buffers:
                             for a in self.alphas:
-                                ana = self.analysis(
+                                ana = self._analysis(
                                         d,
                                         cell_size=c,
                                         bw=bw,
@@ -204,7 +207,7 @@ if __name__ == '__main__':
         kernels=[k for k in kde.KERNELS],
         bws=bandwidths
     )
-    ana.save("SegregationSurfaceAnalysis_kaikki")
+    ana.save("SegregationSurfaceAnalysis_kaikki.csv")
     print(ana.results)
 
     ana2 = SegregationIndexAnalyses(
@@ -213,5 +216,5 @@ if __name__ == '__main__':
         kernels=[k for k in kde.KERNELS],
         bws=bandwidths
     )
-    ana2.save("SegregationIndexAnalysis_kaikki")
+    ana2.save("SegregationIndexAnalysis_kaikki.csv")
     print(ana2.results)

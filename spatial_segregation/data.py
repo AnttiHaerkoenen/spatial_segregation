@@ -101,7 +101,7 @@ def aggregate_sum(data, group_index=0):
 
 def reform(population_data, districts=(1,)):
     """
-    Cleans population data for use in segregation analysis.
+    Cleans population data for use in segregation _analysis.
     :param districts: which districts to use
     :param population_data:
     :return: aggregated sum, list of lists

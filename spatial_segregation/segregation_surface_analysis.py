@@ -39,7 +39,7 @@ class SegregationSurfaceAnalysis:
             convex_hull_buffer=self.buffer
         )
 
-        self.s = 1 - sum(self.surface.min) / sum(self.surface.max)
+        self._s = 1 - sum(self.surface.min) / sum(self.surface.max)
 
     def __str__(self):
         return(
@@ -49,6 +49,10 @@ class SegregationSurfaceAnalysis:
                 self.bw,
                 self.kernel)
         )
+
+    @property
+    def s(self):
+        return round(self._s, 3)
 
     def plot(self, group, arg_dict=None):
         if not arg_dict:

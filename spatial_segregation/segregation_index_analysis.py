@@ -51,7 +51,7 @@ class SegregationIndexAnalysis:
         self._simulations_list = []
 
     def __str__(self):
-        strings = ["Spatial segregation analysis", ""]
+        strings = ["Spatial segregation _analysis", ""]
 
         if self.data_id:
             strings.append("Data: {0}".format(self.data_id))
