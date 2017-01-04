@@ -10,13 +10,7 @@ from spatial_segregation.exceptions import KDEException
 ########################################################################################################################
 
 
-KERNELS = dict(
-    distance_decay=kernel_functions.distance_decay,
-    gaussian=kernel_functions.gaussian,
-    uniform=kernel_functions.uniform,
-    epanechnikov=kernel_functions.epanechnikov,
-    triangle=kernel_functions.triangle
-)
+KERNELS = kernel_functions.KERNELS
 
 
 class KernelDensitySurface:
