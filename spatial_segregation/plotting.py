@@ -20,10 +20,17 @@ def plot_kernel(kernel, bw=1):
     return fig
 
 
-def plot_results_all(results, index):
-    b = results['bw'].unique()
-    c = results['cell_size'].unique()
-    fig, axs = plt.subplots(b, c)
+def plot_results_all(results, kernel):
+    bws = results['bw'].unique()
+    cells = results['cell_size'].unique()
+    fig, axs = plt.subplots(len(bws), len(cells))
+
+    for i, b in enumerate(bws):
+        for j, c in enumerate(cells):
+            ax_data = results.where(results['bw', 'cell_size', 'kernel'] == b, c, kernel)
+            axs[i, j].plot(ax_data)
+
+    return fig
 
 if __name__ == '__main__':
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
@@ -37,5 +44,6 @@ if __name__ == '__main__':
     ana2.load("SegregationSurfaceAnalysis_kaikki.csv")
     print(ana2.results)
 
-    # ana = pd.merge(ana1.results, ana2.results, on=['bw', 'cell_size'])
-    # print(ana.unique())
+    ana = pd.merge(ana1.results, ana2.results, on=['bw', 'cell_size'])
+    plot_results_all(ana, 'distance_decay')
+    plt.show()
