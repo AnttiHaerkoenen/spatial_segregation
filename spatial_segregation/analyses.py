@@ -71,7 +71,7 @@ class Analyses:
 
 class SegregationSurfaceAnalyses(Analyses):
     def __init__(self,
-                 data_dict,
+                 data_dict=None,
                  cell_sizes=(25,),
                  kernels=("distance_decay",),
                  bws=(1,),
@@ -90,7 +90,6 @@ class SegregationSurfaceAnalyses(Analyses):
         self.convex_hull = convex_hull
         self.buffers = buffers
         self._analysis = segregation_surface_analysis.SegregationSurfaceAnalysis
-        self.analyse()
 
     def analyse(self):
         for y, d in self.data_dict.items():
@@ -123,7 +122,7 @@ class SegregationSurfaceAnalyses(Analyses):
 
 class SegregationIndexAnalyses(Analyses):
     def __init__(self,
-                 data_dict,
+                 data_dict=None,
                  cell_sizes=(25,),
                  kernels=("distance_decay",),
                  bws=(1,),
@@ -144,7 +143,6 @@ class SegregationIndexAnalyses(Analyses):
         self.convex_hull = convex_hull
         self.buffers = buffers
         self._analysis = segregation_index_analysis.SegregationIndexAnalysis
-        self.analyse()
 
     def analyse(self):
         for y, d in self.data_dict.items():
@@ -199,14 +197,15 @@ if __name__ == '__main__':
     data = {year: data.add_coordinates(value, point_data, coordinates_to_meters=False)
             for year, value in pop_data.items()}
 
-    ana = SegregationSurfaceAnalyses(
+    ana1 = SegregationSurfaceAnalyses(
         data_dict=data,
         cell_sizes=cells,
         kernels=[k for k in kde.KERNELS],
         bws=bandwidths
     )
-    ana.save("SegregationSurfaceAnalysis_kaikki.csv")
-    print(ana.results)
+    ana1.analyse()
+    ana1.save("SegregationSurfaceAnalysis_kaikki.csv")
+    print(ana1.results)
 
     ana2 = SegregationIndexAnalyses(
         data_dict=data,
@@ -214,5 +213,6 @@ if __name__ == '__main__':
         kernels=[k for k in kde.KERNELS],
         bws=bandwidths
     )
+    ana2.analyse()
     ana2.save("SegregationIndexAnalysis_kaikki.csv")
     print(ana2.results)

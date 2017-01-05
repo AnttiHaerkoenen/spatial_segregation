@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from spatial_segregation import plotting
+
 
 def epanechnikov(d, bw):
     """
@@ -62,19 +64,6 @@ def uniform(d, bw):
     return 1/bw if d < bw else 0
 
 
-def plot_kernel(kernel, bw=1):
-    """
-    Function for plotting kernels.
-    :param kernel: kernel function object
-    :param bw: bw parameter
-    :return: matplotlib.lines.Line2D object
-    """
-    x = np.arange(-2 * bw, 2 * bw, 0.01)
-    y = [kernel(abs(x), bw) for x in np.nditer(x)]
-    fig = plt.plot(x, y)
-    return fig
-
-
 KERNELS = dict(
     distance_decay=distance_decay,
     gaussian=gaussian,
@@ -88,7 +77,7 @@ if __name__ == '__main__':
     plt.style.use("ggplot")
 
     for k, f in KERNELS.items():
-        plot_kernel(f)
+        plotting.plot_kernel(f)
         # plt.title(k.capitalize())
         plt.ylim((-0.2, 1.2))
         plt.ylabel("K(d)")
