@@ -191,8 +191,8 @@ if __name__ == '__main__':
     with open('points1878.geojson') as f:
         point_data = json.load(f)
 
-    cells = [i for i in range(20, 81, 20)]
-    bandwidths = [i for i in range(50, 501, 150)]
+    cells = 25, 50, 100
+    bandwidths = 50, 100, 250, 500
 
     data = {year: data.add_coordinates(value, point_data, coordinates_to_meters=False)
             for year, value in pop_data.items()}
@@ -205,7 +205,6 @@ if __name__ == '__main__':
     )
     ana1.analyse()
     ana1.save("SegregationSurfaceAnalysis_kaikki.csv")
-    print(ana1.results)
 
     ana2 = SegregationIndexAnalyses(
         data_dict=data,
@@ -215,4 +214,8 @@ if __name__ == '__main__':
     )
     ana2.analyse()
     ana2.save("SegregationIndexAnalysis_kaikki.csv")
-    print(ana2.results)
+
+    results = pd.merge(ana1.results, ana2.results)["year kernel bw cell_size s exposure isolation km".split()]
+    results = results.sort_values(by='year')
+    print(results)
+    results.to_csv("kaikki.csv")
