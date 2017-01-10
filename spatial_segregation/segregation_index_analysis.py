@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from spatial_segregation import analyses, kde, data, segregation_indices, utils
-from spatial_segregation.exceptions import SegregationIndexAnalysisException
+from spatial_segregation.exceptions import SSKeyError, SSValueError
 
 
 class SegregationIndexAnalysis:
@@ -126,10 +126,10 @@ class SegregationIndexAnalysis:
 
     def plot(self, index):
         if len(self.simulations) == 0:
-            raise ValueError("No simulations to plot")
+            raise SSValueError("No simulations to plot")
 
         if index not in self.indices:
-            raise ValueError("Index not computed.")
+            raise SSKeyError("Index not computed.")
 
         fig = self.simulations[index].plot.kde(color='red', label="simulated {0}".format(index))
         fig.axvline(self.indices[index], label="actual {0}".format(index))

@@ -2,29 +2,25 @@ class SpatialSegregationException(Exception):
     pass
 
 
-class KDEException(SpatialSegregationException):
+class SSTypeError(TypeError, SpatialSegregationException):
     pass
 
 
-class DataException(SpatialSegregationException):
+class SSIndexError(IndexError, SpatialSegregationException):
     pass
 
 
-class SegregationIndicesException(SpatialSegregationException):
+class SSIOError(IOError, SpatialSegregationException):
     pass
 
 
-class AnalysesException(SpatialSegregationException):
+class SSNotImplementedError(NotImplementedError, SpatialSegregationException):
     pass
 
 
-class SegregationSurfaceAnalysisException(SpatialSegregationException):
+class SSValueError(ValueError, SpatialSegregationException):
     pass
 
 
-class SegregationIndexAnalysisException(SpatialSegregationException):
-    pass
-
-
-class UtilsException(SpatialSegregationException):
+class SSKeyError(KeyError, SpatialSegregationException):
     pass

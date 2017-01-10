@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from spatial_segregation import segregation_index_analysis, segregation_surface_analysis, data, kde
-from spatial_segregation.exceptions import AnalysesException
+from spatial_segregation.exceptions import SSIndexError, SSTypeError, SSIOError, SSNotImplementedError
 
 
 class Analyses:
@@ -31,10 +31,10 @@ class Analyses:
     def __getitem__(self, item):
         try:
             self.results[item]
-        except IndexError as ie:
-            raise ie
-        except TypeError as te:
-            raise te
+        except IndexError:
+            raise SSIndexError
+        except TypeError:
+            raise SSTypeError
 
     @property
     def results(self):
@@ -50,7 +50,7 @@ class Analyses:
         try:
             self.results.to_csv(file)
         except IOError:
-            raise AnalysesException("Error! Saving failed.")
+            raise SSIOError("Error! Saving failed.")
 
     def load(self, file=None):
         if not file:
@@ -61,10 +61,10 @@ class Analyses:
         try:
             self._results = pd.DataFrame.from_csv(file)
         except IOError:
-            raise AnalysesException("File not found")
+            raise SSIOError("File not found")
 
     def analyse(self):
-        raise AnalysesException("Not implemented")
+        raise SSNotImplementedError
 
 ########################################################################################################################
 
