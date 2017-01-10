@@ -3,6 +3,7 @@ import json
 import datetime
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 from spatial_segregation import analyses, kde, data, segregation_indices, utils
@@ -171,6 +172,12 @@ if __name__ == '__main__':
     ana.plot("km")
     plt.show()
 
-    # ana1 = analyses.SegregationIndexAnalyses(d, cell_sizes=cells, bws=bws, kernels=("uniform", "distance_decay"), simulations=49)
+    # ana1 = analyses.SegregationIndexAnalyses(
+    #     d,
+    #     cell_sizes=cells,
+    #     bws=bws,
+    #     kernels=("uniform", "distance_decay"),
+    #     simulations=49
+    # )
     # print(ana1.results)
     # ana1.save()
