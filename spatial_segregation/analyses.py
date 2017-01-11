@@ -121,16 +121,18 @@ class SegregationSurfaceAnalyses(Analyses):
 
 
 class SegregationIndexAnalyses(Analyses):
-    def __init__(self,
-                 data_dict=None,
-                 cell_sizes=(25,),
-                 kernels=("distance_decay",),
-                 bws=(1,),
-                 alphas=(1,),
-                 simulations=0,
-                 which_indices="all",
-                 convex_hull=True,
-                 buffers=(1,)):
+    def __init__(
+            self,
+            data_dict=None,
+            cell_sizes=(25,),
+            kernels=("distance_decay",),
+            bws=(1,),
+            alphas=(1,),
+            simulations=0,
+            which_indices="all",
+            convex_hull=True,
+            buffers=(1,)
+    ):
         super().__init__(
             data_dict=data_dict,
             cell_sizes=cell_sizes,

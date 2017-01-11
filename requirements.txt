@@ -1,5 +1,5 @@
 hypothesis >= 3.6.1
 shapely >= 1.5.13
-pandas >= 0.19.2
+pandas >= 0.18.1
 numpy >= 1.10.4
-matplotlib >= 1.5.3
+matplotlib >= 1.5.1
