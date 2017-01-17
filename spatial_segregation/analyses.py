@@ -70,6 +70,8 @@ class Analyses:
 
 
 class SegregationSurfaceAnalyses(Analyses):
+    _analysis = segregation_surface_analysis.SegregationSurfaceAnalysis
+
     def __init__(self,
                  data_dict=None,
                  cell_sizes=(25,),
@@ -89,7 +91,6 @@ class SegregationSurfaceAnalyses(Analyses):
         )
         self.convex_hull = convex_hull
         self.buffers = buffers
-        self._analysis = segregation_surface_analysis.SegregationSurfaceAnalysis
 
     def analyse(self):
         for y, d in self.data_dict.items():
@@ -121,6 +122,8 @@ class SegregationSurfaceAnalyses(Analyses):
 
 
 class SegregationIndexAnalyses(Analyses):
+    _analysis = segregation_index_analysis.SegregationIndexAnalysis
+
     def __init__(
             self,
             data_dict=None,
@@ -144,7 +147,6 @@ class SegregationIndexAnalyses(Analyses):
         self.which_indices = which_indices
         self.convex_hull = convex_hull
         self.buffers = buffers
-        self._analysis = segregation_index_analysis.SegregationIndexAnalysis
 
     def analyse(self):
         for y, d in self.data_dict.items():
