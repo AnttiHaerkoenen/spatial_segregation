@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import shapely.geometry
 
-from spatial_segregation.exceptions import UtilsException
+from spatial_segregation.exceptions import SSValueError
 
 
 def degrees_to_meters(lon, lat, false_easting=0, false_northing=0):
@@ -37,7 +37,7 @@ def get_stars(p):
     :return: '***', '**', '*', '.' or ' '
     """
     if p < 0 or p > 1:
-        raise UtilsException("That cannot be a p-value!")
+        raise SSValueError("That cannot be a p-value!")
     elif p <= 0.001:
         return "***"
     elif p <= 0.01:

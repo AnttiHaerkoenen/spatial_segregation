@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from spatial_segregation import kde, data, utils
-from spatial_segregation.exceptions import SegregationSurfaceAnalysisException
 
 
 class SegregationSurfaceAnalysis:

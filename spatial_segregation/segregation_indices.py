@@ -1,6 +1,6 @@
 import numpy as np
 
-from spatial_segregation.exceptions import SegregationIndicesException
+from spatial_segregation.exceptions import SSValueError
 
 
 def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_matrix=False):
@@ -16,7 +16,7 @@ def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_mat
     try:
         pop = np.asarray_chkfinite(pop)
     except ValueError:
-        raise SegregationIndicesException("Incorrect input. Remove NaNs and infs.")
+        raise SSValueError("Incorrect input. Remove NaNs and infs.")
 
     if which_indices.lower() == 'all':
         which_indices = ('km', 'mi', 'exposure', 'isolation')

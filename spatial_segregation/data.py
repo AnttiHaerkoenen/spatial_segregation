@@ -5,7 +5,7 @@ import numpy as np
 import json
 
 from spatial_segregation import utils
-from spatial_segregation.exceptions import DataException
+from spatial_segregation.exceptions import SSKeyError
 
 DATA_DIR = 'data'
 X, Y = 0, 1
@@ -109,7 +109,7 @@ def reform(population_data, districts=(1,)):
     try:
         population_data = population_data[population_data['district'].isin(districts)]
     except KeyError:
-        raise DataException("District column not found!")
+        raise SSKeyError("District column not found!")
 
     pop_data = population_data.fillna(value=0)
     pop_data = pop_data.loc[:, ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian',
