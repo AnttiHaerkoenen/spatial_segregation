@@ -21,10 +21,10 @@ def plot_kernel(kernel, bw=1):
 
 
 def plot_results_all(results, kernel, indices=None, title=None, subplot_title_param=None, labels=None):
-    bws = results['bw'].unique()
-    cells = results['cell_size'].unique()
-    years = results['year'].unique()
-    fig, axs = plt.subplots(len(bws), len(cells), sharey='col')
+    bws = sorted(results['bw'].unique())
+    cells = sorted(results['cell_size'].unique())
+    years = sorted(results['year'].unique())
+    fig, axs = plt.subplots(len(bws), len(cells), sharey='col', figsize=(10, 12))
 
     if not indices:
         indices = 's km exposure isolation'.split()
@@ -47,10 +47,24 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
             axs[i, j].set_xticks(years)
             subplot_title_param['b'] = b
             subplot_title_param['c'] = c
-            axs[i, j].set_title("{bandwidth}={b}, {cell_size}={c}".format(**subplot_title_param), fontsize=12)
+            # axs[i, j].set_title(
+            #     "{bandwidth}={b}, {cell_size}={c}".format(**subplot_title_param), fontsize=12
+            # )
 
-    fig.legend(labels=labels, loc='', fontsize=12)
-    plt.suptitle(title, fontsize=18)
+    axs[0, 0].legend(labels=labels, loc='upper center', fontsize=10).get_frame().set_facecolor('white')
+    plt.suptitle(title, fontsize=22)
+
+    for ax, ve in zip(axs[0], cells):
+        ax.set_title('{0}'.format(ve), size=14)
+    for ax, mode in zip(axs[:, 0], bws):
+        ax.set_ylabel(mode, size=14)
+
+    axs[0, 1].annotate(subplot_title_param['cell_size'].capitalize(), (0.5, 1), xytext=(0, 20),
+                       textcoords='offset points', xycoords='axes fraction',
+                       ha='center', va='bottom', size=18)
+    axs[2, 0].annotate(subplot_title_param['bandwidth'].capitalize(), (0, 0.5), xytext=(-50, 0),
+                       textcoords='offset points', xycoords='axes fraction',
+                       ha='right', va='center', size=18, rotation=90)
 
     return fig
 
@@ -62,13 +76,13 @@ if __name__ == '__main__':
     results = pd.DataFrame.from_csv("kaikki.csv")
     plt.style.use("ggplot")
 
-    otsikot = ["Martin et al.", "Gauss", "Epanechnikov", "Kolmio", "Laatikko"]
+    ytimet = ["Martin et al.", "Gauss", "Epanechnikov", "Kolmio", "Laatikko"]
     for i, index in enumerate("distance_decay gaussian epanechnikov triangle uniform".split()):
         plot_results_all(
             results,
             index,
             indices="s km exposure isolation".split(),
-            title=otsikot[i],
+            title=ytimet[i],
             subplot_title_param=dict(bandwidth='leveys', cell_size='solukoko'),
             labels="S K-M Exposure Isolation".split()
         )
