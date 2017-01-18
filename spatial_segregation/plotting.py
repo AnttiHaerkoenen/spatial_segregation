@@ -51,7 +51,7 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
             #     "{bandwidth}={b}, {cell_size}={c}".format(**subplot_title_param), fontsize=12
             # )
 
-    axs[0, 0].legend(labels=labels, loc='upper center', fontsize=10).get_frame().set_facecolor('white')
+    axs[0, 0].legend(labels=labels, fontsize=10, bbox_to_anchor=(0, 1.1), loc=3).get_frame().set_facecolor('white')
     plt.suptitle(title, fontsize=22)
 
     for ax, ve in zip(axs[0], cells):
@@ -62,6 +62,7 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
     axs[0, 1].annotate(subplot_title_param['cell_size'].capitalize(), (0.5, 1), xytext=(0, 20),
                        textcoords='offset points', xycoords='axes fraction',
                        ha='center', va='bottom', size=18)
+
     axs[2, 0].annotate(subplot_title_param['bandwidth'].capitalize(), (0, 0.5), xytext=(-50, 0),
                        textcoords='offset points', xycoords='axes fraction',
                        ha='right', va='center', size=18, rotation=90)
