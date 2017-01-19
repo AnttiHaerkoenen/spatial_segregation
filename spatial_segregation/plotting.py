@@ -2,9 +2,10 @@ import os
 
 import numpy as np
 import pandas as pd
+from pandas.tools.plotting import scatter_matrix
 import matplotlib.pyplot as plt
 
-from spatial_segregation import segregation_index_analysis, segregation_surface_analysis, data, kde, analyses
+from spatial_segregation import segregation_index_analysis, segregation_surface_analysis, data, kde, analyses, utils
 
 
 def plot_kernel(kernel, bw=1):
@@ -47,9 +48,6 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
             axs[i, j].set_xticks(years)
             subplot_title_param['b'] = b
             subplot_title_param['c'] = c
-            # axs[i, j].set_title(
-            #     "{bandwidth}={b}, {cell_size}={c}".format(**subplot_title_param), fontsize=12
-            # )
 
     axs[0, 0].legend(labels=labels, fontsize=10, bbox_to_anchor=(0, 1.1), loc=3).get_frame().set_facecolor('white')
     plt.suptitle(title, fontsize=22)
@@ -76,6 +74,9 @@ if __name__ == '__main__':
 
     results = pd.DataFrame.from_csv("kaikki.csv")
     plt.style.use("ggplot")
+    scatter_matrix(results["s exposure isolation km".split()], diagonal='kde', figsize=(10, 8))
+    plt.suptitle("Indeksien välinen korrelaatio", fontsize=18)
+    plt.show()
 
     ytimet = ["Martin et al.", "Gauss", "Epanechnikov", "Kolmio", "Laatikko"]
     for i, index in enumerate("distance_decay gaussian epanechnikov triangle uniform".split()):
