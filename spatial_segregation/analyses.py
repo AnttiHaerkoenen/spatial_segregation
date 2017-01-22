@@ -220,4 +220,4 @@ if __name__ == '__main__':
     results = pd.merge(ana1.results, ana2.results)["year kernel bw cell_size s exposure isolation km".split()]
     results = results.sort_values(by='year')
     print(results)
-    results.to_csv("kaikki.csv")
+    # results.to_csv("kaikki.csv")

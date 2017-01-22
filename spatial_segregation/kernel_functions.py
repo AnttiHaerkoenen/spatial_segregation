@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from numba import jit
 
 from spatial_segregation import plotting
 
@@ -40,6 +41,7 @@ def gaussian(d, sigma):
     return 1 / (np.sqrt(2 * np.pi) * sigma ** 2) * np.exp(- d ** 2 / (2 * sigma ** 2))
 
 
+@jit
 def distance_decay(d, bw, a=1):
     """
     Distance decay function. See e. g. Martin et al. 2000

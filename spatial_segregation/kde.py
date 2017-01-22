@@ -2,6 +2,7 @@ import datetime
 
 import numpy as np
 import pandas as pd
+from numba import jit
 
 from spatial_segregation import kernel_functions, data
 from spatial_segregation.exceptions import SSTypeError, SSValueError, SSIOError, SSKeyError, SSIndexError
@@ -213,7 +214,7 @@ class KernelDensitySurface:
 #
 #     return _data_frame
 
-
+@jit
 def calc_d(d_a, d_b):
     """
     Calculates distance matrix between two sets of points.
@@ -237,7 +238,7 @@ def calc_d(d_a, d_b):
     d = np.sqrt(x_delta ** 2 + y_delta ** 2)
     return d
 
-
+@jit
 def calc_w(d, kernel='distance_decay', bw=2.5, a=1):
     """
     Calculates relative weights based on distance and kernel function.
