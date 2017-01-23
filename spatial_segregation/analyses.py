@@ -12,13 +12,15 @@ from spatial_segregation.exceptions import SSIndexError, SSTypeError, SSIOError,
 class Analyses:
     _analysis = None
 
-    def __init__(self,
-                 data_dict,
-                 cell_sizes,
-                 kernels,
-                 bws,
-                 alphas,
-                 simulations):
+    def __init__(
+            self,
+            data_dict,
+            cell_sizes,
+            kernels,
+            bws,
+            alphas,
+            simulations
+    ):
         self.data_dict = data_dict
         self.cell_sizes = cell_sizes
         self.kernels = kernels
@@ -70,15 +72,17 @@ class Analyses:
 
 
 class SegregationSurfaceAnalyses(Analyses):
-    def __init__(self,
-                 data_dict=None,
-                 cell_sizes=(25,),
-                 kernels=("distance_decay",),
-                 bws=(1,),
-                 alphas=(1,),
-                 simulations=0,
-                 convex_hull=True,
-                 buffers=(1,)):
+    def __init__(
+            self,
+            data_dict=None,
+            cell_sizes=(25,),
+            kernels=("distance_decay",),
+            bws=(1,),
+            alphas=(1,),
+            simulations=0,
+            convex_hull=True,
+            buffers=(1,)
+    ):
         super().__init__(
             data_dict=data_dict,
             cell_sizes=cell_sizes,

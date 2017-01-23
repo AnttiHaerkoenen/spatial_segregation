@@ -11,15 +11,17 @@ DATA_DIR = 'data'
 X, Y = 0, 1
 
 
-def add_coordinates(population_data,
-                    point_data,
-                    pop_index=0,
-                    host=1,
-                    other=2,
-                    point_index='NUMBER',
-                    coordinates_to_meters=True,
-                    false_easting=0,
-                    false_northing=0):
+def add_coordinates(
+        population_data,
+        point_data,
+        pop_index=0,
+        host=1,
+        other=2,
+        point_index='NUMBER',
+        coordinates_to_meters=True,
+        false_easting=0,
+        false_northing=0
+):
     """
     Adds coordinates
     :param population_data:

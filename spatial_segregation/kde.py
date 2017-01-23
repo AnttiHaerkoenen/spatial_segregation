@@ -238,6 +238,7 @@ def calc_d(d_a, d_b):
     d = np.sqrt(x_delta ** 2 + y_delta ** 2)
     return d
 
+
 @jit
 def calc_w(d, kernel='distance_decay', bw=2.5, a=1):
     """

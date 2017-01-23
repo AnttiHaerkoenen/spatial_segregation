@@ -5,6 +5,7 @@ from numba import jit
 from spatial_segregation import plotting
 
 
+@jit
 def epanechnikov(d, bw):
     """
     Epanechnikov kernel, after Epanechnikov 1969
@@ -18,6 +19,7 @@ def epanechnikov(d, bw):
         return 0
 
 
+@jit
 def triangle(d, bw):
     """
     Triangle-shaped kernel
@@ -31,6 +33,7 @@ def triangle(d, bw):
         return 0
 
 
+@jit
 def gaussian(d, sigma):
     """
     Gaussian kernel function.
@@ -56,6 +59,7 @@ def distance_decay(d, bw, a=1):
         return 0
 
 
+@jit
 def uniform(d, bw):
     """
     Top hat (uniform) kernel
