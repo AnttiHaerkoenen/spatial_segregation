@@ -197,8 +197,8 @@ if __name__ == '__main__':
     with open('points1878.geojson') as f:
         point_data = json.load(f)
 
-    cells = 25, 50, 100
-    bandwidths = 50, 100, 250, 500
+    cells = 25, 50, 75, 100
+    bandwidths = 50, 100, 150, 250, 500
 
     data = {year: data.add_coordinates(value, point_data, coordinates_to_meters=False)
             for year, value in pop_data.items()}

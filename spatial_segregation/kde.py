@@ -2,7 +2,6 @@ import datetime
 
 import numpy as np
 import pandas as pd
-from numba import jit
 
 from spatial_segregation import kernel_functions, data
 from spatial_segregation.exceptions import SSTypeError, SSValueError, SSIOError, SSKeyError, SSIndexError
@@ -214,7 +213,6 @@ class KernelDensitySurface:
 #
 #     return _data_frame
 
-@jit
 def calc_d(d_a, d_b):
     """
     Calculates distance matrix between two sets of points.
@@ -239,7 +237,6 @@ def calc_d(d_a, d_b):
     return d
 
 
-@jit
 def calc_w(d, kernel='distance_decay', bw=2.5, a=1):
     """
     Calculates relative weights based on distance and kernel function.
@@ -252,12 +249,17 @@ def calc_w(d, kernel='distance_decay', bw=2.5, a=1):
     if kernel not in KERNELS:
         raise SSKeyError("Kernel not found")
 
+    # if kernel == 'distance_decay':
+    #     for x in np.nditer(d, op_flags=['readwrite']):
+    #         x[...] = KERNELS[kernel](x, bw, a)
+    # else:
+    #     for x in np.nditer(d, op_flags=['readwrite']):
+    #         x[...] = KERNELS[kernel](x, bw)
+
     if kernel == 'distance_decay':
-        for x in np.nditer(d, op_flags=['readwrite']):
-            x[...] = KERNELS[kernel](x, bw, a)
+        d = KERNELS[kernel](d, bw, a)
     else:
-        for x in np.nditer(d, op_flags=['readwrite']):
-            x[...] = KERNELS[kernel](x, bw)
+        d = KERNELS[kernel](d, bw)
 
     return d
 
