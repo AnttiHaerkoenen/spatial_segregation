@@ -16,7 +16,7 @@ def plot_kernel(kernel, bw=1):
     :return: matplotlib.lines.Line2D object
     """
     x = np.arange(-2 * bw, 2 * bw, 0.01)
-    y = [kernel(abs(x), bw) for x in np.nditer(x)]
+    y = kernel(np.abs(x), bw)
     fig = plt.plot(x, y)
     return fig
 
