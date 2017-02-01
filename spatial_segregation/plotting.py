@@ -25,7 +25,7 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
     bws = sorted(results['bw'].unique())
     cells = sorted(results['cell_size'].unique())
     years = sorted(results['year'].unique())
-    fig, axs = plt.subplots(len(bws), len(cells), sharey='col', figsize=(8, 10))
+    fig, axs = plt.subplots(len(bws), len(cells), sharey='col', figsize=(8, 12))
 
     if not indices:
         indices = 's km exposure isolation'.split()
