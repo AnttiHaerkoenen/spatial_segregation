@@ -6,8 +6,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from spatial_segregation import analyses, kde, data, segregation_indices, utils
-from spatial_segregation.exceptions import SSKeyError, SSValueError
+from src import analyses, kde, data, segregation_indices, utils
+from src.exceptions import SSKeyError, SSValueError
 
 
 class SegregationIndexAnalysis:

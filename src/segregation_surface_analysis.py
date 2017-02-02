@@ -4,7 +4,7 @@ import json
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from spatial_segregation import kde, data, utils
+from src import kde, data, utils
 
 
 class SegregationSurfaceAnalysis:

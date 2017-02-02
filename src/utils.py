@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import shapely.geometry
 
-from spatial_segregation.exceptions import SSValueError
+from src.exceptions import SSValueError
 
 
 def degrees_to_meters(lon, lat, false_easting=0, false_northing=0):

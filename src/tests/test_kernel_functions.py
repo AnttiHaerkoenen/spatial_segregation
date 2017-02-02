@@ -3,7 +3,7 @@ import math
 from hypothesis import given
 import hypothesis.strategies as st
 
-import spatial_segregation.kernel_functions as kf
+import src.kernel_functions as kf
 
 
 @given(bw=st.floats(0.1, 100000),

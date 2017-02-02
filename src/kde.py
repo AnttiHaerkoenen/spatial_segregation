@@ -3,8 +3,8 @@ import datetime
 import numpy as np
 import pandas as pd
 
-from spatial_segregation import kernel_functions, data
-from spatial_segregation.exceptions import SSTypeError, SSValueError, SSIOError, SSKeyError, SSIndexError
+from src import kernel_functions, data
+from src.exceptions import SSTypeError, SSValueError, SSIOError, SSKeyError, SSIndexError
 
 
 ########################################################################################################################
@@ -85,8 +85,8 @@ class KernelDensitySurface:
         try:
             col = self._data_frame[item]
             return col.values.reshape(self.shape)
-        except IndexError:
-            raise SSIndexError
+        except KeyError:
+            raise SSKeyError
         except TypeError:
             raise SSTypeError
 

@@ -4,8 +4,8 @@ import pandas as pd
 import numpy as np
 import json
 
-from spatial_segregation import utils
-from spatial_segregation.exceptions import SSKeyError
+from src import utils
+from src.exceptions import SSKeyError
 
 DATA_DIR = 'data'
 X, Y = 0, 1
