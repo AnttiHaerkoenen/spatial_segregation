@@ -3,7 +3,7 @@ import datetime
 import numpy as np
 import pandas as pd
 
-from spatial_segregation import kernel_functions, data
+from spatial_segregation import kernel_functions, data, utils
 from spatial_segregation.exceptions import SSTypeError, SSValueError, SSIOError, SSKeyError, SSIndexError
 
 
@@ -21,7 +21,7 @@ class KernelDensitySurface:
                  kernel: str ='distance_decay',
                  bw=20,
                  a=1,
-                 convex_hull=True,
+                 convex_hull=False,
                  convex_hull_buffer=0):
         """
         Creates a data frame representing KDE surface clipped to minimum convex polygon of input data points.
@@ -67,8 +67,8 @@ class KernelDensitySurface:
             self._data_frame[group] = pd.Series(np.sum(pop, axis=1), index=self._data_frame.index)
 
         # if convex_hull:
-        #     mcp = get_convex_hull(df, self.convex_hull_buffer)
-        #     self._data_frame = select_by_location(self._data_frame, mcp)
+        #     mcp = utils.get_convex_hull(df, self.convex_hull_buffer)
+        #     self._data_frame = utils.select_by_location(self._data_frame, mcp)
 
     def __str__(self):
         return (
@@ -141,12 +141,12 @@ class KernelDensitySurface:
     def iter_points(self):
         return self._data_frame.loc[:, list('xy')].itertuples()
 
-    def plot(self):
-        size = self._data_frame['host'] + self._data_frame['other']
-        proportion = self._data_frame['other'] / size
-        fig = self._data_frame.plot.scatter(x='x', y='y', s=size, c=proportion)
-        fig.set_title("KDE surface")
-        return fig
+    # def plot(self):
+    #     size = self._data_frame['host'] + self._data_frame['other']
+    #     proportion = self._data_frame['other'] / size
+    #     fig = self._data_frame.plot.scatter(x='x', y='y', s=size, c=proportion)
+    #     fig.set_title("KDE surface")
+    #     return fig
 
     def save(self, file=None):
         if not file:
@@ -265,4 +265,4 @@ def calc_w(d, kernel='distance_decay', bw=2.5, a=1):
 
 
 if __name__ == '__main__':
-    data2 = pd.DataFrame(np.ones((2, 4)), columns='x y host other'.split())
+    pass

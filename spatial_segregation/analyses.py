@@ -3,6 +3,7 @@ import json
 import datetime
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 from spatial_segregation import segregation_index_analysis, segregation_surface_analysis, data, kde
@@ -223,5 +224,6 @@ if __name__ == '__main__':
 
     results = pd.merge(ana1.results, ana2.results)["year kernel bw cell_size s exposure isolation km".split()]
     results = results.sort_values(by='year')
+    results.index = np.arange(1, len(results) + 1)
     print(results)
     # results.to_csv("kaikki.csv")

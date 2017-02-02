@@ -68,6 +68,14 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
     return fig
 
 
+def plot_density(kdesurface : kde.KernelDensitySurface, group):
+    pass
+
+
+def plot_diff(kdesurface : kde.KernelDensitySurface, group1='host', group2='other'):
+    pass
+
+
 if __name__ == '__main__':
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
     os.chdir(os.path.join(os.path.abspath(os.path.pardir), data.DATA_DIR))

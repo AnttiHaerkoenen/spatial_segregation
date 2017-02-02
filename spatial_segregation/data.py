@@ -20,8 +20,7 @@ def add_coordinates(
         point_index='NUMBER',
         coordinates_to_meters=True,
         false_easting=0,
-        false_northing=0
-):
+        false_northing=0):
     """
     Adds coordinates
     :param population_data:
