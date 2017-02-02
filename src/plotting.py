@@ -25,7 +25,7 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
     bws = sorted(results['bw'].unique())
     cells = sorted(results['cell_size'].unique())
     years = sorted(results['year'].unique())
-    fig, axs = plt.subplots(len(bws), len(cells), sharey='col', figsize=(10, 12))
+    fig, axs = plt.subplots(len(bws), len(cells), sharey='col', figsize=(8, 12))
 
     if not indices:
         indices = 's km exposure isolation'.split()
@@ -66,6 +66,14 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
                        ha='right', va='center', size=18, rotation=90)
 
     return fig
+
+
+def plot_density(kdesurface : kde.KernelDensitySurface, group):
+    pass
+
+
+def plot_diff(kdesurface : kde.KernelDensitySurface, group1='host', group2='other'):
+    pass
 
 
 if __name__ == '__main__':

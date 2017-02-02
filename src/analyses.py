@@ -3,6 +3,7 @@ import json
 import datetime
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 from src import segregation_index_analysis, segregation_surface_analysis, data, kde
@@ -197,8 +198,8 @@ if __name__ == '__main__':
     with open('points1878.geojson') as f:
         point_data = json.load(f)
 
-    cells = 25, 50, 75, 100
-    bandwidths = 50, 100, 150, 250, 500
+    cells = 25, 50, 75
+    bandwidths = 30, 60, 100, 150, 250
 
     data = {year: data.add_coordinates(value, point_data, coordinates_to_meters=False)
             for year, value in pop_data.items()}
@@ -223,5 +224,6 @@ if __name__ == '__main__':
 
     results = pd.merge(ana1.results, ana2.results)["year kernel bw cell_size s exposure isolation km".split()]
     results = results.sort_values(by='year')
+    results.index = np.arange(1, len(results) + 1)
     print(results)
     # results.to_csv("kaikki.csv")

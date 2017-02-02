@@ -3,8 +3,8 @@ import datetime
 import numpy as np
 import pandas as pd
 
-from src import kernel_functions, data
-from src.exceptions import SSTypeError, SSValueError, SSIOError, SSKeyError, SSIndexError
+from spatial_segregation import kernel_functions, data
+from spatial_segregation.exceptions import SSTypeError, SSValueError, SSIOError, SSKeyError, SSIndexError
 
 
 ########################################################################################################################
@@ -141,12 +141,12 @@ class KernelDensitySurface:
     def iter_points(self):
         return self._data_frame.loc[:, list('xy')].itertuples()
 
-    def plot(self):
-        size = self._data_frame['host'] + self._data_frame['other']
-        proportion = self._data_frame['other'] / size
-        fig = self._data_frame.plot.scatter(x='x', y='y', s=size, c=proportion)
-        fig.set_title("KDE surface")
-        return fig
+#    def plot(self):
+#        size = self._data_frame['host'] + self._data_frame['other']
+#        proportion = self._data_frame['other'] / size
+#        fig = self._data_frame.plot.scatter(x='x', y='y', s=size, c=proportion)
+#        fig.set_title("KDE surface")
+#        return fig
 
     def save(self, file=None):
         if not file:
@@ -265,4 +265,4 @@ def calc_w(d, kernel='distance_decay', bw=2.5, a=1):
 
 
 if __name__ == '__main__':
-    data2 = pd.DataFrame(np.ones((2, 4)), columns='x y host other'.split())
+    pass
