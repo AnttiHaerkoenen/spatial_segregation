@@ -94,6 +94,6 @@ if __name__ == '__main__':
             indices="s km exposure isolation".split(),
             title=ytimet[i],
             subplot_title_param=dict(bandwidth='leveys', cell_size='solukoko'),
-            labels="S K-M Exposure Isolation".split()
+            labels="S D hP*g gP*g".split()
         )
         plt.show()
