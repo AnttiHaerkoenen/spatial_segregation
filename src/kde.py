@@ -1,9 +1,12 @@
 import datetime
+import os
+import json
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
-from src import kernel_functions, data
+from src import kernel_functions, data, plotting
 from src.exceptions import SSTypeError, SSValueError, SSIOError, SSKeyError, SSIndexError
 
 
@@ -17,11 +20,11 @@ class KernelDensitySurface:
     def __init__(self,
                  df: pd.DataFrame,
                  groups: tuple =("host", "other"),
-                 cell_size=15,
-                 kernel: str ='distance_decay',
-                 bw=20,
+                 cell_size=25,
+                 kernel: str ='biweight',
+                 bw=50,
                  a=1,
-                 convex_hull=True,
+                 convex_hull=False,
                  convex_hull_buffer=0):
         """
         Creates a data frame representing KDE surface clipped to minimum convex polygon of input data points.
@@ -30,7 +33,7 @@ class KernelDensitySurface:
         :param convex_hull: Whether or not to use convex hull to clip kde surface
         :param df: input data with x and y coordinates representing points
         :param cell_size: cell size in meters, default 15
-        :param kernel: kernel type, default 'distance_decay'
+        :param kernel: kernel type, default 'biweight'
         :param bw: bandwidth in meters
         :param a: second parameter for biweight kernel, default 1
         :return: data frame with columns x, y and groups
@@ -91,8 +94,8 @@ class KernelDensitySurface:
             raise SSTypeError
 
     @property
-    def n_cells(self):
-        return self.shape[0] * self.shape[1]
+    def size(self):
+        return self.x.size
 
     @property
     def shape(self):
@@ -141,12 +144,10 @@ class KernelDensitySurface:
     def iter_points(self):
         return self._data_frame.loc[:, list('xy')].itertuples()
 
-#    def plot(self):
-#        size = self._data_frame['host'] + self._data_frame['other']
-#        proportion = self._data_frame['other'] / size
-#        fig = self._data_frame.plot.scatter(x='x', y='y', s=size, c=proportion)
-#        fig.set_title("KDE surface")
-#        return fig
+    def normalize(self):
+        pop = self.population_values
+        pop /= np.nansum(pop, axis=0, keepdims=True)
+        self._data_frame = pd.DataFrame(np.hstack((self.coordinates.values, pop)), columns=list('xy') + self.groups)
 
     def save(self, file=None):
         if not file:
@@ -161,7 +162,7 @@ class KernelDensitySurface:
             file = "KDE_{0}".format(datetime.date.today())
         try:
             self._data_frame = pd.DataFrame.from_csv(file)
-        except IOError:
+        except SSIOError:
             raise SSIOError("File not found")
 
 
@@ -170,7 +171,7 @@ class KernelDensitySurface:
 
 # def create_kde_surface(df,
 #                        cell_size=15,
-#                        kernel='distance_decay',
+#                        kernel='biweight',
 #                        bw=50,
 #                        a=1,
 #                        convex_hull=True,
@@ -181,7 +182,7 @@ class KernelDensitySurface:
 #     :param convex_hull: Whether or not to use convex hull to clip kde surface
 #     :param df: input data with x and y coordinates representing points
 #     :param cell_size: cell size in meters, default 15
-#     :param kernel: kernel type, default 'distance_decay'
+#     :param kernel: kernel type, default 'biweight'
 #     :param bw: bandwidth in meters, default 50
 #     :param a: second parameter for biweight kernel, default 1
 #     :return: data frame with columns x, y, host and other
@@ -213,6 +214,7 @@ class KernelDensitySurface:
 #
 #     return _data_frame
 
+
 def calc_d(d_a, d_b):
     """
     Calculates distance matrix between two sets of points.
@@ -237,11 +239,11 @@ def calc_d(d_a, d_b):
     return d
 
 
-def calc_w(d, kernel='distance_decay', bw=2.5, a=1):
+def calc_w(d, kernel='biweight', bw=2.5, a=1):
     """
     Calculates relative weights based on distance and kernel function.
     :param d: matrix of distances
-    :param kernel: kernel function to be used, default 'distance_decay'
+    :param kernel: kernel function to be used, default 'biweight'
     :param bw: either kernel bandwidth in meters
     :param a: second parameter for biweight kernel, default 1
     :return: matrix of relative weights w
@@ -249,20 +251,36 @@ def calc_w(d, kernel='distance_decay', bw=2.5, a=1):
     if kernel not in KERNELS:
         raise SSKeyError("Kernel not found")
 
-    # if kernel == 'distance_decay':
-    #     for x in np.nditer(d, op_flags=['readwrite']):
-    #         x[...] = KERNELS[kernel](x, bw, a)
-    # else:
-    #     for x in np.nditer(d, op_flags=['readwrite']):
-    #         x[...] = KERNELS[kernel](x, bw)
-
-    if kernel == 'distance_decay':
-        d = KERNELS[kernel](d, bw, a)
+    if kernel == 'biweight':
+        w = KERNELS[kernel](d, bw, a)
     else:
-        d = KERNELS[kernel](d, bw)
+        w = KERNELS[kernel](d, bw)
 
-    return d
+    return w
 
 
 if __name__ == '__main__':
-    pass
+    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+    os.chdir(os.path.join(os.path.abspath(os.path.pardir), data.DATA_DIR))
+
+    v80 = data.aggregate_sum(data.reform(pd.read_csv('1880.csv')))
+    v00 = data.aggregate_sum(data.reform(pd.read_csv('1900.csv')))
+    v20 = data.aggregate_sum(data.reform(pd.read_csv('1920.csv')))
+
+    pop_data = {
+        '1880': v80,
+        '1900': v00,
+        '1920': v20
+    }
+
+    with open('points1878.geojson') as f:
+        point_data = json.load(f)
+
+    d = data.add_coordinates(pop_data['1920'], point_data)
+    kde = KernelDensitySurface(d, kernel='biweight', cell_size=50, bw=100)
+    plotting.plot_density(kde, group='host')
+    plt.show()
+    plotting.plot_density(kde, group='other')
+    plt.show()
+    plotting.plot_diff(kde)
+    plt.show()

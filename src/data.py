@@ -18,7 +18,7 @@ def add_coordinates(
         host=1,
         other=2,
         point_index='NUMBER',
-        coordinates_to_meters=True,
+        coordinates_to_meters=False,
         false_easting=0,
         false_northing=0):
     """

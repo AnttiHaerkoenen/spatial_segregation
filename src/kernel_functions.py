@@ -47,7 +47,7 @@ def gaussian(d, sigma):
     return 1 / (np.sqrt(2 * np.pi) * sigma ** 2) * np.exp(- d ** 2 / (2 * sigma ** 2))
 
 
-def distance_decay(d, bw, alpha=1):
+def biweight(d, bw, alpha=1):
     """
     Distance decay function. See e. g. Martin et al. 2000
     :param d: distance between points
@@ -74,11 +74,10 @@ def uniform(d, bw):
     a = np.ones_like(a) / bw
     a[~i] = 0
     return a
-    # return 1/bw if d < bw else 0
 
 
 KERNELS = dict(
-    distance_decay=distance_decay,
+    biweight=biweight,
     gaussian=gaussian,
     uniform=uniform,
     epanechnikov=epanechnikov,

@@ -10,10 +10,10 @@ import src.kernel_functions as kf
        a=st.floats(0, 1000),
        c=st.floats(0, 100000))
 def test_distance_decay(bw, a, c):
-    assert kf.distance_decay(d=bw, bw=bw, a=a) == 0, "d = bw"
-    assert kf.distance_decay(d=bw + c, bw=bw, a=a) == 0, "d > bw"
-    assert abs(kf.distance_decay(0, bw, a) - 1) < 0.0001, "d = 0"
-    assert abs(kf.distance_decay(d=bw/2, bw=bw, a=a) - 0.6 ** a) < 0.0001, "d = bw/2"
+    assert kf.biweight(d=bw, bw=bw, a=a) == 0, "d = bw"
+    assert kf.biweight(d=bw + c, bw=bw, a=a) == 0, "d > bw"
+    assert abs(kf.biweight(0, bw, a) - 1) < 0.0001, "d = 0"
+    assert abs(kf.biweight(d=bw / 2, bw=bw, a=a) - 0.6 ** a) < 0.0001, "d = bw/2"
 
 
 @given(bw=st.floats(0.1, 10000),

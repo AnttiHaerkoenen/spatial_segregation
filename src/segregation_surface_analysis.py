@@ -3,6 +3,7 @@ import json
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 from src import kde, data, utils
 
@@ -19,7 +20,7 @@ class SegregationSurfaceAnalysis:
                  data_id=None,
                  groups: tuple=("host", "other")):
         self.groups = groups
-        self.data = utils.pop_to_fraction(df, columns=self.groups)
+        self.data = df
         self.cell_size = cell_size
         self.kernel = kernel
         self.bw = bw
@@ -37,8 +38,9 @@ class SegregationSurfaceAnalysis:
             convex_hull=self.convex_hull,
             convex_hull_buffer=self.buffer
         )
+        self.surface.normalize()
 
-        self._s = 1 - sum(self.surface.min) / sum(self.surface.max)
+        self._s = 1 - np.nansum(self.surface.min) / np.nansum(self.surface.max)
 
     def __str__(self):
         return(
@@ -53,15 +55,15 @@ class SegregationSurfaceAnalysis:
     def s(self):
         return round(self._s, 3)
 
-    def plot(self, group, arg_dict=None):
-        if not arg_dict:
-            arg_dict = dict()
-        return plt.imshow(self.surface[group], **arg_dict)
-
-    def plot_diff(self, group_1="host", group_2="other", arg_dict=None):
-        if not arg_dict:
-            arg_dict = dict()
-        return plt.imshow(self.surface[group_1] - self.surface[group_2], **arg_dict)
+    # def plot(self, group, arg_dict=None):
+    #     if not arg_dict:
+    #         arg_dict = dict()
+    #     return plt.imshow(self.surface[group], **arg_dict)
+    #
+    # def plot_diff(self, group_1="host", group_2="other", arg_dict=None):
+    #     if not arg_dict:
+    #         arg_dict = dict()
+    #     return plt.imshow(self.surface[group_1] - self.surface[group_2], **arg_dict)
 
 
 ########################################################################################################################
@@ -95,7 +97,7 @@ if __name__ == '__main__':
     for y, df in d.items():
         for c in cells:
             for bw in bws:
-                for kern in "uniform", "distance_decay":
+                for kern in "uniform", "biweight":
                     ana = SegregationSurfaceAnalysis(
                         df,
                         bw=bw,
@@ -105,7 +107,6 @@ if __name__ == '__main__':
                         data_id=y
                     )
                     s.append(ana.s)
-                    ana.plot_diff()
-                    plt.show()
+                    print(ana.surface)
 
     print(s)

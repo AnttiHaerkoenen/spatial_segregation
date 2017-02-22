@@ -68,12 +68,16 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
     return fig
 
 
-def plot_density(kdesurface : kde.KernelDensitySurface, group):
-    pass
+def plot_density(kdesurface, group):
+    fig = plt.imshow(kdesurface[group])
+    fig.set_cmap('gray_r')
+    return fig
 
 
-def plot_diff(kdesurface : kde.KernelDensitySurface, group1='host', group2='other'):
-    pass
+def plot_diff(kdesurface, group1='host', group2='other'):
+    fig = plt.imshow(kdesurface[group1] - kdesurface[group2])
+    fig.set_cmap('gray_r')
+    return fig
 
 
 if __name__ == '__main__':
@@ -87,7 +91,7 @@ if __name__ == '__main__':
     plt.show()
 
     ytimet = ["Martin et al.", "Gauss", "Epanechnikov", "Kolmio", "Laatikko"]
-    for i, index in enumerate("distance_decay gaussian epanechnikov triangle uniform".split()):
+    for i, index in enumerate("biweight gaussian epanechnikov triangle uniform".split()):
         plot_results_all(
             results,
             index,

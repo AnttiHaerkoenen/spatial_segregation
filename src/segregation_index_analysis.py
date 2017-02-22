@@ -98,7 +98,7 @@ class SegregationIndexAnalysis:
             'convex hull': self.convex_hull
         }
 
-        if self.kernel == 'distance_decay':
+        if self.kernel == 'biweight':
             param['alpha'] = self.alpha
 
         if self.convex_hull:
@@ -165,7 +165,7 @@ if __name__ == '__main__':
     d = {year: data.add_coordinates(pop_data[year], point_data, coordinates_to_meters=False)
          for year in pop_data}
 
-    ana = SegregationIndexAnalysis(d[1880], 50, 1.5, 'distance_decay')
+    ana = SegregationIndexAnalysis(d[1880], 50, 1.5, 'biweight')
     ana.simulate(100)
     print(ana.simulations)
     print(ana)
