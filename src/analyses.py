@@ -199,7 +199,7 @@ if __name__ == '__main__':
         point_data = json.load(f)
 
     cells = 25, 50, 75
-    bandwidths = 30, 60, 100, 150, 250
+    bandwidths = 25, 50, 100, 150, 250
 
     data = {year: data.add_coordinates(value, point_data, coordinates_to_meters=False)
             for year, value in pop_data.items()}

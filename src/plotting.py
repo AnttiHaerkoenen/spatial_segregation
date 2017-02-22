@@ -90,7 +90,7 @@ if __name__ == '__main__':
     plt.suptitle("Indeksien välinen korrelaatio", fontsize=18)
     plt.show()
 
-    ytimet = ["Martin et al.", "Gauss", "Epanechnikov", "Kolmio", "Laatikko"]
+    ytimet = ["Kaksipainoinen", "Gauss", "Epanechnikov", "Kolmio", "Laatikko"]
     for i, index in enumerate("biweight gaussian epanechnikov triangle uniform".split()):
         plot_results_all(
             results,

@@ -87,7 +87,7 @@ if __name__ == '__main__':
         point_data = json.load(f)
 
     cells = [i for i in range(20, 81, 20)]
-    bws = (1.5, 2, 2.5)
+    bws = (15, 250, 25)
 
     d = {year: data.add_coordinates(pop_data[year], point_data, coordinates_to_meters=False)
          for year in pop_data}
@@ -107,6 +107,6 @@ if __name__ == '__main__':
                         data_id=y
                     )
                     s.append(ana.s)
-                    print(ana.surface)
+                    print(np.nansum(ana.surface['host']))
 
     print(s)

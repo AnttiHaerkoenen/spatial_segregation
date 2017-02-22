@@ -116,7 +116,7 @@ class KernelDensitySurface:
 
     @property
     def coordinates(self):
-        return self._data_frame[:, ['x', 'y']]
+        return self._data_frame[list('xy')]
 
     @property
     def max(self):
