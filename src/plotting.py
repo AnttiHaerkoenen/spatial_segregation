@@ -68,6 +68,47 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
     return fig
 
 
+def plot_densities_all(pop_data, cell_size, bw, kernel, title=None, subplot_title_param=None, labels=None):
+    fig, axs = plt.subplots(len(pop_data), 3, sharey='col', figsize=(8, 12))
+
+    if not title:
+        title = "Kernel={0}".format(kernel)
+
+    if not subplot_title_param:
+        subplot_title_param = dict(group='group', year='year')
+
+    if not labels:
+        labels = 'host', 'other', 'difference'
+
+    for i, year in enumerate(pop_data):
+        surface = segregation_surface_analysis.SegregationSurfaceAnalysis(
+            pop_data[year],
+            cell_size=cell_size,
+            bw=bw,
+            kernel=kernel
+        ).surface
+        axs[i, 0] = plot_density(surface, 'host')
+        axs[i, 1] = plot_density(surface, 'other')
+        axs[i, 2] = plot_diff(surface)
+
+    plt.suptitle(title, fontsize=22)
+
+    for ax, ve in zip(axs[0], labels):
+        ax.set_title('{0}'.format(ve), size=14)
+    for ax, mode in zip(axs[:, 0], pop_data):
+        ax.set_ylabel(mode, size=14)
+
+    axs[0, 1].annotate(subplot_title_param['group'].capitalize(), (0.5, 1), xytext=(0, 20),
+                       textcoords='offset points', xycoords='axes fraction',
+                       ha='center', va='bottom', size=18)
+
+    axs[2, 0].annotate(subplot_title_param['year'].capitalize(), (0, 0.5), xytext=(-50, 0),
+                       textcoords='offset points', xycoords='axes fraction',
+                       ha='right', va='center', size=18, rotation=90)
+
+    return fig
+
+
 def plot_density(kdesurface, group):
     fig = plt.imshow(kdesurface[group])
     fig.set_cmap('gray_r')
