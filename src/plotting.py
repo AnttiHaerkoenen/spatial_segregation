@@ -52,30 +52,44 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
     axs[0, 0].legend(labels=labels, fontsize=10, bbox_to_anchor=(0, 1.1), loc=3).get_frame().set_facecolor('white')
     plt.suptitle(title, fontsize=22)
 
-    for ax, ve in zip(axs[0], cells):
-        ax.set_title('{0}'.format(ve), size=14)
-    for ax, mode in zip(axs[:, 0], bws):
-        ax.set_ylabel(mode, size=14)
+    for ax, c in zip(axs[0], cells):
+        ax.set_title('{0}'.format(c), size=14)
+    for ax, bw in zip(axs[:, 0], bws):
+        ax.set_ylabel(bw, size=14)
 
-    axs[0, 1].annotate(subplot_title_param['cell_size'].capitalize(), (0.5, 1), xytext=(0, 20),
-                       textcoords='offset points', xycoords='axes fraction',
-                       ha='center', va='bottom', size=18)
+    axs[0, len(cells) // 2].annotate(
+        subplot_title_param['cell_size'].capitalize(),
+        (0.5, 1),
+        xytext=(0, 20),
+        textcoords='offset points',
+        xycoords='axes fraction',
+        ha='center',
+        va='bottom',
+        size=18
+    )
 
-    axs[2, 0].annotate(subplot_title_param['bandwidth'].capitalize(), (0, 0.5), xytext=(-50, 0),
-                       textcoords='offset points', xycoords='axes fraction',
-                       ha='right', va='center', size=18, rotation=90)
+    axs[len(bws) // 2, 0].annotate(
+        subplot_title_param['bandwidth'].capitalize(),
+        (0, 0.5),
+        xytext=(-50, 0),
+        textcoords='offset points',
+        xycoords='axes fraction',
+        ha='right',
+        va='center',
+        size=18, rotation=90
+    )
 
     return fig
 
 
 def plot_densities_all(pop_data, cell_size, bw, kernel, title=None, subplot_title_param=None, labels=None):
-    fig, axs = plt.subplots(len(pop_data), 3, sharey='col', figsize=(8, 12))
+    fig, axs = plt.subplots(len(pop_data), 3, sharey='col', figsize=(8, 8))
 
     if not title:
         title = "Kernel={0}".format(kernel)
 
     if not subplot_title_param:
-        subplot_title_param = dict(group='group', year='year')
+        subplot_title_param = dict(year='year')
 
     if not labels:
         labels = 'host', 'other', 'difference'
@@ -87,36 +101,40 @@ def plot_densities_all(pop_data, cell_size, bw, kernel, title=None, subplot_titl
             bw=bw,
             kernel=kernel
         ).surface
-        axs[i, 0] = plot_density(surface, 'host')
-        axs[i, 1] = plot_density(surface, 'other')
-        axs[i, 2] = plot_diff(surface)
+        axs[i, 0].matshow(surface['host']).set_cmap('gray_r')
+        axs[i, 1].matshow(surface['other']).set_cmap('gray_r')
+        axs[i, 2].matshow(surface['host'] - surface['other']).set_cmap('hot')
 
     plt.suptitle(title, fontsize=22)
 
-    for ax, ve in zip(axs[0], labels):
-        ax.set_title('{0}'.format(ve), size=14)
-    for ax, mode in zip(axs[:, 0], pop_data):
-        ax.set_ylabel(mode, size=14)
+    for ax, l in zip(axs[0], labels):
+        ax.set_title('{0}'.format(l), size=14)
+    for ax, y in zip(axs[:, 0], pop_data):
+        ax.set_ylabel(y, size=14)
 
-    axs[0, 1].annotate(subplot_title_param['group'].capitalize(), (0.5, 1), xytext=(0, 20),
-                       textcoords='offset points', xycoords='axes fraction',
-                       ha='center', va='bottom', size=18)
-
-    axs[2, 0].annotate(subplot_title_param['year'].capitalize(), (0, 0.5), xytext=(-50, 0),
-                       textcoords='offset points', xycoords='axes fraction',
-                       ha='right', va='center', size=18, rotation=90)
+    axs[len(pop_data) // 2, 0].annotate(
+        subplot_title_param['year'].capitalize(),
+        (0, 0.5),
+        xytext=(-50, 0),
+        textcoords='offset points',
+        xycoords='axes fraction',
+        ha='right',
+        va='center',
+        size=18,
+        rotation=90
+    )
 
     return fig
 
 
 def plot_density(kdesurface, group):
-    fig = plt.imshow(kdesurface[group])
+    fig = plt.matshow(kdesurface[group])
     fig.set_cmap('gray_r')
     return fig
 
 
 def plot_diff(kdesurface, group1='host', group2='other'):
-    fig = plt.imshow(kdesurface[group1] - kdesurface[group2])
+    fig = plt.matshow(kdesurface[group1] - kdesurface[group2])
     fig.set_cmap('gray_r')
     return fig
 
