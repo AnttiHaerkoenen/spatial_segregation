@@ -105,6 +105,10 @@ def plot_densities_all(pop_data, cell_size, bw, kernel, title=None, subplot_titl
         axs[i, 1].matshow(surface['other']).set_cmap('gray_r')
         axs[i, 2].matshow(surface['host'] - surface['other']).set_cmap('hot')
 
+        for j in range(3):
+            axs[i, j].set_xticklabels([])
+            axs[i, j].set_yticklabels([])
+
     plt.suptitle(title, fontsize=22)
 
     for ax, l in zip(axs[0], labels):
