@@ -94,7 +94,7 @@ def plot_densities_all(pop_data, cell_size, bw, kernel, title=None, subplot_titl
     if not labels:
         labels = 'host', 'other', 'difference'
 
-    for i, year in enumerate(pop_data):
+    for i, year in enumerate(sorted(pop_data)):
         surface = segregation_surface_analysis.SegregationSurfaceAnalysis(
             pop_data[year],
             cell_size=cell_size,
@@ -113,7 +113,7 @@ def plot_densities_all(pop_data, cell_size, bw, kernel, title=None, subplot_titl
 
     for ax, l in zip(axs[0], labels):
         ax.set_title('{0}'.format(l), size=14)
-    for ax, y in zip(axs[:, 0], pop_data):
+    for ax, y in zip(axs[:, 0], sorted(pop_data)):
         ax.set_ylabel(y, size=14)
 
     axs[len(pop_data) // 2, 0].annotate(

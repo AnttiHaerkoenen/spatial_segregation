@@ -185,14 +185,10 @@ if __name__ == '__main__':
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
     os.chdir(os.path.join(os.path.abspath(os.path.pardir), data.DATA_DIR))
 
-    v80 = data.aggregate_sum(data.reform(pd.read_csv('1880.csv')))
-    v00 = data.aggregate_sum(data.reform(pd.read_csv('1900.csv')))
-    v20 = data.aggregate_sum(data.reform(pd.read_csv('1920.csv')))
-
     pop_data = {
-        '1880': v80,
-        '1900': v00,
-        '1920': v20
+        '1880': data.aggregate_sum(data.reform(pd.read_csv('1880.csv'))),
+        '1900': data.aggregate_sum(data.reform(pd.read_csv('1900.csv'))),
+        '1920': data.aggregate_sum(data.reform(pd.read_csv('1920.csv')))
     }
 
     with open('points1878.geojson') as f:
@@ -204,37 +200,37 @@ if __name__ == '__main__':
     data = {year: data.add_coordinates(value, point_data, coordinates_to_meters=False)
             for year, value in pop_data.items()}
 
-    # plotting.plot_densities_all(
-    #     data,
-    #     cell_size=50,
-    #     bw=100,
-    #     kernel='epanechnikov',
-    #     subplot_title_param=dict(year='vuosi'),
-    #     labels='luterilaiset ortodoksit erotus'.split(),
-    #     title='Tiheys'
-    # ).set_facecolor('white')
-    # plt.show()
+    plotting.plot_densities_all(
+        data,
+        cell_size=50,
+        bw=100,
+        kernel='epanechnikov',
+        subplot_title_param=dict(year='vuosi'),
+        labels='luterilaiset ortodoksit erotus'.split(),
+        title='Tiheys'
+    ).set_facecolor('white')
+    plt.show()
 
-    ana1 = SegregationSurfaceAnalyses(
-        data_dict=data,
-        cell_sizes=cells,
-        kernels=[k for k in kde.KERNELS],
-        bws=bandwidths
-    )
-    ana1.analyse()
-    ana1.save("SegregationSurfaceAnalysis_kaikki.csv")
-
-    ana2 = SegregationIndexAnalyses(
-        data_dict=data,
-        cell_sizes=cells,
-        kernels=[k for k in kde.KERNELS],
-        bws=bandwidths
-    )
-    ana2.analyse()
-    ana2.save("SegregationIndexAnalysis_kaikki.csv")
-
-    results = pd.merge(ana1.results, ana2.results)["year kernel bw cell_size s exposure isolation km".split()]
-    results = results.sort_values(by='year')
-    results.index = np.arange(1, len(results) + 1)
-    print(results)
+    # ana1 = SegregationSurfaceAnalyses(
+    #     data_dict=data,
+    #     cell_sizes=cells,
+    #     kernels=[k for k in kde.KERNELS],
+    #     bws=bandwidths
+    # )
+    # ana1.analyse()
+    # ana1.save("SegregationSurfaceAnalysis_kaikki.csv")
+    #
+    # ana2 = SegregationIndexAnalyses(
+    #     data_dict=data,
+    #     cell_sizes=cells,
+    #     kernels=[k for k in kde.KERNELS],
+    #     bws=bandwidths
+    # )
+    # ana2.analyse()
+    # ana2.save("SegregationIndexAnalysis_kaikki.csv")
+    #
+    # results = pd.merge(ana1.results, ana2.results)["year kernel bw cell_size s exposure isolation km".split()]
+    # results = results.sort_values(by='year')
+    # results.index = np.arange(1, len(results) + 1)
+    # print(results)
     # results.to_csv("kaikki.csv")
