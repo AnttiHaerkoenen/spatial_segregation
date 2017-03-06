@@ -149,7 +149,7 @@ if __name__ == '__main__':
 
     results = pd.DataFrame.from_csv("kaikki.csv")
     plt.style.use("ggplot")
-    scatter_matrix(results["s exposure isolation km".split()], diagonal='kde', figsize=(10, 8))
+    scatter_matrix(results["s km exposure isolation information".split()], diagonal='kde', figsize=(10, 8))
     plt.suptitle("Indeksien välinen korrelaatio", fontsize=18)
     plt.show()
 
@@ -158,9 +158,9 @@ if __name__ == '__main__':
         plot_results_all(
             results,
             index,
-            indices="s km exposure isolation".split(),
+            indices="s km exposure isolation information".split(),
             title=ytimet[i],
             subplot_title_param=dict(bandwidth='leveys', cell_size='solukoko'),
-            labels="S D hP*g gP*g".split()
+            labels="S D hPg gPg H".split()
         )
         plt.show()

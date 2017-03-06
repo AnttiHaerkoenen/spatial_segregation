@@ -19,7 +19,7 @@ def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_mat
         raise SSValueError("Incorrect input. Remove NaNs and infs.")
 
     if which_indices.lower() == 'all':
-        which_indices = ('km', 'mi', 'exposure', 'isolation')
+        which_indices = ('km', 'mi', 'exposure', 'isolation', 'information')
 
     index = {}
 

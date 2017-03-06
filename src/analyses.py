@@ -200,37 +200,38 @@ if __name__ == '__main__':
     data = {year: data.add_coordinates(value, point_data, coordinates_to_meters=False)
             for year, value in pop_data.items()}
 
-    plotting.plot_densities_all(
-        data,
-        cell_size=50,
-        bw=100,
-        kernel='epanechnikov',
-        subplot_title_param=dict(year='vuosi'),
-        labels='luterilaiset ortodoksit erotus'.split(),
-        title='Tiheys'
-    ).set_facecolor('white')
-    plt.show()
+    # plotting.plot_densities_all(
+    #     data,
+    #     cell_size=50,
+    #     bw=100,
+    #     kernel='epanechnikov',
+    #     subplot_title_param=dict(year='vuosi'),
+    #     labels='luterilaiset ortodoksit erotus'.split(),
+    #     title='Tiheys'
+    # ).set_facecolor('white')
+    # plt.show()
 
-    # ana1 = SegregationSurfaceAnalyses(
-    #     data_dict=data,
-    #     cell_sizes=cells,
-    #     kernels=[k for k in kde.KERNELS],
-    #     bws=bandwidths
-    # )
-    # ana1.analyse()
-    # ana1.save("SegregationSurfaceAnalysis_kaikki.csv")
-    #
-    # ana2 = SegregationIndexAnalyses(
-    #     data_dict=data,
-    #     cell_sizes=cells,
-    #     kernels=[k for k in kde.KERNELS],
-    #     bws=bandwidths
-    # )
-    # ana2.analyse()
-    # ana2.save("SegregationIndexAnalysis_kaikki.csv")
-    #
-    # results = pd.merge(ana1.results, ana2.results)["year kernel bw cell_size s exposure isolation km".split()]
-    # results = results.sort_values(by='year')
-    # results.index = np.arange(1, len(results) + 1)
-    # print(results)
+    ana1 = SegregationSurfaceAnalyses(
+        data_dict=data,
+        cell_sizes=cells,
+        kernels=[k for k in kde.KERNELS],
+        bws=bandwidths
+    )
+    ana1.analyse()
+    ana1.save("SegregationSurfaceAnalysis_kaikki.csv")
+
+    ana2 = SegregationIndexAnalyses(
+        data_dict=data,
+        cell_sizes=cells,
+        kernels=[k for k in kde.KERNELS],
+        bws=bandwidths
+    )
+    ana2.analyse()
+    ana2.save("SegregationIndexAnalysis_kaikki.csv")
+
+    results = pd.merge(ana1.results, ana2.results)
+    results = results["year kernel bw cell_size s exposure isolation km information".split()]
+    results = results.sort_values(by='year')
+    results.index = np.arange(1, len(results) + 1)
+    print(results)
     # results.to_csv("kaikki.csv")
