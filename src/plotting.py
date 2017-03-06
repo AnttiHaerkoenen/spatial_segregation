@@ -22,7 +22,6 @@ def plot_kernel(kernel, bw=1):
 
 
 def plot_results_all(results, kernel, indices=None, title=None, subplot_title_param=None, labels=None):
-    # TODO fit legend to frame
     bws = sorted(results['bw'].unique())
     cells = sorted(results['cell_size'].unique())
     years = sorted(results['year'].unique())
@@ -50,7 +49,13 @@ def plot_results_all(results, kernel, indices=None, title=None, subplot_title_pa
             subplot_title_param['b'] = b
             subplot_title_param['c'] = c
 
-    axs[0, 0].legend(labels=labels, fontsize=10, bbox_to_anchor=(0, 1.1), loc=3).get_frame().set_facecolor('white')
+    axs[0, 0].legend(
+        labels=labels,
+        fontsize=10,
+        bbox_to_anchor=(0, 1.1),
+        ncol=2,
+        loc=3
+    ).get_frame().set_facecolor('white')
     plt.suptitle(title, fontsize=22)
 
     for ax, c in zip(axs[0], cells):
