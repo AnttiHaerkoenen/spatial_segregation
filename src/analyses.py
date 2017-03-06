@@ -233,5 +233,6 @@ if __name__ == '__main__':
     results = results["year kernel bw cell_size s exposure isolation km information".split()]
     results = results.sort_values(by='year')
     results.index = np.arange(1, len(results) + 1)
-    print(results)
+    # print(results)
+    print(results[:, lambda results: 's km exposure isolation information'.split()].corr(method='spearman'))
     # results.to_csv("kaikki.csv")

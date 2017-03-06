@@ -22,6 +22,7 @@ def plot_kernel(kernel, bw=1):
 
 
 def plot_results_all(results, kernel, indices=None, title=None, subplot_title_param=None, labels=None):
+    # TODO fit legend to frame
     bws = sorted(results['bw'].unique())
     cells = sorted(results['cell_size'].unique())
     years = sorted(results['year'].unique())
