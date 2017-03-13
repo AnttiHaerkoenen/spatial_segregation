@@ -1,12 +1,12 @@
 import unittest
 
-from hypothesis import given
-import hypothesis.strategies as st
+from hypothesis import given, settings, Verbosity, strategies as st
 import hypothesis.extra.numpy as hnp
 import numpy as np
 import numpy.testing as npt
 
-from src.kernel_functions import *
+from src.kernel_functions import epanechnikov, uniform, gaussian, triangle, biweight
+from src.exceptions import SSTypeError, SSValueError
 
 
 class TestEpanechnikov(unittest.TestCase):
@@ -14,6 +14,7 @@ class TestEpanechnikov(unittest.TestCase):
         arr=hnp.arrays(np.float, shape=(6, 6, 6), elements=st.floats(0, 100)),
         bw=st.floats(0.0001, 100)
     )
+    @settings(verbosity=Verbosity.verbose)
     def test_min(self, arr, bw):
         is_positive = epanechnikov(arr, bw) >= 0
         self.assertEqual(is_positive.all(), True)
