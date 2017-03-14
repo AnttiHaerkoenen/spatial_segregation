@@ -6,12 +6,19 @@ import numpy as np
 from src import data
 
 
-def fill_data_sheet(filename, sheet='Sheet1'):
+def fill_data_sheet(filename, sheet='Sheet1', columns='all'):
     df = pd.read_excel(io=filename, sheetname=sheet)
+    if columns == 'all':
+        columns = df.columns
+    elif isinstance(columns, str):
+        columns = columns.split()
+    else:
+        columns = pd.Index(columns)
+        print(columns)
 
-    print(df)
+    df[columns] = df[columns].fillna(method='ffill', axis=0)
 
-    # df.to_excel(filename)
+    df.to_excel(filename)
 
 
 if __name__ == '__main__':
