@@ -74,7 +74,11 @@ def shuffle_data(data_frame, columns=("host", "other")):
 
 def get_limits(data_frame, variable):
     x = data_frame[variable]
-    return max(x), min(x)
+
+    max_ = max(x, default=None)
+    min_ = min(x, default=None)
+
+    return max_, min_
 
 
 def aggregate_sum(data, group_index=0):
@@ -100,13 +104,20 @@ def aggregate_sum(data, group_index=0):
     return aggregated_data
 
 
-def reform(population_data, districts=(1,)):
+def reform(population_data, districts='all'):
     """
     Cleans population data for use in segregation _analysis.
-    :param districts: which districts to use
+    :param districts: which districts to use, default 'all
     :param population_data:
     :return: aggregated sum, list of lists
     """
+    if districts == 'all':
+        districts = list(set(population_data['district']))
+    elif isinstance(districts, str):
+        districts = districts.split()
+    else:
+        districts = list(districts)
+
     try:
         population_data = population_data[population_data['district'].isin(districts)]
     except KeyError:

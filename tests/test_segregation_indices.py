@@ -12,7 +12,7 @@ from src.exceptions import SSValueError
 class TestCalcIndices(unittest.TestCase):
 
     @given(
-        arr=hnp.arrays(np.float, shape=(6,80))
+        arr=hnp.arrays(np.float, shape=(6, 80))
     )
     def test_value_error(self, arr):
         with self.assertRaises(SSValueError):

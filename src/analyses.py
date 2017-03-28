@@ -186,9 +186,9 @@ if __name__ == '__main__':
     os.chdir(os.path.join(os.path.abspath(os.path.pardir), data.DATA_DIR))
 
     pop_data = {
-        '1880': data.aggregate_sum(data.reform(pd.read_csv('1880.csv'))),
-        '1900': data.aggregate_sum(data.reform(pd.read_csv('1900.csv'))),
-        '1920': data.aggregate_sum(data.reform(pd.read_csv('1920.csv')))
+        '1880': data.aggregate_sum(data.reform(pd.read_csv('1880.csv'), districts='Valli')),
+        '1900': data.aggregate_sum(data.reform(pd.read_csv('1900.csv'), districts='Valli')),
+        '1920': data.aggregate_sum(data.reform(pd.read_csv('1920.csv'), districts='Valli'))
     }
 
     with open('points1878.geojson') as f:
@@ -231,7 +231,7 @@ if __name__ == '__main__':
 
     results = pd.merge(ana1.results, ana2.results)
     results = results["year kernel bw cell_size s exposure isolation km information".split()]
-    results = results.sort_values(by='year')
+    results = results.sort_values(by='year bw cell_size kernel'.split())
     results.index = np.arange(1, len(results) + 1)
     print(results)
     print(results.loc[:, lambda results: 's km exposure isolation information'.split()].corr(method='spearman'))

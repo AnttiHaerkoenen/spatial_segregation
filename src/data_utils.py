@@ -6,8 +6,22 @@ import numpy as np
 from src import data
 
 
-def fill_data_sheet(input_input, output_file, sheet='Sheet1', columns='all', fill_with_zeros=None):
-    df = pd.read_excel(io=input_input, sheetname=sheet)
+def fill_data_sheet(input_file, output_file, sheet='Sheet1', columns='all', fill_with_zeros=None):
+    """
+    Fills gaps in excel data sheet using pandas.DataFrame.fillna().
+    Fills columns given in columns-parameter using 'ffill'/'pad',
+    and columns given in fill_with_zeros with a value of 0.
+    :param input_file: Input filename
+    :param output_file: Output filename
+    :param sheet: name of the sheet
+    :param columns: Names of columns to be filled.
+    Can be string or list of columns or None or 'all'.
+    Default is 'all'.
+    :param fill_with_zeros: Names of columns to be filled with zeros.
+    Can be string or list of columns or 'all'.
+    Default is None.
+    """
+    df = pd.read_excel(io=input_file, sheetname=sheet)
 
     if not columns:
         columns = pd.Index([])
@@ -29,7 +43,7 @@ def fill_data_sheet(input_input, output_file, sheet='Sheet1', columns='all', fil
     else:
         fill_with_zeros = pd.Index(fill_with_zeros)
 
-    df[columns] = df[columns].fillna(method='ffill', axis=0)
+    df[columns] = df[columns].fillna(method='pad', axis=0)
     df[fill_with_zeros] = df[fill_with_zeros].fillna(value=0)
 
     df.to_excel(output_file)
