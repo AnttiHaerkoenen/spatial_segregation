@@ -3,4 +3,3 @@ pandas
 hypothesis
 matplotlib
 shapely
-requests
