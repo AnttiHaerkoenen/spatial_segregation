@@ -42,7 +42,6 @@ corr_values.columns = 'S D hPg gPg H'.split()
 print(corr_values.corr(method='spearman'))
 
 plt.style.use('ggplot')
-scatter_matrix(corr_values, figsize=(10, 10), diagonal='kde')
+scatter_matrix(corr_values, figsize=(10, 10), diagonal='hist')
 plt.suptitle('Hajontamatriisi', size=20)
 plt.show()
-print(corr_values)
