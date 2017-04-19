@@ -10,7 +10,7 @@ from src.exceptions import SSValueError
 def degrees_to_meters(lon, lat, false_easting=0, false_northing=0):
     d_lon = great_circle_distance(lat, 0, lat, lon) - false_easting
     d_lat = great_circle_distance(0, lon, lat, lon) - false_northing
-    return d_lon, d_lat
+    return d_lon * 6335439, d_lat * 6335439
 
 
 def great_circle_distance(lat1, lon1, lat2, lon2):
@@ -27,7 +27,7 @@ def great_circle_distance(lat1, lon1, lat2, lon2):
     d_lat = lat2 - lat1
     a = math.sin(d_lat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(d_lon / 2) ** 2
     c = 2 * math.asin(a ** 0.5)
-    return c * 6335439
+    return c
 
 
 def get_stars(p):
