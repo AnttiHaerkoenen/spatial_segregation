@@ -1,9 +1,26 @@
 import datetime
+from collections import namedtuple
 
 import pandas as pd
 
 from src import segregation_index_analysis, segregation_surface_analysis, data, kde, plotting
 from src.exceptions import SSIndexError, SSTypeError, SSIOError, SSNotImplementedError
+
+ParameterPermutation = namedtuple('ParameterPermutation', 'cell_size, kernel, bw, alpha')
+
+
+class Parameters:
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        pass
+
+    def __iter__(self):
+        pass
+
+
+########################################################################################################################
 
 
 class Analyses:
@@ -80,7 +97,7 @@ class SegregationSurfaceAnalyses(Analyses):
             convex_hull=True,
             buffers=(1,)
     ):
-        super().__init__(
+        super(SegregationSurfaceAnalyses, self).__init__(
             data_dict=data_dict,
             cell_sizes=cell_sizes,
             kernels=kernels,
@@ -134,7 +151,7 @@ class SegregationIndexAnalyses(Analyses):
             convex_hull=True,
             buffers=(1,)
     ):
-        super().__init__(
+        super(SegregationIndexAnalyses, self).__init__(
             data_dict=data_dict,
             cell_sizes=cell_sizes,
             kernels=kernels,

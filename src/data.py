@@ -11,6 +11,17 @@ DATA_DIR = 'data'
 X, Y = 0, 1
 
 
+########################################################################################################################
+
+
+class SpatialSegregationData(pd.DataFrame):
+    def __init__(self, location_data, pop_data):
+        super(SpatialSegregationData, self).__init__()
+
+
+########################################################################################################################
+
+
 def add_coordinates(
         population_data,
         point_data,
