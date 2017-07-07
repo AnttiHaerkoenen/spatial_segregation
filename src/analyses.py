@@ -10,8 +10,11 @@ ParameterPermutation = namedtuple('ParameterPermutation', 'cell_size, kernel, bw
 
 
 class Parameters:
-    def __init__(self):
-        pass
+    def __init__(self, cell_sizes, kernels, bws, alphas):
+        self.cell_sizes = set(cell_sizes)
+        self.kernels = set(kernels)
+        self.bws = set(bws)
+        self.alphas = set(alphas)
 
     def __str__(self):
         pass
