@@ -2,8 +2,8 @@ import datetime
 
 import pandas as pd
 
-from src import segregation_index_analysis, segregation_surface_analysis, data, kde, plotting
-from src.exceptions import SSIndexError, SSTypeError, SSIOError, SSNotImplementedError
+import segregation_index_analysis, segregation_surface_analysis, data, kde, plotting
+from .exceptions import SSIndexError, SSTypeError, SSIOError, SSNotImplementedError
 
 
 class Analyses:

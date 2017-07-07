@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from src import kernel_functions, data, plotting
-from src.exceptions import SSTypeError, SSValueError, SSIOError, SSKeyError, SSIndexError
+import kernel_functions, data, plotting
+from .exceptions import SSTypeError, SSValueError, SSIOError, SSKeyError, SSIndexError
 
 
 ########################################################################################################################

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from src.exceptions import SSValueError, SSTypeError
+from .exceptions import SSValueError, SSTypeError
 
 
 def epanechnikov(d, bw):
