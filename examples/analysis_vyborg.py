@@ -6,7 +6,7 @@ from pandas.tools.plotting import scatter_matrix
 import numpy as np
 import matplotlib.pyplot as plt
 
-import analyses, data, kde, plotting
+from src import analyses, data, kde, plotting
 
 
 os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
