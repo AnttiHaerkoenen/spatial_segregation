@@ -6,7 +6,7 @@ from pandas.tools.plotting import scatter_matrix
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src import analyses, data, kde, plotting
+from src import analyses, data, kde, plotting, parameters
 
 
 os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
@@ -26,24 +26,26 @@ with open('points1878.geojson') as f:
 
 cells = 25, 50, 75
 bandwidths = 25, 50, 100, 150, 250
+pars = parameters.Parameters(
+    cell_sizes=cells,
+    kernels=kde.KERNELS,
+    bws=bandwidths,
+    alphas=(1,)
+)
 
 data = {year: data.SpatialSegregationData._add_coordinates(value, point_data, coordinates_to_meters=False)
         for year, value in pop_data.items()}
 
 ana1 = analyses.SegregationSurfaceAnalyses(
     data_dict=data,
-    cell_sizes=cells,
-    kernels=[k for k in kde.KERNELS],
-    bws=bandwidths
+    parameters=pars
 )
 ana1.analyse()
 ana1.save("SegregationSurfaceAnalysis_kaikki.csv")
 
 ana2 = analyses.SegregationIndexAnalyses(
     data_dict=data,
-    cell_sizes=cells,
-    kernels=[k for k in kde.KERNELS],
-    bws=bandwidths
+    parameters=pars
 )
 ana2.analyse()
 ana2.save("SegregationIndexAnalysis_kaikki.csv")

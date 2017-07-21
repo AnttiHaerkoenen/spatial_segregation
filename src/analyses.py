@@ -12,17 +12,11 @@ class Analyses:
     def __init__(
             self,
             data_dict,
-            cell_sizes,
-            kernels,
-            bws,
-            alphas,
+            parameters,
             simulations
     ):
         self.data_dict = data_dict
-        self.cell_sizes = cell_sizes
-        self.kernels = kernels
-        self.bws = bws
-        self.alphas = alphas
+        self.parameters = parameters
         self.simulations = simulations
 
         self._results = []
@@ -71,21 +65,15 @@ class Analyses:
 class SegregationSurfaceAnalyses(Analyses):
     def __init__(
             self,
-            data_dict=None,
-            cell_sizes=(25,),
-            kernels=("biweight",),
-            bws=(1,),
-            alphas=(1,),
+            data_dict,
+            parameters,
             simulations=0,
             convex_hull=True,
             buffers=(1,)
     ):
         super(SegregationSurfaceAnalyses, self).__init__(
             data_dict=data_dict,
-            cell_sizes=cell_sizes,
-            kernels=kernels,
-            bws=bws,
-            alphas=alphas,
+            parameters=parameters,
             simulations=simulations
         )
         self.convex_hull = convex_hull
@@ -94,28 +82,25 @@ class SegregationSurfaceAnalyses(Analyses):
 
     def analyse(self):
         for y, d in self.data_dict.items():
-            for c in self.cell_sizes:
-                for bw in self.bws:
-                    for kern in self.kernels:
-                        for b in self.buffers:
-                            for a in self.alphas:
-                                ana = self._analysis(
-                                    d,
-                                    cell_size=c,
-                                    bw=bw,
-                                    kernel=kern,
-                                    alpha=a,
-                                    buffer=b,
-                                    convex_hull=self.convex_hull,
-                                    data_id=y
-                                )
-                                self._results.append(
-                                    {
-                                        "year": y,
-                                        "s": ana.s,
-                                        **ana.surface.param
-                                    }
-                                )
+            for par in self.parameters:
+                for b in self.buffers:
+                    ana = self._analysis(
+                        d,
+                        cell_size=par.cell_size,
+                        bw=par.bw,
+                        kernel=par.kernel,
+                        alpha=par.alpha,
+                        buffer=b,
+                        convex_hull=self.convex_hull,
+                        data_id=y
+                    )
+                    self._results.append(
+                        {
+                            "year": y,
+                            "s": ana.s,
+                            **ana.surface.param
+                        }
+                    )
 
 
 ########################################################################################################################
@@ -124,11 +109,8 @@ class SegregationSurfaceAnalyses(Analyses):
 class SegregationIndexAnalyses(Analyses):
     def __init__(
             self,
-            data_dict=None,
-            cell_sizes=(25,),
-            kernels=("biweight",),
-            bws=(1,),
-            alphas=(1,),
+            data_dict,
+            parameters,
             simulations=0,
             which_indices="all",
             convex_hull=True,
@@ -136,10 +118,7 @@ class SegregationIndexAnalyses(Analyses):
     ):
         super(SegregationIndexAnalyses, self).__init__(
             data_dict=data_dict,
-            cell_sizes=cell_sizes,
-            kernels=kernels,
-            bws=bws,
-            alphas=alphas,
+            parameters=parameters,
             simulations=simulations
         )
         self.which_indices = which_indices
@@ -149,30 +128,27 @@ class SegregationIndexAnalyses(Analyses):
 
     def analyse(self):
         for y, d in self.data_dict.items():
-            for c in self.cell_sizes:
-                for bw in self.bws:
-                    for kern in self.kernels:
-                        for b in self.buffers:
-                            for a in self.alphas:
-                                ana = self._analysis(
-                                        d,
-                                        cell_size=c,
-                                        bw=bw,
-                                        kernel=kern,
-                                        which_indices=self.which_indices,
-                                        alpha=a,
-                                        buffer=b,
-                                        convex_hull=self.convex_hull,
-                                        data_id=y
-                                )
-                                if self.simulations:
-                                    ana.simulate(self.simulations)
-                                self._results.append({
-                                    "year": y,
-                                    **ana.surface.param,
-                                    **ana.indices,
-                                    **ana.p
-                                })
+            for par in self.parameters:
+                for b in self.buffers:
+                    ana = self._analysis(
+                        d,
+                        cell_size=par.cell_size,
+                        bw=par.bw,
+                        kernel=par.kernel,
+                        alpha=par.alpha,
+                        which_indices=self.which_indices,
+                        buffer=b,
+                        convex_hull=self.convex_hull,
+                        data_id=y
+                    )
+                    if self.simulations:
+                        ana.simulate(self.simulations)
+                    self._results.append({
+                        "year": y,
+                        **ana.surface.param,
+                        **ana.indices,
+                        **ana.p
+                    })
 
 ########################################################################################################################
 
