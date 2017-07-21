@@ -12,7 +12,7 @@ X, Y = 0, 1
 
 
 class SpatialSegregationData:
-    def __init__(self, location_data, population_data, data_dir):
+    def __init__(self, location_data, population_data):
         self._data = self._add_coordinates(location_data, population_data)
 
     @staticmethod
