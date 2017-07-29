@@ -33,7 +33,7 @@ pars = parameters.Parameters(
     alphas=(1,)
 )
 
-data = {year: data.SpatialSegregationData._add_coordinates(value, point_data, coordinates_to_meters=False)
+data = {year: data.SpatialSegregationData._combine_data(value, point_data, coordinates_to_meters=False)
         for year, value in pop_data.items()}
 
 ana1 = analyses.SegregationSurfaceAnalyses(

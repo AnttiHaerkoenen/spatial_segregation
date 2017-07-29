@@ -12,11 +12,20 @@ X, Y = 0, 1
 
 
 class SpatialSegregationData:
-    def __init__(self, location_data, population_data):
-        self._data = self._add_coordinates(location_data, population_data)
+    def __init__(
+            self,
+            location_data,
+            population_data
+    ):
+        """
+        Data wrapper for spatial segregation analysis
+        :param location_data: LocationData instance or similar
+        :param population_data: PopulationData instance or similar
+        """
+        self._data = self._combine_data(location_data, population_data)
 
     @staticmethod
-    def _add_coordinates(
+    def _combine_data(
             population_data,
             point_data,
             pop_index=0,
@@ -25,8 +34,8 @@ class SpatialSegregationData:
             point_index='NUMBER',
             coordinates_to_meters=False,
             false_easting=0,
-            false_northing=0):
-
+            false_northing=0
+    ):
         data_dict = {}
 
         for feature in point_data['features']:
@@ -98,6 +107,18 @@ class SpatialSegregationData:
         return [i for i in map(list, pop_data.values)]
 
 
+class LocationData:
+    def __init(self, data_frame):
+        self._data = data_frame
+
+
+class PopulationData:
+    def __init__(self, data_frame):
+        self._data = data_frame
+
+
+########################################################################################################################
+
 def get_limits(data_frame, variable):
     x = data_frame[variable]
 
@@ -118,4 +139,4 @@ if __name__ == '__main__':
     with open('points1878.geojson') as f:
         point_data = json.load(f)
 
-    d = SpatialSegregationData._add_coordinates(pop_data, point_data)
+    d = SpatialSegregationData._combine_data(pop_data, point_data)
