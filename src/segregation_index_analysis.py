@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from src import analyses, kde, data, segregation_indices, utils
-from src.exceptions import SSKeyError, SSValueError
+from src.exceptions import SpatSegKeyError, SpatSegValueError
 
 
 class SegregationIndexAnalysis:
@@ -127,10 +127,10 @@ class SegregationIndexAnalysis:
 
     def plot(self, index):
         if len(self.simulations) == 0:
-            raise SSValueError("No simulations to plot")
+            raise SpatSegValueError("No simulations to plot")
 
         if index not in self.indices:
-            raise SSKeyError("Index not computed.")
+            raise SpatSegKeyError("Index not computed.")
 
         fig = self.simulations[index].plot.kde(color='red', label="simulated {0}".format(index))
         fig.axvline(self.indices[index], label="actual {0}".format(index))

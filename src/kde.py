@@ -7,7 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import kernel_functions, data, plotting
-from .exceptions import SSTypeError, SSValueError, SSIOError, SSKeyError, SSIndexError
+from .exceptions import SpatSegTypeError, SpatSegValueError, SpatSegIOError, SpatSegKeyError, SpatSegIndexError
 
 
 ########################################################################################################################
@@ -89,9 +89,9 @@ class KernelDensitySurface:
             col = self._data_frame[item]
             return col.values.reshape(self.shape)
         except KeyError:
-            raise SSKeyError
+            raise SpatSegKeyError
         except TypeError:
-            raise SSTypeError
+            raise SpatSegTypeError
 
     @property
     def size(self):
@@ -155,15 +155,15 @@ class KernelDensitySurface:
         try:
             self._data_frame.to_csv(file)
         except IOError:
-            raise SSIOError("Error! Saving failed.")
+            raise SpatSegIOError("Error! Saving failed.")
 
     def load(self, file=None):
         if not file:
             file = "KDE_{0}".format(datetime.date.today())
         try:
             self._data_frame = pd.DataFrame.from_csv(file)
-        except SSIOError:
-            raise SSIOError("File not found")
+        except SpatSegIOError:
+            raise SpatSegIOError("File not found")
 
 
 ########################################################################################################################
@@ -228,7 +228,7 @@ def calc_d(d_a, d_b):
     x_b = d_b.loc[:, 'x'].values
 
     if y_a.shape != x_a.shape or y_b.shape != x_b.shape:
-        raise SSValueError("Mismatching coordinates")
+        raise SpatSegValueError("Mismatching coordinates")
 
     y1, y2 = tuple(np.meshgrid(y_a, y_b))
     x1, x2 = tuple(np.meshgrid(x_a, x_b))
@@ -249,7 +249,7 @@ def calc_w(d, kernel='biweight', bw=2.5, a=1):
     :return: matrix of relative weights w
     """
     if kernel not in KERNELS:
-        raise SSKeyError("Kernel not found")
+        raise SpatSegKeyError("Kernel not found")
 
     if kernel == 'biweight':
         w = KERNELS[kernel](d, bw, a)

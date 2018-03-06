@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from .exceptions import SSValueError, SSTypeError
+from .exceptions import SpatSegValueError, SpatSegTypeError
 
 
 def epanechnikov(d, bw):
@@ -12,9 +12,9 @@ def epanechnikov(d, bw):
     :return: weight of points, np.ndarray or pd.DataFrame
     """
     if not (isinstance(d, np.ndarray) or isinstance(d, pd.DataFrame)):
-        raise SSTypeError("Data must be numpy-array or pandas DataFrame")
+        raise SpatSegTypeError("Data must be numpy-array or pandas DataFrame")
     if bw <= 0:
-        raise SSValueError("Not a proper bandwidth")
+        raise SpatSegValueError("Not a proper bandwidth")
 
     a = d.copy()
     i = a < bw
@@ -31,9 +31,9 @@ def triangle(d, bw):
     :return: weight of points, np.ndarray or pd.DataFrame
     """
     if not (isinstance(d, np.ndarray) or isinstance(d, pd.DataFrame)):
-        raise SSTypeError("Data must be numpy-array or pandas DataFrame")
+        raise SpatSegTypeError("Data must be numpy-array or pandas DataFrame")
     if bw <= 0:
-        raise SSValueError("Not a proper bandwidth")
+        raise SpatSegValueError("Not a proper bandwidth")
 
     a = d.copy()
     i = a < bw
@@ -50,9 +50,9 @@ def gaussian(d, sigma):
     :return: weight of points, np.ndarray or pd.DataFrame
     """
     if not (isinstance(d, np.ndarray) or isinstance(d, pd.DataFrame)):
-        raise SSTypeError("Data must be numpy-array or pandas DataFrame")
+        raise SpatSegTypeError("Data must be numpy-array or pandas DataFrame")
     if sigma <= 0:
-        raise SSValueError("Not a proper bandwidth")
+        raise SpatSegValueError("Not a proper bandwidth")
 
     return 1 / (np.sqrt(2 * np.pi) * sigma ** 2) * np.exp(- d ** 2 / (2 * sigma ** 2))
 
@@ -66,11 +66,11 @@ def biweight(d, bw, alpha=1):
     :return: weight of points, np.ndarray or pd.DataFrame
     """
     if not (isinstance(d, np.ndarray) or isinstance(d, pd.DataFrame)):
-        raise SSTypeError("Data must be numpy-array or pandas DataFrame")
+        raise SpatSegTypeError("Data must be numpy-array or pandas DataFrame")
     if bw <= 0:
-        raise SSValueError("Not a proper bandwidth")
+        raise SpatSegValueError("Not a proper bandwidth")
     if alpha <= 0:
-        raise SSValueError("Not a proper alpha")
+        raise SpatSegValueError("Not a proper alpha")
 
     a = d.copy()
     i = a < bw
@@ -87,9 +87,9 @@ def uniform(d, bw):
     :return: weight of points, np.ndarray or pd.DataFrame
     """
     if not (isinstance(d, np.ndarray) or isinstance(d, pd.DataFrame)):
-        raise SSTypeError("Data must be numpy-array or pandas DataFrame")
+        raise SpatSegTypeError("Data must be numpy-array or pandas DataFrame")
     if bw <= 0:
-        raise SSValueError("Not a proper bandwidth")
+        raise SpatSegValueError("Not a proper bandwidth")
 
     a = d.copy()
     i = a < bw

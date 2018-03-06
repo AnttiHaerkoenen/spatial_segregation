@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from .exceptions import SSTypeError
+from .exceptions import SpatSegTypeError
 
 ParameterPermutation = namedtuple('ParameterPermutation', 'cell_size, kernel, bw, alpha')
 
@@ -37,7 +37,7 @@ class Parameters:
 
     def __add__(self, other):
         if not other.instanceof(Parameters):
-            raise SSTypeError("{other} is not a {this}-class object!".format(other=other.__name__, this=self.__name__))
+            raise SpatSegTypeError("{other} is not a {this}-class object!".format(other=other.__name__, this=self.__name__))
 
         self.cell_sizes.update(other.cell_sizes)
         self.kernels.update(other.kernels)
@@ -46,7 +46,7 @@ class Parameters:
 
     def __sub__(self, other):
         if not other.instanceof(Parameters):
-            raise SSTypeError("{other} is not a {this}-class object!".format(other=other.__name__, this=self.__name__))
+            raise SpatSegTypeError("{other} is not a {this}-class object!".format(other=other.__name__, this=self.__name__))
 
         self.cell_sizes.difference_update(other.cell_sizes)
         self.kernels.difference_update(other.kernels)

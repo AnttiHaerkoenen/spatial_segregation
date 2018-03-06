@@ -3,3 +3,4 @@ pandas
 hypothesis
 matplotlib
 shapely
+geopandas

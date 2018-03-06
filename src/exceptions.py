@@ -1,26 +1,26 @@
-class SpatialSegregationException(Exception):
+class SpatSegException(Exception):
     pass
 
 
-class SSTypeError(TypeError, SpatialSegregationException):
+class SpatSegTypeError(TypeError, SpatSegException):
     pass
 
 
-class SSIndexError(IndexError, SpatialSegregationException):
+class SpatSegIndexError(IndexError, SpatSegException):
     pass
 
 
-class SSIOError(IOError, SpatialSegregationException):
+class SpatSegIOError(IOError, SpatSegException):
     pass
 
 
-class SSNotImplementedError(NotImplementedError, SpatialSegregationException):
+class SpatSegNotImplementedError(NotImplementedError, SpatSegException):
     pass
 
 
-class SSValueError(ValueError, SpatialSegregationException):
+class SpatSegValueError(ValueError, SpatSegException):
     pass
 
 
-class SSKeyError(KeyError, SpatialSegregationException):
+class SpatSegKeyError(KeyError, SpatSegException):
     pass

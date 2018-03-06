@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.exceptions import SSValueError
+from src.exceptions import SpatSegValueError
 
 
 def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_matrix=False):
@@ -16,7 +16,7 @@ def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_mat
     try:
         pop = np.asarray_chkfinite(pop)
     except ValueError:
-        raise SSValueError("Incorrect input. Remove NaNs and infs.")
+        raise SpatSegValueError("Incorrect input. Remove NaNs and infs.")
 
     if which_indices.lower() == 'all':
         which_indices = ('km', 'mi', 'exposure', 'isolation', 'information')

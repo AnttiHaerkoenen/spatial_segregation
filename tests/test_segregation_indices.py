@@ -6,7 +6,7 @@ import numpy as np
 import numpy.testing as npt
 
 from src.segregation_indices import calc_indices
-from src.exceptions import SSValueError
+from src.exceptions import SpatSegValueError
 
 
 class TestCalcIndices(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestCalcIndices(unittest.TestCase):
         arr=hnp.arrays(np.float, shape=(6, 80))
     )
     def test_value_error(self, arr):
-        with self.assertRaises(SSValueError):
+        with self.assertRaises(SpatSegValueError):
             calc_indices(arr)
 
 

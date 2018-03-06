@@ -3,7 +3,7 @@ import datetime
 import pandas as pd
 
 from src import segregation_index_analysis, segregation_surface_analysis, data, kde, plotting
-from .exceptions import SSIndexError, SSTypeError, SSIOError, SSNotImplementedError
+from .exceptions import SpatSegIndexError, SpatSegTypeError, SpatSegIOError, SpatSegNotImplementedError
 
 
 class Analyses:
@@ -25,9 +25,9 @@ class Analyses:
         try:
             self.results[item]
         except IndexError:
-            raise SSIndexError
+            raise SpatSegIndexError
         except TypeError:
-            raise SSTypeError
+            raise SpatSegTypeError
 
     @property
     def results(self):
@@ -43,7 +43,7 @@ class Analyses:
         try:
             self.results.to_csv(file)
         except IOError:
-            raise SSIOError("Error! Saving failed.")
+            raise SpatSegIOError("Error! Saving failed.")
 
     def load(self, file=None):
         if not file:
@@ -54,10 +54,10 @@ class Analyses:
         try:
             self._results = pd.DataFrame.from_csv(file)
         except IOError:
-            raise SSIOError("File not found")
+            raise SpatSegIOError("File not found")
 
     def analyse(self):
-        raise SSNotImplementedError
+        raise SpatSegNotImplementedError
 
 ########################################################################################################################
 

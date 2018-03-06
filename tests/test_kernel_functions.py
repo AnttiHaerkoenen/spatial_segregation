@@ -6,7 +6,7 @@ import numpy as np
 import numpy.testing as npt
 
 from src.kernel_functions import epanechnikov, uniform, gaussian, triangle, biweight
-from src.exceptions import SSTypeError, SSValueError
+from src.exceptions import SpatSegTypeError, SpatSegValueError
 
 
 class TestEpanechnikov(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestEpanechnikov(unittest.TestCase):
         bw=st.floats(-1000, 0)
     )
     def test_value_error(self, arr, bw):
-        with self.assertRaises(SSValueError):
+        with self.assertRaises(SpatSegValueError):
             epanechnikov(arr, bw)
 
     @given(
@@ -45,7 +45,7 @@ class TestEpanechnikov(unittest.TestCase):
         bw=st.floats(0.0001, 100)
     )
     def test_type_error(self, arr, bw):
-        with self.assertRaises(SSTypeError):
+        with self.assertRaises(SpatSegTypeError):
             epanechnikov(arr, bw)
 
     @given(
@@ -78,7 +78,7 @@ class TestTriangle(unittest.TestCase):
         bw=st.floats(-1000, 0)
     )
     def test_value_error(self, arr, bw):
-        with self.assertRaises(SSValueError):
+        with self.assertRaises(SpatSegValueError):
             triangle(arr, bw)
 
     @given(
@@ -92,7 +92,7 @@ class TestTriangle(unittest.TestCase):
         bw=st.floats(0.0001, 100)
     )
     def test_type_error(self, arr, bw):
-        with self.assertRaises(SSTypeError):
+        with self.assertRaises(SpatSegTypeError):
             triangle(arr, bw)
 
     @given(
@@ -117,7 +117,7 @@ class TestGaussian(unittest.TestCase):
         sigma=st.floats(-1000, 0)
     )
     def test_value_error(self, arr, sigma):
-        with self.assertRaises(SSValueError):
+        with self.assertRaises(SpatSegValueError):
             gaussian(arr, sigma)
 
     @given(
@@ -131,7 +131,7 @@ class TestGaussian(unittest.TestCase):
         sigma=st.floats(0.0001, 100)
     )
     def test_type_error(self, arr, sigma):
-        with self.assertRaises(SSTypeError):
+        with self.assertRaises(SpatSegTypeError):
             gaussian(arr, sigma)
 
     @given(
@@ -167,7 +167,7 @@ class TestBiweight(unittest.TestCase):
         a=st.floats(0.01, 5)
     )
     def test_value_error_1(self, arr, bw, a):
-        with self.assertRaises(SSValueError):
+        with self.assertRaises(SpatSegValueError):
             biweight(arr, bw, a)
 
     @given(
@@ -176,7 +176,7 @@ class TestBiweight(unittest.TestCase):
         a=st.floats(-100, 0)
     )
     def test_value_error_2(self, arr, bw, a):
-        with self.assertRaises(SSValueError):
+        with self.assertRaises(SpatSegValueError):
             biweight(arr, bw, a)
 
     @given(
@@ -190,7 +190,7 @@ class TestBiweight(unittest.TestCase):
         bw=st.floats(0.0001, 100)
     )
     def test_type_error(self, arr, bw):
-        with self.assertRaises(SSTypeError):
+        with self.assertRaises(SpatSegTypeError):
             biweight(arr, bw)
 
     @given(
@@ -215,7 +215,7 @@ class TestUniform(unittest.TestCase):
         bw=st.floats(-1000, 0)
     )
     def test_value_error(self, arr, bw):
-        with self.assertRaises(SSValueError):
+        with self.assertRaises(SpatSegValueError):
             uniform(arr, bw)
 
     @given(
@@ -229,7 +229,7 @@ class TestUniform(unittest.TestCase):
         bw=st.floats(0.0001, 100)
     )
     def test_type_error(self, arr, bw):
-        with self.assertRaises(SSTypeError):
+        with self.assertRaises(SpatSegTypeError):
             uniform(arr, bw)
 
     @given(
