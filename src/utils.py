@@ -9,8 +9,14 @@ import shapely.geometry
 from src.exceptions import *
 
 
-def split_plots():
-    raise SpatSegNotImplementedError
+def split_plots(geodataframe, target_col):
+    new_geodataframe = gpd.GeoDataFrame(columns=geodataframe.columns)
+    for _, row in geodataframe.iterrows():
+        for c in str(row[target_col]).split(','):
+            new_row = row
+            new_row[target_col] = c
+            new_geodataframe.append(new_row)
+    return new_geodataframe.reindex()
 
 
 def combine_data(

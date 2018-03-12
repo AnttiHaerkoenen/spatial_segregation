@@ -34,14 +34,13 @@ class SpatialSegregationData:
             pop_index=0,
             host=1,
             other=2,
-            point_index='NUMBER',
-            coordinates_to_meters=False,
-            false_easting=0,
-            false_northing=0,
+            location_index='NUMBER',
+            **kwargs,
     ) -> gpd.GeoDataFrame:
-        location_data = utils.split_plots(location_data)
+        location_data = utils.split_plots(location_data, location_index)
         if population_data:
-            pass
+            location_data = location_data.set_index(location_index)
+            location_data = location_data.join(population_data)
         return location_data
 
         # data_dict = {}
