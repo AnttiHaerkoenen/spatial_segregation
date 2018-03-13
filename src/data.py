@@ -31,16 +31,13 @@ class SpatialSegregationData:
             *,
             location_data: gpd.GeoDataFrame,
             population_data: pd.DataFrame=None,
-            pop_index=0,
-            host=1,
-            other=2,
             location_index='NUMBER',
-            **kwargs,
+            **kwargs
     ) -> gpd.GeoDataFrame:
         location_data = utils.split_plots(location_data, location_index)
         if population_data:
             location_data = location_data.set_index(location_index)
-            location_data = location_data.join(population_data)
+            location_data = location_data.join(population_data, **kwargs)
         return location_data
 
         # data_dict = {}
@@ -75,24 +72,7 @@ class SpatialSegregationData:
         return pd.DataFrame(np.hstack((xy, pop)), columns=cols)
 
     @staticmethod
-    def _aggregate_sum(data, group_index=0):
-        cols = len(data[0])
-        data_rows = [i for i in range(cols) if i != group_index]
-        aggregated_data = []
-        last_id = None
-
-        for row in data:
-            if row[group_index] == last_id:
-                for k in data_rows:
-                    aggregated_data[-1][k] += row[k]
-            else:
-                aggregated_data.append(row)
-            last_id = row[group_index]
-
-        return aggregated_data
-
-    @staticmethod
-    def _reform(population_data, districts='all'):
+    def reform_pop_data(population_data, districts='all'):
         if districts == 'all':
             districts = list(set(population_data['district']))
         elif isinstance(districts, str):
@@ -130,7 +110,7 @@ def get_limits(data_frame, variable):
 if __name__ == '__main__':
     os.chdir(r'../data')
 
-    pop_data = SpatialSegregationData._aggregate_sum(SpatialSegregationData._reform(pd.read_csv('1880.csv')))
+    pop_data = SpatialSegregationData._aggregate_sum(SpatialSegregationData.reform_pop_data(pd.read_csv('1880.csv')))
 
     with open('points1878.geojson') as f:
         point_data = json.load(f)

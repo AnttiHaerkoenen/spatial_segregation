@@ -13,12 +13,12 @@ os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 os.chdir(os.path.join(os.path.abspath(os.path.pardir), data.DATA_DIR))
 
 pop_data = {
-    '1880': data.SpatialSegregationData._aggregate_sum(data.SpatialSegregationData._reform(pd.read_csv('1880.csv'),
-                                                                                           districts='Valli')),
-    '1900': data.SpatialSegregationData._aggregate_sum(data.SpatialSegregationData._reform(pd.read_csv('1900.csv'),
-                                                                                           districts='Valli')),
-    '1920': data.SpatialSegregationData._aggregate_sum(data.SpatialSegregationData._reform(pd.read_csv('1920.csv'),
-                                                                                           districts='Valli'))
+    '1880': data.SpatialSegregationData._aggregate_sum(data.SpatialSegregationData.reform_pop_data(pd.read_csv('1880.csv'),
+                                                                                                   districts='Valli')),
+    '1900': data.SpatialSegregationData._aggregate_sum(data.SpatialSegregationData.reform_pop_data(pd.read_csv('1900.csv'),
+                                                                                                   districts='Valli')),
+    '1920': data.SpatialSegregationData._aggregate_sum(data.SpatialSegregationData.reform_pop_data(pd.read_csv('1920.csv'),
+                                                                                                   districts='Valli'))
 }
 
 with open('points1878.geojson') as f:

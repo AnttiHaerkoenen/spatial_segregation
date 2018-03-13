@@ -1,5 +1,6 @@
 import math
 import logging
+from typing import Sequence
 
 import pandas as pd
 import geopandas as gpd
@@ -17,6 +18,43 @@ def split_plots(geodataframe, target_col):
             new_row[target_col] = c
             new_geodataframe.append(new_row)
     return new_geodataframe.reindex()
+
+
+def aggregate_sum(
+        data: gpd.GeoDataFrame,
+        group_cols: Sequence,
+        target_cols: Sequence,
+) -> gpd.GeoDataFrame:
+    agg_data = gpd.GeoDataFrame()
+    agg_data.columns = data.columns
+    agg_data.crs = data.crs
+    last = None
+    len_targets = len(target_cols)
+    sums = np.zeros(len_targets)
+    for _, row in data.iterrows():
+        if row[group_cols] != last:
+            last = row[group_cols]
+            new_row = row
+            new_row[group_cols] = sums
+            sums = np.zeros(len_targets)
+            agg_data = agg_data.append(new_row)
+        else:
+            sums =+ row[target_cols]
+
+    return agg_data.reindex()
+
+    # cols = len(data[0])
+    # data_rows = [i for i in range(cols) if i != group_index]
+    # aggregated_data = []
+    # last_id = None
+    # for row in data:
+    #     if row[group_index] == last_id:
+    #         for k in data_rows:
+    #             aggregated_data[-1][k] += row[k]
+    #     else:
+    #         aggregated_data.append(row)
+    #     last_id = row[group_index]
+    # return aggregated_data
 
 
 def combine_data(
