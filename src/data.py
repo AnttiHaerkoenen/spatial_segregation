@@ -6,7 +6,7 @@ import geopandas as gpd
 import json
 
 from src import utils
-from .exceptions import SpatSegKeyError
+from exceptions import SpatSegKeyError
 
 DATA_DIR = 'data'
 X, Y = 0, 1
@@ -71,28 +71,6 @@ class SpatialSegregationData:
         np.random.shuffle(xy)
         return pd.DataFrame(np.hstack((xy, pop)), columns=cols)
 
-    @staticmethod
-    def reform_pop_data(population_data, districts='all'):
-        if districts == 'all':
-            districts = list(set(population_data['district']))
-        elif isinstance(districts, str):
-            districts = districts.split()
-        else:
-            districts = list(districts)
-
-        try:
-            population_data = population_data[population_data['district'].isin(districts)]
-        except KeyError:
-            raise SpatSegKeyError("District column not found!")
-
-        pop_data = population_data.fillna(value=0)
-        pop_data = pop_data.loc[:, ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian',
-                                    'other.religion']].astype(int)
-        pop_data['lutheran'] = (pop_data['total.men'] + pop_data['total.women'] - pop_data['orthodox'] -
-                                pop_data['other.christian'] - pop_data['other.religion'])
-        pop_data = pop_data.loc[:, ['plot.number', 'lutheran', 'orthodox']]
-        return [i for i in map(list, pop_data.values)]
-
 
 ########################################################################################################################
 
@@ -110,9 +88,13 @@ def get_limits(data_frame, variable):
 if __name__ == '__main__':
     os.chdir(r'../data')
 
-    pop_data = SpatialSegregationData._aggregate_sum(SpatialSegregationData.reform_pop_data(pd.read_csv('1880.csv')))
+    pop_data = utils.aggregate_sum(
+        utils.prepare_pop_data(pd.read_csv('1880.csv')),
+        group_cols='district, plot.number'.split(', '),
+        target_cols='lutheran, orthodox'.split(', '),
+    )
 
-    with open('points1878.geojson') as f:
-        point_data = json.load(f)
+    point_data = gpd.read_file('points1878.geojson')
 
-    d = SpatialSegregationData._combine_data(pop_data, point_data)
+    d = SpatialSegregationData(pop_data, point_data)
+    print(d)

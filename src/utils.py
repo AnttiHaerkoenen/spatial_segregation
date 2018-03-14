@@ -21,25 +21,25 @@ def split_plots(geodataframe, target_col):
 
 
 def aggregate_sum(
-        data: gpd.GeoDataFrame,
+        data: pd.DataFrame,
         group_cols: Sequence,
         target_cols: Sequence,
-) -> gpd.GeoDataFrame:
-    agg_data = gpd.GeoDataFrame()
-    agg_data.columns = data.columns
-    agg_data.crs = data.crs
+) -> pd.DataFrame:
+    agg_data = gpd.GeoDataFrame(columns=data.columns)
+    if isinstance(data, gpd.GeoDataFrame):
+        agg_data.crs = data.crs
     last = None
     len_targets = len(target_cols)
     sums = np.zeros(len_targets)
     for _, row in data.iterrows():
-        if row[group_cols] != last:
+        if row[group_cols].all() != last:
             last = row[group_cols]
             new_row = row
             new_row[group_cols] = sums
             sums = np.zeros(len_targets)
             agg_data = agg_data.append(new_row)
         else:
-            sums =+ row[target_cols]
+            sums += row[target_cols]
 
     return agg_data.reindex()
 
@@ -132,7 +132,7 @@ def get_stars(p):
     """
     R-style significance symbols.
     :param p: p-value
-    :return: '***', '**', '*', '.' or ' '
+    :return: '***', '**', '*', '.' or ''
     """
     if p < 0 or p > 1:
         raise SpatSegValueError("That cannot be a p-value!")
@@ -145,7 +145,7 @@ def get_stars(p):
     elif p <= 0.1:
         return "."
     else:
-        return " "
+        return ""
 
 
 def select_by_location(point_data, polygon):
@@ -181,6 +181,15 @@ def make_mask(kde, polygon, outside=True):
         arr = np.abs(arr - 1)
 
     return arr.reshape(kde.shape)
+
+
+def prepare_pop_data(population_data: pd.DataFrame) -> pd.DataFrame:
+    pop_data = population_data.fillna(value=0)
+    pop_data = pop_data.loc[:, ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian',
+                                'other.religion']].astype(int)
+    pop_data['lutheran'] = pop_data['total.men'] + pop_data['total.women'] \
+                           - pop_data['orthodox'] - pop_data['other.christian'] - pop_data['other.religion']
+    return pop_data
 
 
 def get_convex_hull(point_data, convex_hull_buffer=0):
