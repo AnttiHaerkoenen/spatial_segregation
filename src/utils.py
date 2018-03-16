@@ -30,13 +30,13 @@ def aggregate_sum(
         agg_data.crs = data.crs
     last = None
     len_targets = len(target_cols)
-    sums = np.zeros(len_targets)
+    sums = pd.Series(np.zeros(len_targets), index=target_cols)
     for _, row in data.iterrows():
-        if row[group_cols].all() != last:
-            last = row[group_cols]
+        if set(row[group_cols]) != last:
+            last = set(row[group_cols])
             new_row = row
             new_row[group_cols] = sums
-            sums = np.zeros(len_targets)
+            sums = pd.Series(np.zeros(len_targets), index=target_cols)
             agg_data = agg_data.append(new_row)
         else:
             sums += row[target_cols]
