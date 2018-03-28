@@ -35,7 +35,6 @@ def aggregate_sum(
         if set(row[group_cols]) != last:
             last = set(row[group_cols])
             new_row = row
-            print(new_row)
             new_row[group_cols] = sums
             sums = pd.Series(np.zeros(len_targets), index=target_cols)
             agg_data = agg_data.append(new_row)
