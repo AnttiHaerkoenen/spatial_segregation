@@ -17,6 +17,8 @@ class SpatialSegregationData:
             self,
             location_data,
             population_data=None,
+            join_method='outer',
+            join_on='plot.number',
     ):
         """
         Data wrapper for spatial segregation analysis
@@ -24,14 +26,19 @@ class SpatialSegregationData:
         self._data = self._combine_data(
             location_data=location_data,
             population_data=population_data,
+            how=join_method,
+            on=join_on,
         )
+
+    def __str__(self):
+        return str(self._data)
 
     @staticmethod
     def _combine_data(
             *,
             location_data: gpd.GeoDataFrame,
             population_data: pd.DataFrame=None,
-            location_index='plot.number',
+            location_index='NUMBER',
             **kwargs
     ) -> gpd.GeoDataFrame:
         location_data = utils.split_plots(location_data, location_index)

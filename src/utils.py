@@ -187,7 +187,7 @@ def prepare_pop_data(population_data: pd.DataFrame, cols=None) -> pd.DataFrame:
     pop_data = population_data.fillna(value=0)
     if not cols:
         cols = ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian', 'other.religion']
-    pop_data[cols] = pop_data.loc[:, cols].astype(int)
+    pop_data.loc[:, cols] = pop_data.loc[:, cols].astype(int)
     pop_data['lutheran'] = pop_data['total.men'] + pop_data['total.women'] \
                            - pop_data['orthodox'] - pop_data['other.christian'] - pop_data['other.religion']
     return pop_data
