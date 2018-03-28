@@ -35,6 +35,7 @@ def aggregate_sum(
         if set(row[group_cols]) != last:
             last = set(row[group_cols])
             new_row = row
+            print(new_row)
             new_row[group_cols] = sums
             sums = pd.Series(np.zeros(len_targets), index=target_cols)
             agg_data = agg_data.append(new_row)
@@ -183,10 +184,11 @@ def make_mask(kde, polygon, outside=True):
     return arr.reshape(kde.shape)
 
 
-def prepare_pop_data(population_data: pd.DataFrame) -> pd.DataFrame:
+def prepare_pop_data(population_data: pd.DataFrame, cols=None) -> pd.DataFrame:
     pop_data = population_data.fillna(value=0)
-    pop_data = pop_data.loc[:, ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian',
-                                'other.religion']].astype(int)
+    if not cols:
+        cols = ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian', 'other.religion']
+    pop_data[cols] = pop_data.loc[:, cols].astype(int)
     pop_data['lutheran'] = pop_data['total.men'] + pop_data['total.women'] \
                            - pop_data['orthodox'] - pop_data['other.christian'] - pop_data['other.religion']
     return pop_data
