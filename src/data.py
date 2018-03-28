@@ -31,11 +31,11 @@ class SpatialSegregationData:
             *,
             location_data: gpd.GeoDataFrame,
             population_data: pd.DataFrame=None,
-            location_index='NUMBER',
+            location_index='plot.number',
             **kwargs
     ) -> gpd.GeoDataFrame:
         location_data = utils.split_plots(location_data, location_index)
-        if population_data:
+        if isinstance(population_data, pd.DataFrame):
             location_data = location_data.set_index(location_index)
             location_data = location_data.join(population_data, **kwargs)
         return location_data
