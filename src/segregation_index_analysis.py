@@ -11,17 +11,19 @@ from src.exceptions import SpatSegKeyError, SpatSegValueError
 
 
 class SegregationIndexAnalysis:
-    def __init__(self,
-                 data_dict,
-                 cell_size,
-                 bw,
-                 kernel,
-                 which_indices='all',
-                 alpha=1,
-                 convex_hull=True,
-                 buffer=0,
-                 data_id=None,
-                 groups=("host", "other")):
+    def __init__(
+            self,
+            data_dict,
+            cell_size,
+            bw,
+            kernel,
+            which_indices='all',
+            alpha=1,
+            convex_hull=True,
+            buffer=0,
+            data_id=None,
+            groups=("host", "other"),
+    ):
         self.data = data_dict
         self.cell_size = cell_size
         self.kernel = kernel
@@ -41,12 +43,12 @@ class SegregationIndexAnalysis:
             bw=self.bw,
             a=self.alpha,
             convex_hull=self.convex_hull,
-            convex_hull_buffer=self.buffer
+            convex_hull_buffer=self.buffer,
         )
 
         self.indices = segregation_indices.calc_indices(
             self.surface.population_values,
-            which_indices=self.which_indices
+            which_indices=self.which_indices,
         )
 
         self._simulations_list = []

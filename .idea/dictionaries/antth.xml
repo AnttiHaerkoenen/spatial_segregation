@@ -1,8 +1,12 @@
 <component name="ProjectDictionaryState">
   <dictionary name="antth">
     <words>
+      <w>aspatial</w>
       <w>biweight</w>
+      <w>dataframe</w>
+      <w>dataframes</w>
       <w>epanechnikov</w>
+      <w>geodataframe</w>
       <w>matplotlib</w>
       <w>northing</w>
       <w>silverman</w>

@@ -1,4 +1,4 @@
-id,district,plot.number,plot.part,taxpayer.men,taxpayer.women,no.tax.men,no.tax.women,in.russia.men,in.russia.women,total.men,total.women,owner,rent,other,orthodox,other.christian,other.religion,draftee
+id,district,plot_number,plot_part,taxpayer_men,taxpayer_women,no_tax_men,no_tax_women,in_russia_men,in_russia_women,total_men,total_women,owner,rent,other,orthodox,other_christian,other_religion,draftee
 1,Valli,1,,1,2,3,0,0,0,4,2,5,1,0,0,0,0,0
 2,Valli,1,,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0
 3,Valli,2,,4,5,2,1,0,0,6,6,8,4,0,0,0,0,1

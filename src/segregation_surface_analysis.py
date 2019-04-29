@@ -9,16 +9,18 @@ from src import kde, data, utils
 
 
 class SegregationSurfaceAnalysis:
-    def __init__(self,
-                 df: pd.DataFrame,
-                 cell_size,
-                 bw,
-                 kernel,
-                 alpha=1,
-                 convex_hull: bool =True,
-                 buffer=0,
-                 data_id=None,
-                 groups: tuple=("host", "other")):
+    def __init__(
+            self,
+            df: pd.DataFrame,
+            cell_size,
+            bw,
+            kernel,
+            alpha=1,
+            convex_hull: bool =True,
+            buffer=0,
+            data_id=None,
+            groups: tuple=("host", "other"),
+    ):
         self.groups = groups
         self.data = df
         self.cell_size = cell_size

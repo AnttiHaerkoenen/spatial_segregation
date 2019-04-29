@@ -3,83 +3,62 @@ import os
 import pandas as pd
 import numpy as np
 import geopandas as gpd
-import json
 
 from src import utils
-from exceptions import SpatSegKeyError
 
 DATA_DIR = 'data'
 X, Y = 0, 1
 
 
-class SpatialSegregationData:
-    def __init__(
-            self,
-            location_data,
-            population_data=None,
-            join_method='outer',
-            join_on='plot.number',
-    ):
-        """
-        Data wrapper for spatial segregation analysis
-        """
-        self._data = self._combine_data(
-            location_data=location_data,
-            population_data=population_data,
-            how=join_method,
-            on=join_on,
-        )
-
-    def __str__(self):
-        return str(self._data)
-
-    @staticmethod
-    def _combine_data(
-            *,
-            location_data: gpd.GeoDataFrame,
-            population_data: pd.DataFrame=None,
-            location_index='NUMBER',
-            **kwargs
-    ) -> gpd.GeoDataFrame:
-        location_data = utils.split_plots(location_data, location_index)
-        if isinstance(population_data, pd.DataFrame):
-            location_data = location_data.set_index(location_index)
-            location_data = location_data.join(population_data, **kwargs)
-        return location_data
-
-        # data_dict = {}
-        #
-        # for feature in point_data['features']:
-        #     index = feature['properties'][point_index]
-        #     x, y = feature['geometry']['coordinates']
-        #     if coordinates_to_meters:
-        #         x, y = utils.degrees_to_meters(x, y, false_easting=false_easting, false_northing=false_northing)
-        #     data_dict[index] = {'x': x, 'y': y}
-        #
-        # for r in population_data:
-        #     if r[pop_index] in data_dict.keys():
-        #         data_dict[r[pop_index]]['host'] = r[host]
-        #         data_dict[r[pop_index]]['other'] = r[other]
-        #
-        # bad_keys = [key for key in data_dict
-        #             if key not in [r[pop_index]for r in population_data]]
-        #
-        # for key in bad_keys:
-        #     del data_dict[key]
-        #
-        # return pd.DataFrame.from_dict(data_dict, orient='index').reindex_axis("x y host other".split(), axis='columns')
-
-    @staticmethod
-    def shuffle_data(data_frame, columns=("host", "other")):
-        pop_columns = list(columns)
-        cols = data_frame.columns.values.tolist()
-        xy = data_frame.loc[:, list('xy')].values
-        pop = data_frame.loc[:, pop_columns].values
-        np.random.shuffle(xy)
-        return pd.DataFrame(np.hstack((xy, pop)), columns=cols)
+def combine_data(
+        *,
+        location_data: gpd.GeoDataFrame,
+        other_data: pd.DataFrame,
+        location_index,
+        **join_args,
+) -> gpd.GeoDataFrame:
+    """
+    Joins spatial and aspatial dataframes
+    :param location_data: geodataframe with locations
+    :param other_data: other dataframe
+    :param location_index: index for pd.DataFrame.set_index
+    :param join_args: kwargs for pd.DataFrame.join
+    :return:
+    """
+    location_data = utils.split_plots(location_data, location_index)
+    if isinstance(other_data, pd.DataFrame):
+        location_data = location_data.set_index(location_index)
+        combined_data = location_data.join(other_data, **join_args)
+        return combined_data
 
 
-########################################################################################################################
+def shuffle_data(data):
+    data.geometry = np.random.shuffle(data.geometry)
+    return data
+
+
+def prepare_pop_data(
+        population_data: pd.DataFrame,
+        cols=None,
+) -> pd.DataFrame:
+    pop_data = population_data.fillna(value=0)
+    if not cols:
+        cols = [
+            'plot_number',
+            'total_men',
+            'total_women',
+            'orthodox',
+            'other_christian',
+            'other_religion',
+        ]
+    pop_data.loc[:, cols] = pop_data.loc[:, cols].astype(int)
+    pop_data['lutheran'] = pop_data['total_men'] \
+                           + pop_data['total_women'] \
+                           - pop_data['orthodox'] \
+                           - pop_data['other_christian'] \
+                           - pop_data['other_religion']
+    return pop_data
+
 
 def get_limits(data_frame, variable):
     x = data_frame[variable]
@@ -96,12 +75,18 @@ if __name__ == '__main__':
     os.chdir(r'../data')
 
     pop_data = utils.aggregate_sum(
-        utils.prepare_pop_data(pd.read_csv('1880.csv')),
-        group_cols='district, plot.number'.split(', '),
+        prepare_pop_data(pd.read_csv('1880.csv')),
+        group_cols='district, plot_number'.split(', '),
         target_cols='lutheran, orthodox'.split(', '),
     )
 
     point_data = gpd.read_file('points1878.geojson')
 
-    d = SpatialSegregationData(pop_data, point_data)
-    print(d)
+    d = combine_data(
+        location_data=point_data,
+        other_data=pop_data,
+        location_index='NUMBER',
+        on='plot_number',
+        how='outer',
+    )
+    print(pop_data)

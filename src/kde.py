@@ -17,15 +17,17 @@ KERNELS = kernel_functions.KERNELS
 
 
 class KernelDensitySurface:
-    def __init__(self,
-                 df: pd.DataFrame,
-                 groups: tuple =("host", "other"),
-                 cell_size=25,
-                 kernel: str ='biweight',
-                 bw=50,
-                 a=1,
-                 convex_hull=False,
-                 convex_hull_buffer=0):
+    def __init__(
+            self,
+            df: pd.DataFrame,
+            groups: tuple =("host", "other"),
+            cell_size=25,
+            kernel: str = 'biweight',
+            bw=50,
+            a=1,
+            convex_hull=False,
+            convex_hull_buffer=0,
+    ):
         """
         Creates a data frame representing KDE surface clipped to minimum convex polygon of input data points.
         :param groups: population groups to be compared

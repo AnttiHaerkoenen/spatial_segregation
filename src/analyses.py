@@ -3,7 +3,6 @@ import datetime
 import pandas as pd
 
 from src import segregation_index_analysis, segregation_surface_analysis, data, kde, plotting
-from .exceptions import SpatSegIndexError, SpatSegTypeError, SpatSegIOError, SpatSegNotImplementedError
 
 
 class Analyses:
@@ -22,12 +21,7 @@ class Analyses:
         self._results = []
 
     def __getitem__(self, item):
-        try:
-            self.results[item]
-        except IndexError:
-            raise SpatSegIndexError
-        except TypeError:
-            raise SpatSegTypeError
+        return self.results[item]
 
     @property
     def results(self):
@@ -40,10 +34,7 @@ class Analyses:
                 datetime.date.today()
             )
 
-        try:
-            self.results.to_csv(file)
-        except IOError:
-            raise SpatSegIOError("Error! Saving failed.")
+        self.results.to_csv(file)
 
     def load(self, file=None):
         if not file:
@@ -51,13 +42,10 @@ class Analyses:
                 self.__class__.__name__,
                 datetime.date.today()
             )
-        try:
-            self._results = pd.DataFrame.from_csv(file)
-        except IOError:
-            raise SpatSegIOError("File not found")
+        self._results = pd.DataFrame.from_csv(file)
 
     def analyse(self):
-        raise SpatSegNotImplementedError
+        raise NotImplementedError
 
 ########################################################################################################################
 
@@ -69,12 +57,12 @@ class SegregationSurfaceAnalyses(Analyses):
             parameters,
             simulations=0,
             convex_hull=True,
-            buffers=(1,)
+            buffers=(1,),
     ):
         super(SegregationSurfaceAnalyses, self).__init__(
             data_dict=data_dict,
             parameters=parameters,
-            simulations=simulations
+            simulations=simulations,
         )
         self.convex_hull = convex_hull
         self.buffers = buffers

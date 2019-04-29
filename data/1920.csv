@@ -1,4 +1,4 @@
-id,district,plot.number,taxpayer.men,taxpayer.women,no.tax.men,no.tax.women,in.russia.men,in.russia.women,total.men,total.women,upper,lower,worker.industrial,worker.other,servants,other,not.present,orthodox,other.christian,other.religion,draft
+id,district,plot_number,taxpayer_men,taxpayer_women,no_tax_men,no_tax_women,in_russia_men,in_russia_women,total_men,total_women,upper,lower,worker_industrial,worker_other,servants,other,not_present,orthodox,other_christian,other_religion,draft
 1,Valli,1,2,1,4,0,0,0,6,1,0,7,0,0,0,0,0,0,0,0,0
 2,Valli,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0
 3,Valli,2,0,1,2,2,0,0,2,3,5,0,0,0,0,0,0,0,0,0,0

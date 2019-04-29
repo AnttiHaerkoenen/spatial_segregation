@@ -7,13 +7,22 @@ import geopandas as gpd
 import numpy as np
 import shapely.geometry
 
-from src.exceptions import *
 
-
-def split_plots(geodataframe, target_col):
+def split_plots(
+        geodataframe: gpd.GeoDataFrame,
+        target_col: str,
+        separator: str = ',',
+) -> gpd.GeoDataFrame:
+    """
+    Splits plot rows in parts by based on separator
+    :param geodataframe:
+    :param target_col: column name
+    :param separator: separator, default ','
+    :return: GeoDataFrame with split rows
+    """
     new_geodataframe = gpd.GeoDataFrame(columns=geodataframe.columns)
     for _, row in geodataframe.iterrows():
-        for c in str(row[target_col]).split(','):
+        for c in str(row[target_col]).split(separator):
             new_row = row
             new_row[target_col] = c
             new_geodataframe.append(new_row)
@@ -25,17 +34,26 @@ def aggregate_sum(
         group_cols: Sequence,
         target_cols: Sequence,
 ) -> pd.DataFrame:
-    agg_data = gpd.GeoDataFrame(columns=data.columns)
+    """
+    Calculates aggregate sums of target_cols based grouped by group_cols.
+    Preserves crs-attribute if 'data' is GeoDataFrame.
+    :param data: target dataframe
+    :param group_cols:
+    :param target_cols:
+    :return:
+    """
+    agg_data = pd.DataFrame(columns=data.columns)
     if isinstance(data, gpd.GeoDataFrame):
         agg_data.crs = data.crs
-    last = None
+
+    last = pd.Series()
     len_targets = len(target_cols)
     sums = pd.Series(np.zeros(len_targets), index=target_cols)
     for _, row in data.iterrows():
-        if set(row[group_cols]) != last:
-            last = set(row[group_cols])
+        if row[group_cols].all() != last.all():
+            last = row[group_cols]
             new_row = row
-            new_row[group_cols] = sums
+            new_row[target_cols] = sums
             sums = pd.Series(np.zeros(len_targets), index=target_cols)
             agg_data = agg_data.append(new_row)
         else:
@@ -43,26 +61,13 @@ def aggregate_sum(
 
     return agg_data.reindex()
 
-    # cols = len(data[0])
-    # data_rows = [i for i in range(cols) if i != group_index]
-    # aggregated_data = []
-    # last_id = None
-    # for row in data:
-    #     if row[group_index] == last_id:
-    #         for k in data_rows:
-    #             aggregated_data[-1][k] += row[k]
-    #     else:
-    #         aggregated_data.append(row)
-    #     last_id = row[group_index]
-    # return aggregated_data
-
 
 def combine_data(
         shp_fp: str,
         stats_fp: str,
-        shp_on: str=None,
-        stats_on: str=None,
-        sheet: str or int=None,
+        shp_on: str = None,
+        stats_on: str = None,
+        sheet: str or int = None,
         **kwargs
 ) -> gpd.GeoDataFrame or None:
     """
@@ -73,11 +78,12 @@ def combine_data(
     :param stats_on: Which column of non-spatial data to use in join
     :param sheet: which excel sheet to use
     :param kwargs: Additional arguments for pandas.DataFrame.join
-    :return: geopandas.GeoDataFrame with joined data
+    :return: gpd.GeoDataFrame with joined data
     """
     data_ = gpd.read_file(shp_fp)
     with open(shp_fp.replace('.shp', '.prj')) as crs_fin:
         crs_ = crs_fin.readline().strip()
+    data_.crs = crs_
 
     stats_format = stats_fp.split('.', maxsplit=1)[1]
     if stats_format == 'csv':
@@ -85,20 +91,20 @@ def combine_data(
     elif stats_format in ('xls', 'xlsx'):
         data_stats = pd.read_excel(stats_fp, sheet_name=sheet)
     else:
-        logging.error(f'combine_data: {stats_format} is not supported data format')
+        print(f'combine_data: {stats_format} is not supported data format')
         return None
 
     if shp_on:
         try:
             data_ = data_.set_index(shp_on)
         except KeyError:
-            logging.error(f"{shp_on} is wrong key. Check spelling")
+            print(f"{shp_on} is wrong key. Check spelling")
             return None
     if stats_on:
         try:
             data_stats = data_stats.set_index(stats_on)
         except KeyError:
-            logging.error(f"{stats_on} is wrong key. Check spelling")
+            print(f"{stats_on} is wrong key. Check spelling")
             return None
 
     data_ = data_.join(data_stats, **kwargs)
@@ -134,8 +140,8 @@ def get_stars(p):
     :param p: p-value
     :return: '***', '**', '*', '.' or ''
     """
-    if p < 0 or p > 1:
-        raise SpatSegValueError("That cannot be a p-value!")
+    if p < 0 or 1 < p:
+        raise ValueError("That cannot be a p-value!")
     elif p <= 0.001:
         return "***"
     elif p <= 0.01:
@@ -155,6 +161,12 @@ def select_by_location(point_data, polygon):
     :param polygon: instance of shapely.geometry.polygon.Polygon
     :return: data frame of coordinates
     """
+    #######################################################################
+    # MURSUT Python 3.8 varten!
+    # if (poly_crs := polygon.crs) != (point_crs := point_data.crs):
+    #     print(f"Mismatching CRS! {poly_crs} vs {point_crs}")
+    #     return
+    #######################################################################
     xy = [(row.x, row.y) for row in point_data.itertuples()]
 
     points = [p for p in xy
@@ -183,16 +195,6 @@ def make_mask(kde, polygon, outside=True):
     return arr.reshape(kde.shape)
 
 
-def prepare_pop_data(population_data: pd.DataFrame, cols=None) -> pd.DataFrame:
-    pop_data = population_data.fillna(value=0)
-    if not cols:
-        cols = ['plot.number', 'total.men', 'total.women', 'orthodox', 'other.christian', 'other.religion']
-    pop_data.loc[:, cols] = pop_data.loc[:, cols].astype(int)
-    pop_data['lutheran'] = pop_data['total.men'] + pop_data['total.women'] \
-                           - pop_data['orthodox'] - pop_data['other.christian'] - pop_data['other.religion']
-    return pop_data
-
-
 def get_convex_hull(point_data, convex_hull_buffer=0):
     """
     Create a convex hull based on points
@@ -206,13 +208,13 @@ def get_convex_hull(point_data, convex_hull_buffer=0):
 
     return convex_hull.buffer(convex_hull_buffer)
 
-
-def pop_to_fraction(data_frame, columns=("host", "other")):
-    pop_columns = list(columns)
-
-    xy = data_frame.loc[:, list("xy")].values
-    pop = data_frame.loc[:, pop_columns].values
-    pop_sum = np.nansum(pop, axis=0, keepdims=True)
-    pop = pop / pop_sum
-
-    return pd.DataFrame(np.hstack((xy, pop)), columns=list("xy") + pop_columns)
+#
+# def pop_to_fraction(data_frame, columns=("host", "other")):
+#     pop_columns = list(columns)
+#
+#     xy = data_frame.loc[:, list("xy")].values
+#     pop = data_frame.loc[:, pop_columns].values
+#     pop_sum = np.nansum(pop, axis=0, keepdims=True)
+#     pop = pop / pop_sum
+#
+#     return pd.DataFrame(np.hstack((xy, pop)), columns=list("xy") + pop_columns)
