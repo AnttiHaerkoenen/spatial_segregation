@@ -41,7 +41,7 @@ def prepare_pop_data(
         population_data: pd.DataFrame,
         cols=None,
 ) -> pd.DataFrame:
-    pop_data = population_data.fillna(value=0)
+    pop_frame = population_data.fillna(value=0)
     if not cols:
         cols = [
             'plot_number',
@@ -51,13 +51,13 @@ def prepare_pop_data(
             'other_christian',
             'other_religion',
         ]
-    pop_data.loc[:, cols] = pop_data.loc[:, cols].astype(int)
-    pop_data['lutheran'] = pop_data['total_men'] \
-                           + pop_data['total_women'] \
-                           - pop_data['orthodox'] \
-                           - pop_data['other_christian'] \
-                           - pop_data['other_religion']
-    return pop_data
+    pop_frame.loc[:, cols] = pop_frame.loc[:, cols].astype(int)
+    pop_frame['lutheran'] = pop_frame['total_men'] \
+        + pop_frame['total_women'] \
+        - pop_frame['orthodox'] \
+        - pop_frame['other_christian'] \
+        - pop_frame['other_religion']
+    return pop_frame
 
 
 def get_limits(data_frame, variable):
