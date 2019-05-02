@@ -1,12 +1,18 @@
 import os
+import argparse
 
 import pandas as pd
-import numpy as np
 
 from src import data
 
 
-def fill_data_sheet(input_file, output_file, sheet='Sheet1', columns='all', fill_with_zeros=None):
+def fill_data_sheet(
+        input_file,
+        output_file,
+        sheet='Sheet1',
+        columns='all',
+        fill_with_zeros=None,
+) -> None:
     """
     Fills gaps in excel data sheet using pandas.DataFrame.fillna().
     Fills columns given in columns-parameter using 'ffill'/'pad',
