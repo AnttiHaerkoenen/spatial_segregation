@@ -64,27 +64,42 @@ def aggregate_sum(
     return agg_data.reindex()
 
 
-def combine_data(
+def merge_dataframes(
         *,
         location_data: gpd.GeoDataFrame,
         other_data: pd.DataFrame,
-        location_index,
-        **merge_args,
+        on_location,
+        on_other,
+        **kwargs,
 ) -> gpd.GeoDataFrame:
     """
     Joins spatial and aspatial dataframes
     :param location_data: geodataframe with locations
     :param other_data: other dataframe
-    :param location_index: index for pd.DataFrame.set_index
-    :param merge_args: kwargs for pd.DataFrame.join
+    :param on_location: key for joining
+    :param on_other: key for joining
+    :param kwargs: additional keyword arguments for pd.DataFrame.merge
     :return:
     """
-    location_data = split_plots(location_data, location_index)
+    if not isinstance(location_data, gpd.GeoDataFrame):
+        raise ValueError(f"{location_data}: not a geodataframe")
+    if not isinstance(other_data, pd.DataFrame):
+        raise ValueError(f"{other_data}: not a dataframe")
+    location_data = split_plots(location_data, on_location)
     if location_data.empty:
-        raise ValueError(f"Geodataframe is empty")
-    if isinstance(other_data, pd.DataFrame):
-        combined_data = location_data.merge(other_data, **merge_args)
-        return combined_data
+        raise ValueError("Geodataframe is empty")
+    if other_data.empty:
+        raise ValueError("Dataframe is empty")
+
+    location_data[on_location] = location_data[on_location].astype(str)
+    other_data[on_other] = other_data[on_other].astype(str)
+    combined_data = location_data.merge(
+        other_data,
+        left_on=on_location,
+        right_on=on_other,
+        **kwargs
+    )
+    return combined_data
 
 
 def shuffle_data(data):
@@ -144,11 +159,11 @@ if __name__ == '__main__':
 
     point_data = prepare_point_data(gpd.read_file('points1878.geojson'))
 
-    d = combine_data(
+    d = merge_dataframes(
         location_data=point_data.set_index('OBJECTID'),
         other_data=pop_data,
-        location_index='NUMBER',
-        left_on='NUMBER',
-        right_on='plot_number',
-        how='outer',
+        on_location='NUMBER',
+        on_other='plot_number',
+        how='inner',
     )
+    print(d)
