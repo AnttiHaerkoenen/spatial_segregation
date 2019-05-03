@@ -76,23 +76,32 @@ def merge_dataframes(
     Joins spatial and aspatial dataframes
     :param location_data: geodataframe with locations
     :param other_data: other dataframe
-    :param on_location: key for joining
-    :param on_other: key for joining
+    :param on_location: key for joining, must be same type as on_other
+    :param on_other: key for joining, must be same type as on_location
     :param kwargs: additional keyword arguments for pd.DataFrame.merge
     :return:
     """
+    if type(on_location) != type(on_other):
+        raise ValueError("Mismatching column specifications")
     if not isinstance(location_data, gpd.GeoDataFrame):
         raise ValueError(f"{location_data}: not a geodataframe")
     if not isinstance(other_data, pd.DataFrame):
         raise ValueError(f"{other_data}: not a dataframe")
-    location_data = split_plots(location_data, on_location)
+
     if location_data.empty:
         raise ValueError("Geodataframe is empty")
     if other_data.empty:
         raise ValueError("Dataframe is empty")
 
-    location_data[on_location] = location_data[on_location].astype(str)
-    other_data[on_other] = other_data[on_other].astype(str)
+    if isinstance(on_location, str):
+        location_data[on_location] = location_data[on_location].astype(str)
+        other_data[on_other] = other_data[on_other].astype(str)
+    elif isinstance(on_location, Sequence):
+        for col in on_location:
+            location_data[col] = location_data[col].astype(str)
+        for col in on_other:
+            other_data[col] = other_data[col].astype(str)
+
     combined_data = location_data.merge(
         other_data,
         left_on=on_location,
@@ -140,9 +149,9 @@ def prepare_point_data(
         # if (num_2 := point_data.loc[i, number_col_2]) != na:
         num_2 = point_data.loc[i, number_col_2]
         if num_2 != na:
-            point_data.loc[i, number_col] = f'{point_data.loc[i, number_col]}, {num_2}'
+            point_data.loc[i, number_col] = f'{point_data.loc[i, number_col]},{num_2}'
     del point_data[number_col_2]
-    return point_data
+    return split_plots(point_data, number_col)
 
 
 ########################################################################################################################
@@ -151,19 +160,27 @@ def prepare_point_data(
 if __name__ == '__main__':
     os.chdir(r'../data')
 
-    pop_data = aggregate_sum(
-        prepare_pop_data(pd.read_csv('1880.csv')),
+    cols = dict(
         group_cols='district, plot_number'.split(', '),
         target_cols='lutheran, orthodox'.split(', '),
     )
+    pop_data = (
+        pd.read_csv('1880.csv')
+            .pipe(prepare_pop_data)
+            .pipe(aggregate_sum, **cols)
+    )
 
-    point_data = prepare_point_data(gpd.read_file('points1878.geojson'))
+    point_data = (
+        gpd.read_file('points1878.geojson')
+            .pipe(prepare_point_data)
+    )
+    point_data['district'] = pd.Series(['Valli'] * len(point_data.index))
 
     d = merge_dataframes(
         location_data=point_data.set_index('OBJECTID'),
         other_data=pop_data,
-        on_location='NUMBER',
-        on_other='plot_number',
-        how='inner',
+        on_location=['district', 'NUMBER'],
+        on_other=['district', 'plot_number'],
+        how='left',
     )
     print(d)
