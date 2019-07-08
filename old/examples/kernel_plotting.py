@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from src import plotting, kernel_functions as kf
+from old.src import kernel_functions as kf, plotting
 
 plt.style.use('classic')
 

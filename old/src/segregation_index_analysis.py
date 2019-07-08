@@ -1,12 +1,10 @@
 import os
 import json
-import datetime
 
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 
-from src import analyses, kde, data, segregation_indices, utils
+from old.src import kde, segregation_indices, data
 from src.exceptions import SpatSegKeyError, SpatSegValueError
 
 

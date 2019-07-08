@@ -5,8 +5,6 @@ import pandas as pd
 import numpy as np
 import geopandas as gpd
 
-from src import utils
-
 DATA_DIR = 'data'
 
 

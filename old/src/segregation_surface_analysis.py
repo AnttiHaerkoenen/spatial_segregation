@@ -1,11 +1,10 @@
 import os
 import json
 
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-from src import kde, data, utils
+from old.src import kde, data
 
 
 class SegregationSurfaceAnalysis:

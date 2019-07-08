@@ -6,9 +6,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-import kernel_functions, data, plotting
-from .exceptions import SpatSegTypeError, SpatSegValueError, SpatSegIOError, SpatSegKeyError, SpatSegIndexError
-
+from old.src import kernel_functions, plotting, data
+from .exceptions import SpatSegTypeError, SpatSegValueError, SpatSegIOError, SpatSegKeyError
 
 ########################################################################################################################
 
@@ -20,7 +19,7 @@ class KernelDensitySurface:
     def __init__(
             self,
             df: pd.DataFrame,
-            groups: tuple =("host", "other"),
+            groups: tuple = ("host", "other"),
             cell_size=25,
             kernel: str = 'biweight',
             bw=50,

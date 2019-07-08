@@ -5,7 +5,7 @@ import hypothesis.extra.numpy as hnp
 import numpy as np
 import numpy.testing as npt
 
-from src.kernel_functions import epanechnikov, uniform, gaussian, triangle, biweight
+from old.src.kernel_functions import epanechnikov, uniform, gaussian, triangle, biweight
 from src.exceptions import SpatSegTypeError, SpatSegValueError
 
 

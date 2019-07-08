@@ -1,6 +1,4 @@
 numpy
 pandas
-hypothesis
-matplotlib
-shapely
 geopandas
+segregation

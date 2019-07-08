@@ -5,7 +5,7 @@ import pandas as pd
 from pandas.tools.plotting import scatter_matrix
 import matplotlib.pyplot as plt
 
-import segregation_index_analysis, segregation_surface_analysis, data, kde, analyses, utils
+from old.src import segregation_surface_analysis, data
 
 
 def plot_kernel(kernel, bw=1):

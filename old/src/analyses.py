@@ -2,7 +2,7 @@ import datetime
 
 import pandas as pd
 
-from src import segregation_index_analysis, segregation_surface_analysis, data, kde, plotting
+from old.src import segregation_index_analysis, segregation_surface_analysis
 
 
 class Analyses:

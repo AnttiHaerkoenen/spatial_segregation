@@ -1,11 +1,10 @@
 import unittest
 
-from hypothesis import given, strategies as st
+from hypothesis import given
 import hypothesis.extra.numpy as hnp
 import numpy as np
-import numpy.testing as npt
 
-from src.segregation_indices import calc_indices
+from old.src.segregation_indices import calc_indices
 from src.exceptions import SpatSegValueError
 
 

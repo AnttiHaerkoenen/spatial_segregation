@@ -5,7 +5,7 @@ import pandas as pd
 from pandas.tools.plotting import scatter_matrix
 import matplotlib.pyplot as plt
 
-from src import data, plotting
+from old.src import plotting, data
 
 os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 os.chdir(os.path.join(os.path.abspath(os.path.pardir), data.DATA_DIR))
