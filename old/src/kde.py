@@ -173,7 +173,7 @@ class KernelDensitySurface:
 # def create_kde_surface(df,
 #                        cell_size=15,
 #                        kernel='biweight',
-#                        bw=50,
+#                        bandwidth=50,
 #                        a=1,
 #                        convex_hull=True,
 #                        convex_hull_buffer=0):
@@ -184,17 +184,17 @@ class KernelDensitySurface:
 #     :param df: input data with x and y coordinates representing points
 #     :param cell_size: cell size in meters, default 15
 #     :param kernel: kernel type, default 'biweight'
-#     :param bw: bandwidth in meters, default 50
+#     :param bandwidth: bandwidth in meters, default 50
 #     :param a: second parameter for biweight kernel, default 1
 #     :return: data frame with columns x, y, host and other
 #     """
 #
 #     ymax, ymin = data.get_limits(df, 'y')
 #     xmax, xmin = data.get_limits(df, 'x')
-#     ymax += bw
-#     ymin -= bw
-#     xmax += bw
-#     xmin -= bw
+#     ymax += bandwidth
+#     ymin -= bandwidth
+#     xmax += bandwidth
+#     xmin -= bandwidth
 #     x = np.arange(xmin, xmax, cell_size)
 #     y = np.arange(ymin, ymax, cell_size)
 #     xx, yy = np.meshgrid(x, y)
@@ -207,7 +207,7 @@ class KernelDensitySurface:
 #         _data_frame = select_by_location(_data_frame, mcp)
 #
 #     d = calc_d(df, _data_frame)
-#     w = calc_w(d, kernel, bw, a)
+#     w = calc_w(d, kernel, bandwidth, a)
 #
 #     for group in 'host', 'other':
 #         pop = np.broadcast_to(df[group][np.newaxis:, ], w.shape) * w

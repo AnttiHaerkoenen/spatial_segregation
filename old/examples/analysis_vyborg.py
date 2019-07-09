@@ -51,8 +51,8 @@ ana2.analyse()
 ana2.save("SegregationIndexAnalysis_kaikki.csv")
 
 results = pd.merge(ana1.results, ana2.results)
-results = results["year kernel bw cell_size s exposure isolation km information".split()]
-results = results.sort_values(by='year bw cell_size kernel'.split())
+results = results["year kernel bandwidth cell_size s exposure isolation km information".split()]
+results = results.sort_values(by='year bandwidth cell_size kernel'.split())
 results.index = np.arange(1, len(results) + 1)
 
 results.to_csv("kaikki.csv")

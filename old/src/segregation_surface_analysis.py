@@ -45,7 +45,7 @@ class SegregationSurfaceAnalysis:
 
     def __str__(self):
         return(
-            "Segregation Surface Analysis, S = {0}, cell size = {1}, bw = {2}, kernel = {3}".format(
+            "Segregation Surface Analysis, S = {0}, cell size = {1}, bandwidth = {2}, kernel = {3}".format(
                 self.s,
                 self.cell_size,
                 self.bw,

@@ -12,7 +12,7 @@ def plot_kernel(kernel, bw=1):
     """
     Function for plotting kernels.
     :param kernel: kernel function object
-    :param bw: bw parameter
+    :param bw: bandwidth parameter
     :return: matplotlib.lines.Line2D object
     """
     x = np.arange(-2 * bw, 2 * bw, 0.01)
@@ -22,7 +22,7 @@ def plot_kernel(kernel, bw=1):
 
 
 def plot_results_all(results, kernel, indices=None, title=None, subplot_title_param=None, labels=None):
-    bws = sorted(results['bw'].unique())
+    bws = sorted(results['bandwidth'].unique())
     cells = sorted(results['cell_size'].unique())
     years = sorted(results['year'].unique())
     fig, axs = plt.subplots(len(bws), len(cells), sharey='col', figsize=(8, 12))

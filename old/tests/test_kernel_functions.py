@@ -6,7 +6,7 @@ import numpy as np
 import numpy.testing as npt
 
 from old.src.kernel_functions import epanechnikov, uniform, gaussian, triangle, biweight
-from src.exceptions import SpatSegTypeError, SpatSegValueError
+from spatial_segregation.exceptions import SpatSegTypeError, SpatSegValueError
 
 
 class TestEpanechnikov(unittest.TestCase):

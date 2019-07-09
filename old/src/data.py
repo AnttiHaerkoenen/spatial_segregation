@@ -5,8 +5,6 @@ import pandas as pd
 import numpy as np
 import geopandas as gpd
 
-DATA_DIR = 'data'
-
 
 def split_plots(
         geodataframe: gpd.GeoDataFrame,
@@ -181,4 +179,3 @@ if __name__ == '__main__':
         on_other=['district', 'plot_number'],
         how='left',
     )
-    print(d)

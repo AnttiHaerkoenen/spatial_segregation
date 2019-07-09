@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.exceptions import SpatSegValueError
+from spatial_segregation.exceptions import SpatSegValueError
 
 
 def calc_indices(pop, which_indices='all', host_col=0, other_col=1, exposure_matrix=False):

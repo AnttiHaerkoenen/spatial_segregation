@@ -74,7 +74,7 @@ def make_mask(kde, polygon, outside=True):
     Returns a mask for kde
     :param kde: kernel density surface
     :type kde: KernelDensitySurface
-    :param polygon: a polygon area to be analysed
+    :param polygon: a polygon polygon to be analysed
     :type polygon: shapely.geometry.polygon.Polygon
     :param outside: sets cells outside of polygon this value
     :type outside: bool

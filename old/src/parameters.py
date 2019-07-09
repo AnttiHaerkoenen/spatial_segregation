@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from .exceptions import SpatSegTypeError
 
-ParameterPermutation = namedtuple('ParameterPermutation', 'cell_size, kernel, bw, alpha')
+ParameterPermutation = namedtuple('ParameterPermutation', 'cell_size, kernel, bandwidth, alpha')
 
 NEEDS_ALPHA = frozenset('biweight')
 
