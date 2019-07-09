@@ -26,6 +26,8 @@ class KDESurface:
             data = data.drop([data._geometry_column_name], axis=1)
             data = data.set_geometry('geometry')
 
+        self.polygon = polygon
+
         data = data.rename(columns={
             variable: 'variable',
         })
@@ -35,8 +37,6 @@ class KDESurface:
         convex = MultiPoint(data.geometry).convex_hull
         if not self.polygon:
             self.polygon = convex.buffer(kernel.bandwidth)
-        else:
-            self.polygon = polygon
         xmin, ymin, xmax, ymax = self.bbox = self.polygon.bounds
         x = np.arange(xmin, xmax, self.cell_size)
         y = np.arange(ymin, ymax, self.cell_size)
