@@ -16,6 +16,7 @@ class KDESurface:
             variable: str,
             kernel: Kernel,
             cell_size,
+            polygon=None,
     ):
         if not isinstance(data, gpd.GeoDataFrame):
             raise TypeError('data should be a geopandas GeoDataFrame')
@@ -32,7 +33,10 @@ class KDESurface:
         self.cell_size = cell_size
         data.points = data.geometry.centroid
         convex = MultiPoint(data.geometry).convex_hull
-        self.polygon = convex.buffer(kernel.bandwidth)
+        if not self.polygon:
+            self.polygon = convex.buffer(kernel.bandwidth)
+        else:
+            self.polygon = polygon
         xmin, ymin, xmax, ymax = self.bbox = self.polygon.bounds
         x = np.arange(xmin, xmax, self.cell_size)
         y = np.arange(ymin, ymax, self.cell_size)
