@@ -1,12 +1,10 @@
-import os
-
 import numpy as np
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point, MultiPoint
 import matplotlib.pyplot as plt
 
-from kernels import Kernel, QuarticKernel
+from old.kernels import Kernel, QuarticKernel
 
 
 class KDESurface:
@@ -35,8 +33,10 @@ class KDESurface:
         self.cell_size = cell_size
         data.points = data.geometry.centroid
         convex = MultiPoint(data.geometry).convex_hull
+
         if not self.polygon:
             self.polygon = convex.buffer(kernel.bandwidth)
+
         xmin, ymin, xmax, ymax = self.bbox = self.polygon.bounds
         x = np.arange(xmin, xmax, self.cell_size)
         y = np.arange(ymin, ymax, self.cell_size)

@@ -25,6 +25,10 @@ class Kernel(ABC):
     def __eq__(self, other):
         raise NotImplementedError
 
+    @abstractmethod
+    def __str__(self):
+        return "Abstract base class for kernels"
+
 
 class QuarticKernel(Kernel):
     name = 'quartic kernel'
