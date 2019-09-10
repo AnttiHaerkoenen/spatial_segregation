@@ -215,7 +215,7 @@
 ,
 { "type": "Feature", "id": 106, "properties": { "OBJECTID": 107, "NUMBER": 114, "NUMBER2": 0 }, "geometry": { "type": "Point", "coordinates": [ 594671.176000, 6731905.026100 ] } }
 ,
-{ "type": "Feature", "id": 107, "properties": { "OBJECTID": 108, "NUMBER": 155, "NUMBER2": 0 }, "geometry": { "type": "Point", "coordinates": [ 594699.036900, 6731915.301000 ] } }
+{ "type": "Feature", "id": 107, "properties": { "OBJECTID": 108, "NUMBER": 115, "NUMBER2": 0 }, "geometry": { "type": "Point", "coordinates": [ 594699.036900, 6731915.301000 ] } }
 ,
 { "type": "Feature", "id": 108, "properties": { "OBJECTID": 109, "NUMBER": 117, "NUMBER2": 0 }, "geometry": { "type": "Point", "coordinates": [ 594800.048400, 6731841.182400 ] } }
 ,

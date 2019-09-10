@@ -8,7 +8,7 @@ import geopandas as gpd
 from shapely.geometry import MultiPoint, Point
 from libpysal.weights import Kernel
 from segregation import spatial
-from surface_based import surface_dissim
+from surface_based import _surface_dissim
 
 
 def timing(f):
@@ -24,7 +24,7 @@ def timing(f):
 
 @timing
 def my_analysis(data):
-    s, _ = surface_dissim(data, function='quartic', bandwidth=10, group_1_pop_var='pop1', group_2_pop_var='pop2')
+    s, _ = _surface_dissim(data, function='quartic', bandwidth=10, group_1_pop_var='pop1', group_2_pop_var='pop2')
     return s
 
 

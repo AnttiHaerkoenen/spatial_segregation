@@ -4,14 +4,14 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import MultiPoint, Point
-from libpysal.weights import Kernel
+from libpysal.weights import W, Kernel
 
 
-def surface_dissim(
+def _surface_dissim(
         data: gpd.GeoDataFrame,
         group_1_pop_var: str,
         group_2_pop_var: str,
-        **kwargs
+        w: Kernel = None,
 ):
     if not isinstance(data, gpd.GeoDataFrame):
         raise TypeError('data should be a geopandas GeoDataFrame')
@@ -30,11 +30,14 @@ def surface_dissim(
     sum_2 = data['group_2_pop_var'].sum()
     data['group_2_pop_var_norm'] = data['group_2_pop_var'] / sum_2
 
-    points = [(p.x, p.y) for p in data.centroid]
-    kernel = Kernel(points, **kwargs)
-    w, _ = kernel.full()
-    density_1 = w * data['group_1_pop_var_norm'].values
-    density_2 = w * data['group_2_pop_var_norm'].values
+    if not w:
+        points = [(p.x, p.y) for p in data.centroid]
+        w = Kernel(points)
+
+    w_, _ = w.full()
+
+    density_1 = w_ * data['group_1_pop_var_norm'].values
+    density_2 = w_ * data['group_2_pop_var_norm'].values
     densities = np.vstack([density_1.sum(axis=1), density_2.sum(axis=1)])
     v_union = densities.max(axis=0).sum()
     v_intersect = densities.min(axis=0).sum()
@@ -54,5 +57,5 @@ if __name__ == '__main__':
         'pop2': [0, 1, 1],
     }
     data = gpd.GeoDataFrame.from_dict(data_dict)
-    s, _ = surface_dissim(data, function='quartic', group_1_pop_var='pop1', group_2_pop_var='pop2')
+    s, _ = _surface_dissim(data, group_1_pop_var='pop1', group_2_pop_var='pop2')
     print(s)
