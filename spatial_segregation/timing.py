@@ -24,7 +24,7 @@ def timing(f):
 
 @timing
 def my_analysis(data):
-    s, _ = _surface_dissim(data, function='quartic', bandwidth=10, group_1_pop_var='pop1', group_2_pop_var='pop2')
+    s, _ = _surface_dissim(data, function='box', bandwidth=10, group_1_pop_var='pop1', group_2_pop_var='pop2')
     return s
 
 
