@@ -67,8 +67,12 @@ def plot_density(
     fig.xaxis.minor_tick_line_color = None
     fig.yaxis.major_tick_line_color = None
     fig.yaxis.minor_tick_line_color = None
+
     fig.xaxis.major_label_text_font_size = '0pt'
     fig.yaxis.major_label_text_font_size = '0pt'
+
+    fig.xgrid.visible = False
+    fig.ygrid.visible = False
 
     water = gpd.read_file('water_clip.shp')
     water.crs = {'init': 'epsg:4326'}
