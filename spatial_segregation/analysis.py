@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 from segregation.spatial import SpatialMinMax
+from libpysal.weights import W
 from bokeh.plotting import figure, show, save
 from bokeh.models import GeoJSONDataSource
 from bokeh.palettes import grey
@@ -27,12 +28,20 @@ def get_xy(
     return geodf
 
 
-def box(u, bandwidth):
-    return np.where(np.abs(u) <= bandwidth, 1, 0)
+def gaussian(u, bw):
+    return 1 / (np.sqrt(2 * np.pi) * bw ** 2) * np.exp(- u ** 2 / (2 * bw ** 2))
 
 
-def triangle(u, bandwidth):
-    return np.where(np.abs(u) <= bandwidth, 1 - u/bandwidth, 0)
+def box(u, bw):
+    return np.where(np.abs(u) <= bw, 1, 0)
+
+
+def triangle(u, bw):
+    return np.where(np.abs(u) <= bw, 1 - u/bw, 0)
+
+
+def biweight(u, bw, alpha=1):
+    return np.where(np.abs(u) <= bw, ((bw ** 2 - u ** 2) / (bw ** 2 + u ** 2)) ** alpha, 0)
 
 
 def plot_density(
@@ -132,7 +141,7 @@ if __name__ == '__main__':
         data,
         group='orthodox',
         year=1900,
-        kernel_function=triangle,
+        kernel_function=biweight,
         bandwidth=100,
         cell_size=10,
     )
