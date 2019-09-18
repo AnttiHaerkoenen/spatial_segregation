@@ -47,13 +47,6 @@ def plot_density(
 ):
     if crs is None:
         crs = {'init': 'epsg:3067'}
-    fig = figure(title=f"Density of {group.capitalize()} population in Vyborg in {year}")
-
-    water = gpd.read_file('water_clip.shp')
-    water.crs = {'init': 'epsg:4326'}
-    water.geometry = water.geometry.to_crs(crs)
-    water = get_xy(water)
-    water_src = GeoJSONDataSource(geojson=water.to_json())
 
     pop = get_xy(data)
     # pop_src = GeoJSONDataSource(geojson=pop.to_json())
@@ -64,6 +57,25 @@ def plot_density(
     maxx += pad
     maxy += pad
     w, h = maxx - minx, maxy - miny
+
+    fig = figure(
+        title=f"Density of {group.capitalize()} population in Vyborg in {year}",
+        x_range=(minx, maxx),
+        y_range=(miny, maxy),
+    )
+    fig.xaxis.major_tick_line_color = None
+    fig.xaxis.minor_tick_line_color = None
+    fig.yaxis.major_tick_line_color = None
+    fig.yaxis.minor_tick_line_color = None
+    fig.xaxis.major_label_text_font_size = '0pt'
+    fig.yaxis.major_label_text_font_size = '0pt'
+
+    water = gpd.read_file('water_clip.shp')
+    water.crs = {'init': 'epsg:4326'}
+    water.geometry = water.geometry.to_crs(crs)
+    water = get_xy(water)
+    water_src = GeoJSONDataSource(geojson=water.to_json())
+
     x = np.arange(minx, maxx, cell_size)
     y = np.arange(miny, maxy, cell_size)
     X, Y = np.meshgrid(x, y)
@@ -98,7 +110,7 @@ if __name__ == '__main__':
     points = gpd.read_file('points1878.geojson')
     points['geometry'].crs = {'init': 'epsg:3067'}
     points = prepare_point_data(points, 'NUMBER', 'NUMBER2')
-    pop_data = prepare_pop_data(pd.read_csv('1880.csv'))
+    pop_data = prepare_pop_data(pd.read_csv('1900.csv'))
     pop_data = aggregate_sum(pop_data, ['plot_number'], [
         'other_christian', 'orthodox', 'other_religion', 'lutheran',
     ])
@@ -115,8 +127,8 @@ if __name__ == '__main__':
     plot_density(
         data,
         group='orthodox',
-        year=1880,
+        year=1900,
         kernel_function=triangle,
         bandwidth=100,
-        cell_size=25,
+        cell_size=10,
     )
