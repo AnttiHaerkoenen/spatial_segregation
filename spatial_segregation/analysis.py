@@ -3,13 +3,10 @@ import os
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from segregation.spatial import SpatialMinMax
-from libpysal.weights import W
+from segregation.aspatial import MinMax
 from bokeh.plotting import figure, show, save
 from bokeh.models import GeoJSONDataSource
 from bokeh.palettes import grey
-import libpysal
-from libpysal.weights import Kernel
 from scipy.spatial.distance import cdist
 
 from spatial_segregation.data import merge_dataframes, prepare_pop_data, prepare_point_data, aggregate_sum
@@ -44,6 +41,31 @@ def biweight(u, bw, alpha=1):
     return np.where(np.abs(u) <= bw, ((bw ** 2 - u ** 2) / (bw ** 2 + u ** 2)) ** alpha, 0)
 
 
+def kernel_density_surface(
+        data,
+        group,
+        bandwidth,
+        cell_size,
+        kernel_function,
+):
+    pop = get_xy(data)
+    pad = bandwidth * 2
+    minx, miny, maxx, maxy = pop['geometry'].total_bounds
+    minx -= pad
+    miny -= pad
+    maxx += pad
+    maxy += pad
+
+    x = np.arange(minx, maxx, cell_size)
+    y = np.arange(miny, maxy, cell_size)
+    X, Y = np.meshgrid(x, y)
+    xy = np.vstack([Y.ravel(), X.ravel()]).T
+    U = cdist(xy, pop[['y', 'x']].values, metric='euclidean')
+    W = kernel_function(U, bandwidth)
+    density = (W * pop[group].values).sum(axis=1).reshape(X.shape)
+    return density
+
+
 def plot_density(
         data,
         *,
@@ -58,7 +80,6 @@ def plot_density(
         crs = {'init': 'epsg:3067'}
 
     pop = get_xy(data)
-    # pop_src = GeoJSONDataSource(geojson=pop.to_json())
     pad = bandwidth * 2
     minx, miny, maxx, maxy = pop['geometry'].total_bounds
     minx -= pad
@@ -89,13 +110,13 @@ def plot_density(
     water = get_xy(water)
     water_src = GeoJSONDataSource(geojson=water.to_json())
 
-    x = np.arange(minx, maxx, cell_size)
-    y = np.arange(miny, maxy, cell_size)
-    X, Y = np.meshgrid(x, y)
-    xy = np.vstack([Y.ravel(), X.ravel()]).T
-    U = cdist(xy, pop[['y', 'x']].values, metric='euclidean')
-    W = kernel_function(U, bandwidth)
-    density = (W * pop[group].values).sum(axis=1).reshape(X.shape)
+    density = kernel_density_surface(
+        data,
+        group=group,
+        bandwidth=bandwidth,
+        cell_size=cell_size,
+        kernel_function=kernel_function,
+    )
 
     fig.image(
         [density],
@@ -137,9 +158,25 @@ if __name__ == '__main__':
         'OBJECTID', 'NUMBER', 'geometry',
         'other_christian', 'orthodox', 'other_religion', 'lutheran',
     ]]
-    plot_density(
+    data['total'] = data[['other_christian', 'orthodox', 'other_religion', 'lutheran']].sum(axis=1)
+    density_total = kernel_density_surface(
+        data,
+        group='total',
+        bandwidth=100,
+        cell_size=10,
+        kernel_function=biweight,
+    )
+    density_orthodox = kernel_density_surface(
         data,
         group='orthodox',
+        bandwidth=100,
+        cell_size=10,
+        kernel_function=biweight,
+    )
+    # todo segregation index
+    plot_density(
+        data,
+        group='total',
         year=1900,
         kernel_function=biweight,
         bandwidth=100,
