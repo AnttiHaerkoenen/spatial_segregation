@@ -136,29 +136,12 @@ def plot_density(
         line_width=0,
     )
 
-    show(fig)
+    return fig
 
 
-if __name__ == '__main__':
-    os.chdir('../data')
-    points = gpd.read_file('points1878.geojson')
-    points['geometry'].crs = {'init': 'epsg:3067'}
-    points = prepare_point_data(points, 'NUMBER', 'NUMBER2')
-    pop_data = prepare_pop_data(pd.read_csv('1900.csv'))
-    pop_data = aggregate_sum(pop_data, ['plot_number'], [
-        'other_christian', 'orthodox', 'other_religion', 'lutheran',
-    ])
-    data = merge_dataframes(
-        location_data=points,
-        other_data=pop_data,
-        on_location='NUMBER',
-        on_other='plot_number',
-    )
-    data = data[[
-        'OBJECTID', 'NUMBER', 'geometry',
-        'other_christian', 'orthodox', 'other_religion', 'lutheran',
-    ]]
-    data['total'] = data[['other_christian', 'orthodox', 'other_religion', 'lutheran']].sum(axis=1)
+def get_s(
+        data,
+):
     density_total = kernel_density_surface(
         data,
         group='total',
@@ -173,12 +156,49 @@ if __name__ == '__main__':
         cell_size=10,
         kernel_function=biweight,
     )
-    # todo segregation index
-    plot_density(
+    density = pd.DataFrame({'orthodox': density_orthodox.flatten(), 'total': density_total.flatten()})
+    s = MinMax(density, 'orthodox', 'total')
+    return s
+
+
+if __name__ == '__main__':
+    os.chdir('../data')
+    points = gpd.read_file('points1878.geojson')
+    year = 1920
+    points['geometry'].crs = {'init': 'epsg:3067'}
+    points = prepare_point_data(points, 'NUMBER', 'NUMBER2')
+    pop_data = prepare_pop_data(pd.read_csv(f'{year}.csv'))
+    pop_data = aggregate_sum(pop_data, ['plot_number'], [
+        'other_christian', 'orthodox', 'other_religion', 'lutheran',
+    ])
+    data = merge_dataframes(
+        location_data=points,
+        other_data=pop_data,
+        on_location='NUMBER',
+        on_other='plot_number',
+    )
+    data = data[[
+        'OBJECTID', 'NUMBER', 'geometry',
+        'other_christian', 'orthodox', 'other_religion', 'lutheran',
+    ]]
+    data['total'] = data[['other_christian', 'orthodox', 'other_religion', 'lutheran']].sum(axis=1)
+    s = get_s(data)
+    print(s.statistic)
+    fig = plot_density(
         data,
-        group='total',
-        year=1900,
+        group='orthodox',
+        year=year,
         kernel_function=biweight,
         bandwidth=100,
         cell_size=10,
     )
+    save(fig, f'../slideshow/orthodox_{year}.html')
+    fig = plot_density(
+        data,
+        group='total',
+        year=year,
+        kernel_function=biweight,
+        bandwidth=100,
+        cell_size=10,
+    )
+    save(fig, f'../slideshow/total_{year}.html')
