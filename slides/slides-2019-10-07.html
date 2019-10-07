@@ -158,21 +158,21 @@
 <h1>Vyborg</h1>
 <ul class="incremental">
 <li>Swedish castle against Novgorod/Moscovy</li>
-<li>Town privileges from 1403</li>
+<li>town privileges from 1403</li>
 </ul>
 </section>
 <section id="russian-era" class="slide level1">
 <h1>Russian era</h1>
 <ul class="incremental">
 <li>Vyborg conquered by Russians in 1710</li>
-<li>Large Russian garrison</li>
+<li>large Russian garrison</li>
 <li>Vyborg joined to the Autonomous Grand Duchy of Finland 1812</li>
 </ul>
 </section>
 <section id="th-century" class="slide level1">
 <h1>19th century</h1>
 <ul class="incremental">
-<li>Industrialization</li>
+<li>industrialization</li>
 <li>Saimaa canal 1856</li>
 <li>St. Petersburg-Helsinki railway 1870</li>
 </ul>
@@ -180,22 +180,22 @@
 <section id="lutheran" class="slide level1">
 <h1>Lutheran</h1>
 <ul class="incremental">
-<li>Vast majority Finnish speaking, lower classes</li>
-<li>German and Swedish speaking minority, upper classes</li>
+<li>vast majority Finnish speaking, lower classes</li>
+<li>german and Swedish speaking minority, upper classes</li>
 </ul>
 </section>
 <section id="orthodox" class="slide level1">
 <h1>Orthodox</h1>
 <ul class="incremental">
-<li>Moved mainly from Russia</li>
-<li>Originally Russian speaking</li>
+<li>moved mainly from Russia</li>
+<li>originally Russian speaking</li>
 </ul>
 </section>
 <section id="early-20th-century" class="slide level1">
 <h1>Early 20th century</h1>
 <ul class="incremental">
-<li>Russification of Finland from 1899</li>
-<li>High political tensions</li>
+<li>russification of Finland from 1899</li>
+<li>high political tensions</li>
 <li>Finnish independence 1917</li>
 <li>Finnish civil war 1918: lots of war crimes</li>
 </ul>
@@ -203,8 +203,8 @@
 <section id="research-problem" class="slide level1">
 <h1>Research Problem</h1>
 <ul class="incremental">
-<li>How segregated population of Vyborg was?</li>
-<li>Orthodox vs Lutherans</li>
+<li>how segregated population of Vyborg was?</li>
+<li>orthodox vs lutherans</li>
 </ul>
 </section>
 <section id="data-methods" class="slide level1">
@@ -213,31 +213,31 @@
 <section id="data" class="slide level1">
 <h1>Data</h1>
 <ul class="incremental">
-<li>Population &amp; tax registers</li>
-<li>Cadastral maps</li>
-<li>Handwritten digit recognition using CV &amp; ML</li>
+<li>population &amp; tax registers</li>
+<li>cadastral maps</li>
+<li>handwritten digit recognition using CV &amp; ML</li>
 </ul>
 </section>
 <section id="methods" class="slide level1">
 <h1>Methods</h1>
 <ul class="incremental">
-<li>Spatial segregation analysis</li>
-<li>Traditional aspatial indices (e.g. Index of dissimilarity) suffer from MAUP</li>
+<li>spatial segregation analysis</li>
+<li>traditional aspatial indices (e.g. Index of dissimilarity) suffer from MAUP</li>
 </ul>
 </section>
 <section id="kernel-density-estimation" class="slide level1">
 <h1>Kernel density estimation</h1>
 <ul class="incremental">
-<li>Smoothing of population surfaces using kernel functions</li>
+<li>smoothing of population surfaces using kernel functions</li>
 <li>grid represents continuous distribution of population in town space</li>
 </ul>
 </section>
 <section id="spatial-segregation-index-s" class="slide level1">
 <h1>Spatial segregation index S</h1>
 <ul class="incremental">
-<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mfrac><msub><mi>V</mi><mo>∩</mo></msub><msub><mi>V</mi><mo>∪</mo></msub></mfrac></mrow><annotation encoding="application/x-tex">S = \frac{V_{\cap}}{V_{\cup}}</annotation></semantics></math></li>
-<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mo>∩</mo></msub><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup><mrow><mi>m</mi><mi>i</mi><mi>n</mi><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>h</mi><mi>n</mi></mrow></msub><mo>,</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>g</mi><mi>n</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_{\cap} = \sum_{n=1}^N{min(\tilde p_{hn}, \tilde p_{gn})}</annotation></semantics></math></li>
-<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mo>∪</mo></msub><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup><mrow><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>h</mi><mi>n</mi></mrow></msub><mo>,</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>g</mi><mi>n</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_{\cup} = \sum_{n=1}^N{max(\tilde p_{hn}, \tilde p_{gn})}</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><msub><mi>V</mi><mo>∩</mo></msub><msub><mi>V</mi><mo>∪</mo></msub></mfrac></mrow><annotation encoding="application/x-tex">S = 1 - \frac{V_{\cap}}{V_{\cup}}</annotation></semantics></math></li>
+<li><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mo>∩</mo></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mi>N</mi></munderover><mrow><mi>m</mi><mi>i</mi><mi>n</mi><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>h</mi><mi>n</mi></mrow></msub><mo>,</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>g</mi><mi>n</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_{\cap} = \sum_{n=0}^N{min(\tilde p_{hn}, \tilde p_{gn})}</annotation></semantics></math></li>
+<li><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mo>∪</mo></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mi>N</mi></munderover><mrow><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>h</mi><mi>n</mi></mrow></msub><mo>,</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>g</mi><mi>n</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_{\cup} = \sum_{n=0}^N{max(\tilde p_{hn}, \tilde p_{gn})}</annotation></semantics></math></li>
 </ul>
 </section>
 <section id="results" class="slide level1">
@@ -247,14 +247,21 @@
 <h1>Segregation</h1>
 <ul class="incremental">
 <li>S seems to first decrease, then increase</li>
+<li>concentrations of Orthodox population change significantly</li>
 </ul>
 </section>
 <section id="conclusion" class="slide level1">
 <h1>Conclusion</h1>
 <ul class="incremental">
-<li>integration in peaceful times followed by segregation and violence during political crisis</li>
-<li>More data needed</li>
-<li>software for automatic reading of sources under work</li>
+<li>integration in peaceful times</li>
+<li>… followed by segregation and violence during political crisis</li>
+</ul>
+</section>
+<section id="what-next" class="slide level1">
+<h1>What next</h1>
+<ul class="incremental">
+<li>more data needed</li>
+<li>software for automatic reading of sources coming along</li>
 </ul>
 </section>
 <!-- {{{{ dzslides core
