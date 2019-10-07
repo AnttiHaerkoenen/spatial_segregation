@@ -7,6 +7,7 @@ from segregation.aspatial import MinMax
 from bokeh.plotting import figure, show, save
 from bokeh.models import GeoJSONDataSource
 from bokeh.palettes import grey
+from bokeh.io import export_png
 from scipy.spatial.distance import cdist
 
 from spatial_segregation.data import merge_dataframes, prepare_pop_data, prepare_point_data, aggregate_sum
@@ -190,15 +191,17 @@ if __name__ == '__main__':
         year=year,
         kernel_function=biweight,
         bandwidth=100,
-        cell_size=10,
+        cell_size=25,
     )
-    save(fig, f'../slideshow/orthodox_{year}.html')
+    save(fig, f'../slides/orthodox_{year}.html')
+    export_png(fig, f'../slides/orthodox_{year}.png')
     fig = plot_density(
         data,
         group='total',
         year=year,
         kernel_function=biweight,
         bandwidth=100,
-        cell_size=10,
+        cell_size=25,
     )
-    save(fig, f'../slideshow/total_{year}.html')
+    save(fig, f'../slides/total_{year}.html')
+    export_png(fig, f'../slides/total_{year}.png')
