@@ -9,39 +9,45 @@
 - ruotsalainen linna vesireittien hallitsemiseen
 - kaupunkioikeudet 1403
 
-# Russian era
+# Venäjän aika
 
-- Vyborg conquered by Russians in 1710
-- large Russian garrison
-- Vyborg joined to the Autonomous Grand Duchy of Finland 1812
+- venäläiset valtasivat 1710
+- suuri venäläinen varuskunta
+- Viipurin kuvernementti liitettiin Suomen suuriruhtinaskuntaan 1812
 
-# 19th century
+# 1800-luku
 
-- industrialization
-- Saimaa canal 1856
-- St. Petersburg-Helsinki railway 1870
+- teollistuminen
+- Saimaan kanva 1856
+- Pietari-Helsinki rata 1870
 
-# Lutheran
+# Luterilaiset
 
-- vast majority Finnish speaking, lower classes
-- german and Swedish speaking minority, upper classes
+- alemmat yhteiskuntaluokat suomenkielisiä
+- ruotsin- ja saksankieliset vähemmistöt
 
-# Orthodox
+# Ortodoksit
 
-- moved mainly from Russia
-- originally Russian speaking
+- Venäjältä muuttaneita
+- venäjänkielisiä
 
-# Early 20th century
+# 1900-luvun alku
 
-- russification of Finland from 1899
-- high political tensions
-- Finnish independence 1917
-- Finnish civil war 1918: lots of war crimes
+- venäläistämistoimet vaikuttivat Viipurin läänissä eniten
+- poliittinen jännitys
 
-# Research Problem
+# Itsenäistyminen ja sisällissota
 
-- how segregated population of Vyborg was?
-- orthodox vs lutherans
+- ensimmäinen yhteenotto Viipurissa 19.1. 
+- kaupunki punaisten hallussa melkein koko sodan
+- valkoiset ampuivat valtauksen jälkeen paitsi punaisia myös venäjänkielistä siviiliväestöä
+
+# Tutkimusongelma
+
+- kuinka segregaatio muuttui vuosien varrella
+- ortodoksit vs valtaväestö
+
+# todo todo
 
 # Data & Methods
 
