@@ -1,0 +1,86 @@
+% Spatiaalinen segregaatioanalyysi ja autonomian ajan lopun uskonnolliset ryhmät
+% Antti Härkönen
+% 2019-10-25
+
+# Taustaa
+
+# Viipuri
+
+- ruotsalainen linna vesireittien hallitsemiseen
+- kaupunkioikeudet 1403
+
+# Russian era
+
+- Vyborg conquered by Russians in 1710
+- large Russian garrison
+- Vyborg joined to the Autonomous Grand Duchy of Finland 1812
+
+# 19th century
+
+- industrialization
+- Saimaa canal 1856
+- St. Petersburg-Helsinki railway 1870
+
+# Lutheran
+
+- vast majority Finnish speaking, lower classes
+- german and Swedish speaking minority, upper classes
+
+# Orthodox
+
+- moved mainly from Russia
+- originally Russian speaking
+
+# Early 20th century
+
+- russification of Finland from 1899
+- high political tensions
+- Finnish independence 1917
+- Finnish civil war 1918: lots of war crimes
+
+# Research Problem
+
+- how segregated population of Vyborg was?
+- orthodox vs lutherans
+
+# Data & Methods
+
+# Data
+
+- population & tax registers
+- cadastral maps
+- handwritten digit recognition using CV & ML
+
+# Methods
+
+- spatial segregation analysis
+- traditional aspatial indices (e.g. Index of dissimilarity) suffer from MAUP
+
+# Kernel density estimation
+
+- smoothing of population surfaces using kernel functions
+- grid represents continuous distribution of population in town space
+
+# Spatial segregation index S
+
+- $S = 1 - \frac{V_{\cap}}{V_{\cup}}$
+- $$V_{\cap} = \sum_{n=0}^N{min(\tilde p_{hn}, \tilde p_{gn})}$$
+- $$V_{\cup} = \sum_{n=0}^N{max(\tilde p_{hn}, \tilde p_{gn})}$$
+
+# Results
+
+# Segregation
+
+- S seems to first decrease, then increase
+- concentrations of Orthodox population change significantly
+
+# Conclusion
+
+- integration in peaceful times 
+- ... followed by segregation and violence during political crisis
+
+# What next
+
+- more data needed
+- software for automatic reading of sources coming along
+- [github.com/AnttiHaerkoenen](https://www.github.com/AnttiHaerkoenen)
