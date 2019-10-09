@@ -194,74 +194,95 @@
 <section id="luvun-alku" class="slide level1">
 <h1>1900-luvun alku</h1>
 <ul class="incremental">
-<li>russification of Finland from 1899</li>
-<li>high political tensions</li>
-<li>Finnish independence 1917</li>
-<li>Finnish civil war 1918: lots of war crimes</li>
+<li>venäläistämistoimet vaikuttivat Viipurin läänissä eniten</li>
+<li>poliittinen jännitys</li>
 </ul>
 </section>
-<section id="research-problem" class="slide level1">
-<h1>Research Problem</h1>
+<section id="sisällissota" class="slide level1">
+<h1>Sisällissota</h1>
 <ul class="incremental">
-<li>how segregated population of Vyborg was?</li>
-<li>orthodox vs lutherans</li>
+<li>ensimmäinen yhteenotto Viipurissa 19.1.</li>
+<li>kaupunki punaisten hallussa melkein koko sodan</li>
 </ul>
 </section>
-<section id="data-methods" class="slide level1">
-<h1>Data &amp; Methods</h1>
-</section>
-<section id="data" class="slide level1">
-<h1>Data</h1>
+<section id="viipurin-valtaus" class="slide level1">
+<h1>Viipurin valtaus</h1>
 <ul class="incremental">
-<li>population &amp; tax registers</li>
-<li>cadastral maps</li>
-<li>handwritten digit recognition using CV &amp; ML</li>
+<li>valkoiset ampuivat valtauksen jälkeen paitsi punaisia myös venäjänkielistä siviiliväestöä</li>
 </ul>
 </section>
-<section id="methods" class="slide level1">
-<h1>Methods</h1>
+<section id="tutkimusongelma" class="slide level1">
+<h1>Tutkimusongelma</h1>
 <ul class="incremental">
-<li>spatial segregation analysis</li>
-<li>traditional aspatial indices (e.g. Index of dissimilarity) suffer from MAUP</li>
+<li>kuinka segregaatio muuttui vuosien varrella</li>
+<li>ortodoksit vs valtaväestö</li>
 </ul>
 </section>
-<section id="kernel-density-estimation" class="slide level1">
-<h1>Kernel density estimation</h1>
+<section id="aineisto-menetelmät" class="slide level1">
+<h1>Aineisto &amp; Menetelmät</h1>
+</section>
+<section id="aineisto" class="slide level1">
+<h1>Aineisto</h1>
 <ul class="incremental">
-<li>smoothing of population surfaces using kernel functions</li>
-<li>grid represents continuous distribution of population in town space</li>
+<li>henkikirjat</li>
+<li>katasterikartat</li>
 </ul>
 </section>
-<section id="spatial-segregation-index-s" class="slide level1">
-<h1>Spatial segregation index S</h1>
+<section id="konenäkö" class="slide level1">
+<h1>Konenäkö</h1>
+<ul class="incremental">
+<li>scikit-image (Python)</li>
+<li>kuvan puhdistaminen</li>
+<li>numeroiden erottaminen</li>
+<li>koulutusaineiston tuottaminen</li>
+</ul>
+</section>
+<section id="koneoppiminen" class="slide level1">
+<h1>Koneoppiminen</h1>
+<ul class="incremental">
+<li>ohjattu syväoppiminen</li>
+<li>hermoverkkomalli</li>
+<li>lupaavia tuloksia numeroiden tunnistamisessa</li>
+<li>vaatii runsaasti koulutusdataa</li>
+</ul>
+</section>
+<section id="segregaatioanalyysi" class="slide level1">
+<h1>Segregaatioanalyysi</h1>
+<ul class="incremental">
+<li>spatiaalinen segregaatioanalyysi</li>
+<li>perinteiset aspatiaaliset indeksit (esim. Index of dissimilarity) kärsivät MAUPista</li>
+</ul>
+</section>
+<section id="ydinestimointi" class="slide level1">
+<h1>Ydinestimointi</h1>
+<ul class="incremental">
+<li>ydinestimointi (Kernel Density Estimation, KDE)</li>
+<li>rasteri kuvaa väestön jakautumista kaupunkitilassa</li>
+</ul>
+</section>
+<section id="spatiaalinen-segregaatioindeksi-s" class="slide level1">
+<h1>Spatiaalinen segregaatioindeksi S</h1>
 <ul class="incremental">
 <li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><msub><mi>V</mi><mo>∩</mo></msub><msub><mi>V</mi><mo>∪</mo></msub></mfrac></mrow><annotation encoding="application/x-tex">S = 1 - \frac{V_{\cap}}{V_{\cup}}</annotation></semantics></math></li>
 <li><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mo>∩</mo></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mi>N</mi></munderover><mrow><mi>m</mi><mi>i</mi><mi>n</mi><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>h</mi><mi>n</mi></mrow></msub><mo>,</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>g</mi><mi>n</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_{\cap} = \sum_{n=0}^N{min(\tilde p_{hn}, \tilde p_{gn})}</annotation></semantics></math></li>
 <li><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mo>∪</mo></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mi>N</mi></munderover><mrow><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false" form="prefix">(</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>h</mi><mi>n</mi></mrow></msub><mo>,</mo><msub><mover><mi>p</mi><mo accent="true">̃</mo></mover><mrow><mi>g</mi><mi>n</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">V_{\cup} = \sum_{n=0}^N{max(\tilde p_{hn}, \tilde p_{gn})}</annotation></semantics></math></li>
 </ul>
 </section>
-<section id="results" class="slide level1">
-<h1>Results</h1>
+<section id="tuloksia" class="slide level1">
+<h1>Tuloksia</h1>
 </section>
-<section id="segregation" class="slide level1">
-<h1>Segregation</h1>
+<section id="segregaatio" class="slide level1">
+<h1>Segregaatio</h1>
 <ul class="incremental">
-<li>S seems to first decrease, then increase</li>
-<li>concentrations of Orthodox population change significantly</li>
+<li>S:n arvo laskee 1880-1900 ja nousee 1900-1920</li>
+<li>ortodoksien asuinalueet vaihtuvat huomattavasti</li>
 </ul>
 </section>
-<section id="conclusion" class="slide level1">
-<h1>Conclusion</h1>
+<section id="mitä-nyt" class="slide level1">
+<h1>Mitä nyt</h1>
 <ul class="incremental">
-<li>integration in peaceful times</li>
-<li>… followed by segregation and violence during political crisis</li>
-</ul>
-</section>
-<section id="what-next" class="slide level1">
-<h1>What next</h1>
-<ul class="incremental">
-<li>more data needed</li>
-<li>software for automatic reading of sources coming along</li>
+<li>lisää aineistoa käyttöön</li>
+<li>koneoppimista parannettava</li>
 <li><a href="https://www.github.com/AnttiHaerkoenen">github.com/AnttiHaerkoenen</a></li>
 </ul>
 </section>

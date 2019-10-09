@@ -36,10 +36,13 @@
 - venäläistämistoimet vaikuttivat Viipurin läänissä eniten
 - poliittinen jännitys
 
-# Itsenäistyminen ja sisällissota
+# Sisällissota
 
 - ensimmäinen yhteenotto Viipurissa 19.1. 
 - kaupunki punaisten hallussa melkein koko sodan
+
+# Viipurin valtaus
+
 - valkoiset ampuivat valtauksen jälkeen paitsi punaisia myös venäjänkielistä siviiliväestöä
 
 # Tutkimusongelma
@@ -47,46 +50,52 @@
 - kuinka segregaatio muuttui vuosien varrella
 - ortodoksit vs valtaväestö
 
-# todo todo
+# Aineisto & Menetelmät
 
-# Data & Methods
+# Aineisto
 
-# Data
+- henkikirjat
+- katasterikartat
 
-- population & tax registers
-- cadastral maps
-- handwritten digit recognition using CV & ML
+# Konenäkö
 
-# Methods
+- scikit-image (Python)
+- kuvan puhdistaminen
+- numeroiden erottaminen
+- koulutusaineiston tuottaminen
 
-- spatial segregation analysis
-- traditional aspatial indices (e.g. Index of dissimilarity) suffer from MAUP
+# Koneoppiminen
 
-# Kernel density estimation
+- ohjattu syväoppiminen
+- hermoverkkomalli
+- lupaavia tuloksia numeroiden tunnistamisessa
+- vaatii runsaasti koulutusdataa
 
-- smoothing of population surfaces using kernel functions
-- grid represents continuous distribution of population in town space
+# Segregaatioanalyysi
 
-# Spatial segregation index S
+- spatiaalinen segregaatioanalyysi
+- perinteiset aspatiaaliset indeksit (esim. Index of dissimilarity) kärsivät MAUPista
+
+# Ydinestimointi
+
+- ydinestimointi (Kernel Density Estimation, KDE)
+- rasteri kuvaa väestön jakautumista kaupunkitilassa
+
+# Spatiaalinen segregaatioindeksi S
 
 - $S = 1 - \frac{V_{\cap}}{V_{\cup}}$
 - $$V_{\cap} = \sum_{n=0}^N{min(\tilde p_{hn}, \tilde p_{gn})}$$
 - $$V_{\cup} = \sum_{n=0}^N{max(\tilde p_{hn}, \tilde p_{gn})}$$
 
-# Results
+# Tuloksia
 
-# Segregation
+# Segregaatio
 
-- S seems to first decrease, then increase
-- concentrations of Orthodox population change significantly
+- S:n arvo laskee 1880-1900 ja nousee 1900-1920
+- ortodoksien asuinalueet vaihtuvat huomattavasti
 
-# Conclusion
+# Mitä nyt
 
-- integration in peaceful times 
-- ... followed by segregation and violence during political crisis
-
-# What next
-
-- more data needed
-- software for automatic reading of sources coming along
+- lisää aineistoa käyttöön
+- koneoppimista parannettava
 - [github.com/AnttiHaerkoenen](https://www.github.com/AnttiHaerkoenen)
