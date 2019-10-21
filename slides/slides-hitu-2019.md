@@ -18,7 +18,7 @@
 ## 1800-luku
 
 - teollistuminen
-- Saimaan kanva 1856
+- Saimaan kanava 1856
 - Pietari-Helsinki rata 1870
 
 ## Luterilaiset
@@ -56,19 +56,19 @@
 
 ## Aineisto
 
-- henkikirjat
-- katasterikartat
+- [henkikirjat](http://digi.narc.fi/digi/view.ka?kuid=691815)
+- [tonttikartat](http://digi.narc.fi/digi/view.ka?kuid=40602614)
 
 ## Konenäkö
 
-- scikit-image (Python)
+- [scikit-image](https://scikit-image.org/) (Python)
 - kuvan puhdistaminen
 - numeroiden erottaminen
 - koulutusaineiston tuottaminen
 
 ## Koneoppiminen
 
-- ohjattu syväoppiminen
+- ohjattu syväoppiminen ([scikit-learn](https://scikit-learn.org/stable/))
 - hermoverkkomalli
 - lupaavia tuloksia numeroiden tunnistamisessa
 - vaatii runsaasti koulutusdataa
@@ -76,16 +76,42 @@
 ## Segregaatioanalyysi
 
 - spatiaalinen segregaatioanalyysi
-- perinteiset aspatiaaliset indeksit (esim. Index of dissimilarity) kärsivät MAUPista
+- perinteiset aspatiaaliset indeksit 
+(esim. [Index of dissimilarity](https://www.jstor.org/stable/2088328))
+kärsivät [MAUPista](https://en.wikipedia.org/wiki/Modifiable_areal_unit_problem)
 
 ## Ydinestimointi
 
 - ydinestimointi (Kernel Density Estimation, KDE)
 - rasteri kuvaa väestön jakautumista kaupunkitilassa
 
-<section>
-<figure></figure>
-</section>
+# Tiheys: Koko keskusta
+
+## 1880
+
+![kaikki 1880](total_1880.png)
+
+## 1900
+
+![kaikki 1900](total_1900.png)
+
+## 1920
+
+![kaikki 1920](total_1920.png)
+
+# Tiheys: Ortodoksit
+
+## 1880
+
+![ortodoksit 1880](orthodox_1880.png)
+
+## 1900
+
+![ortodoksit 1900](orthodox_1900.png)
+
+## 1920
+
+![ortodoksit 1920](orthodox_1920.png)
 
 ## Spatiaalinen segregaatioindeksi S
 

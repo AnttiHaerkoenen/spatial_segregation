@@ -76,6 +76,7 @@ def plot_density(
         cell_size,
         crs=None,
         bandwidth,
+        show_title,
 ):
     if crs is None:
         crs = {'init': 'epsg:3067'}
@@ -94,6 +95,7 @@ def plot_density(
         x_range=(minx, maxx),
         y_range=(miny, maxy),
     )
+    fig.title.visible = show_title
     fig.xaxis.major_tick_line_color = None
     fig.xaxis.minor_tick_line_color = None
     fig.yaxis.major_tick_line_color = None
@@ -192,6 +194,7 @@ if __name__ == '__main__':
         kernel_function=biweight,
         bandwidth=100,
         cell_size=25,
+        show_title=False,
     )
     save(fig, f'../slides/orthodox_{year}.html')
     export_png(fig, f'../slides/orthodox_{year}.png')
@@ -202,6 +205,7 @@ if __name__ == '__main__':
         kernel_function=biweight,
         bandwidth=100,
         cell_size=25,
+        show_title=False,
     )
     save(fig, f'../slides/total_{year}.html')
     export_png(fig, f'../slides/total_{year}.png')
