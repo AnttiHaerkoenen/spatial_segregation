@@ -85,6 +85,12 @@ kärsivät [MAUPista](https://en.wikipedia.org/wiki/Modifiable_areal_unit_proble
 - ydinestimointi (Kernel Density Estimation, KDE)
 - rasteri kuvaa väestön jakautumista kaupunkitilassa
 
+## Spatiaalinen segregaatioindeksi S
+
+- $S = 1 - \frac{V_{\cap}}{V_{\cup}}$
+- $$V_{\cap} = \sum_{n=0}^N{min(\tilde p_{hn}, \tilde p_{gn})}$$
+- $$V_{\cup} = \sum_{n=0}^N{max(\tilde p_{hn}, \tilde p_{gn})}$$
+
 # Tiheys: Koko keskusta
 
 ## 1880
@@ -112,12 +118,6 @@ kärsivät [MAUPista](https://en.wikipedia.org/wiki/Modifiable_areal_unit_proble
 ## 1920
 
 ![ortodoksit 1920](orthodox_1920.png)
-
-## Spatiaalinen segregaatioindeksi S
-
-- $S = 1 - \frac{V_{\cap}}{V_{\cup}}$
-- $$V_{\cap} = \sum_{n=0}^N{min(\tilde p_{hn}, \tilde p_{gn})}$$
-- $$V_{\cup} = \sum_{n=0}^N{max(\tilde p_{hn}, \tilde p_{gn})}$$
 
 # Tuloksia
 
