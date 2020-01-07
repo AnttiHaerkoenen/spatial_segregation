@@ -3,3 +3,5 @@ pandas
 geopandas
 segregation
 bokeh
+xlrd
+openpyxl

@@ -23,10 +23,10 @@ def fill_data_sheet(
     Can be string or list of columns or None or 'all'.
     Default is 'all'.
     :param fill_with_zeros: Names of columns to be filled with zeros.
-    Can be string or list of columns or 'all'.
+    Can be string, list of columns, 'all' or 'rest'.
     Default is None.
     """
-    df = pd.read_excel(io=input_file, sheetname=sheet)
+    df = pd.read_excel(io=input_file, sheet_name=sheet)
 
     if not columns:
         columns = pd.Index([])
@@ -55,7 +55,27 @@ def fill_data_sheet(
 
 
 if __name__ == '__main__':
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
-    os.chdir(os.path.join(os.path.abspath(os.path.pardir), data.DATA_DIR))
+    data_dir = '../data'
+    os.chdir(data_dir)
 
-    fill_data_sheet('example.xlsx', 'example2.xlsx', columns='district plot.number', fill_with_zeros='rest')
+    fill_data_sheet(
+        'Viipurin henkikirjat.xlsx',
+        'pop_by_plot_1880.xlsx',
+        sheet='1880',
+        columns='district plot_number',
+        fill_with_zeros='rest',
+    )
+    fill_data_sheet(
+        'Viipurin henkikirjat summat.xlsx',
+        'pop_by_page_1880.xlsx',
+        sheet='1880',
+        columns='district plot_number',
+        fill_with_zeros='rest',
+    )
+    fill_data_sheet(
+        'Viipurin henkikirjat kaupunginosittain.xlsx',
+        'pop_by_district_1880.xlsx',
+        sheet='1880',
+        columns='district',
+        fill_with_zeros='rest',
+    )
