@@ -114,19 +114,18 @@ def shuffle_data(data):
 
 def prepare_pop_data(
         population_data: pd.DataFrame,
-        cols=None,
+        num_cols=None,
 ) -> pd.DataFrame:
     pop_frame = population_data.fillna(value=0)
-    if not cols:
-        cols = [
-            'plot_number',
+    if not num_cols:
+        num_cols = [
             'total_men',
             'total_women',
             'orthodox',
             'other_christian',
             'other_religion',
         ]
-    pop_frame.loc[:, cols] = pop_frame.loc[:, cols].astype(int)
+    pop_frame.loc[:, num_cols] = pop_frame.loc[:, num_cols].astype(int)
     pop_frame['lutheran'] = pop_frame['total_men'] \
         + pop_frame['total_women'] \
         - pop_frame['orthodox'] \
