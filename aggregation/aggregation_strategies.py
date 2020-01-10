@@ -9,25 +9,6 @@ from spatial_segregation.analysis import plot_density, kernel_density_surface
 from spatial_segregation.data import merge_dataframes, split_plots, aggregate_sum, prepare_pop_data
 
 
-def get_aggregate_locations(
-        *,
-        population_data: pd.DataFrame,
-        location_data: gpd.GeoDataFrame,
-) -> gpd.GeoDataFrame:
-    geodata_by_district = []
-
-    for district in set(population_data['district']):
-        pop = population_data[population_data.district == district]
-        loc = location_data.geometry[location_data.district == district]
-
-        geodata_by_district.append(_get_aggregate_locations_by_district(pop, loc))
-
-    geodata = pd.concat(geodata_by_district, ignore_index=True)
-    geodata.crs = location_data.crs
-
-    return geodata
-
-
 def interval_sample(iterable, length) -> list:
     ratio = len(iterable) / length
     sample = []
@@ -43,6 +24,25 @@ def interval_sample(iterable, length) -> list:
     return sample
 
 
+def get_aggregate_locations(
+        *,
+        population_data: pd.DataFrame,
+        location_data: gpd.GeoDataFrame,
+) -> gpd.GeoDataFrame:
+    geodata_by_district = []
+
+    for dist in set(population_data['district']):
+        pop = population_data[population_data.district == dist]
+        loc = location_data.geometry[location_data.district == dist]
+
+        geodata_by_district.append(_get_aggregate_locations_by_district(pop, loc))
+
+    geodata = pd.concat(geodata_by_district, ignore_index=True)
+    geodata.crs = location_data.crs
+
+    return geodata
+
+
 def _get_aggregate_locations_by_district(
         population_data: pd.DataFrame,
         locations: gpd.GeoSeries,
@@ -52,23 +52,26 @@ def _get_aggregate_locations_by_district(
     len_loc = len(locations)
 
     if len_loc == 0 or len_pop == 0:
-        return gpd.GeoDataFrame()
+        geodata = gpd.GeoDataFrame()
 
     elif len_loc == len_pop:
         geodata = gpd.GeoDataFrame(population_data)
+        geodata.index = locations.index
         geodata = geodata.set_geometry(locations)
-        return geodata
 
     elif len_loc < len_pop:
-        # todo
-        pass
+        sample_pop = population_data.loc[interval_sample(population_data.index, len_loc)]
+        geodata = gpd.GeoDataFrame(sample_pop)
+        geodata.index = sample_pop.index
+        geodata = geodata.set_geometry(locations)
 
-    elif len_pop < len_loc:
+    else:
         sample_locations = gpd.GeoSeries(interval_sample(locations, len_pop))
+        sample_locations.index = population_data.index
         geodata = gpd.GeoDataFrame(population_data)
         geodata = geodata.set_geometry(sample_locations)
 
-        return geodata
+    return geodata
 
 
 if __name__ == '__main__':
@@ -101,6 +104,10 @@ if __name__ == '__main__':
         population_data=pop_by_page,
         location_data=points,
     )
+    page_data.to_csv(data_dir / 'processed' / 'page_data_1880.csv')
+
+    page_data.plot()
+    plt.show()
 
     # plots_surface = kernel_density_surface(
     #     ,
