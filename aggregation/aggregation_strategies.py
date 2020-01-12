@@ -1,12 +1,60 @@
 import os
 from pathlib import Path
+from typing import Callable
 
+import numpy as np
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
+import rasterio as rio
+from scipy.spatial.distance import cdist
 
-from spatial_segregation.analysis import plot_density, kernel_density_surface
-from spatial_segregation.data import merge_dataframes, split_plots, aggregate_sum, prepare_pop_data
+from spatial_segregation.analysis import plot_density, gaussian, get_xy
+from spatial_segregation.data import merge_dataframes,\
+    split_plots, aggregate_sum, prepare_pop_data
+
+
+def kernel_density_surface(
+        data: gpd.GeoDataFrame,
+        group: str,
+        bandwidth,
+        cell_size,
+        kernel_function: Callable,
+):
+    pop = get_xy(data)
+    pad = bandwidth * 2
+    minx, miny, maxx, maxy = pop.geometry.total_bounds
+    minx -= pad
+    miny -= pad
+    maxx += pad
+    maxy += pad
+
+    x = np.arange(minx, maxx, cell_size)
+    y = np.arange(miny, maxy, cell_size)
+    X, Y = np.meshgrid(x, y)
+    xy = np.vstack([Y.ravel(), X.ravel()]).T
+    U = cdist(xy, pop[['y', 'x']].values, metric='euclidean')
+    W = kernel_function(U, bandwidth)
+    density = (W * pop[group].values).sum(axis=1).reshape(X.shape)
+
+    geotiff_meta = {
+        'driver': 'GTiff',
+        'count': 1,
+        'dtype': 'float64',
+        'width': len(x),
+        'height': len(y),
+        'crs': data.crs,
+        'transform': rio.transform.from_bounds(
+            west=minx,
+            east=maxx,
+            north=maxy,
+            south=miny,
+            width=len(x),
+            height=len(y),
+        )
+    }
+
+    return density[::-1, ], geotiff_meta
 
 
 def interval_sample(iterable, length) -> list:
@@ -74,8 +122,25 @@ def _get_aggregate_locations_by_district(
     return geodata
 
 
+def make_kde_surface(
+        data,
+        group: str,
+        file_path: Path,
+        **kde_kwargs
+) -> None:
+    surface, meta = kernel_density_surface(
+        data,
+        group=group,
+        **kde_kwargs
+    )
+
+    with rio.open(file_path, 'w', **meta) as fout:
+        fout.write(surface, 1)
+
+
 if __name__ == '__main__':
     data_dir = Path('../data')
+    fig_dir = Path('../figures')
 
     district_codes = pd.read_csv(data_dir / 'district_codes.csv')
     district_codes = {k: v for k, v in district_codes.itertuples(index=False)}
@@ -84,6 +149,10 @@ if __name__ == '__main__':
     points = split_plots(points, target_col='NUMBER')
     points['district'] = [district_codes[int(d)] for d in points['DISTRICT']]
     points['plot_number'] = [str(i) for i in points['NUMBER']]
+
+    # remove plots after 31 from Repola district
+    drop_ = points[points.district == 'Repola'].index[31:]
+    points = points.drop(drop_)
 
     pop_by_plot = pd.read_excel(data_dir / 'raw' / 'pop_by_plot_1880.xlsx').pipe(prepare_pop_data)
     pop_by_plot['plot_number'] = [str(n).split(',')[0] for n in pop_by_plot['plot_number']]
@@ -106,14 +175,42 @@ if __name__ == '__main__':
     )
     page_data.to_csv(data_dir / 'processed' / 'page_data_1880.csv')
 
-    page_data.plot()
-    plt.show()
+    # page_data.plot(column='district', legend=True)
+    # plt.show()
 
-    # plots_surface = kernel_density_surface(
-    #     ,
-    #     group=,
-    #     bandwidth=,
-    #     cell_size=,
-    #     kernel_function=,
-    # )
-    # todo kde + visualisation
+    kwargs = dict(
+        bandwidth=250,
+        cell_size=50,
+        kernel_function=gaussian,
+    )
+
+    make_kde_surface(
+        data=plot_data,
+        group='lutheran',
+        file_path=data_dir / 'processed' / 'lutheran_by_plot.tif',
+        **kwargs
+    )
+
+    make_kde_surface(
+        data=plot_data,
+        group='orthodox',
+        file_path=data_dir / 'processed' / 'orthodox_by_plot.tif',
+        **kwargs
+    )
+
+    make_kde_surface(
+        data=page_data,
+        group='lutheran',
+        file_path=data_dir / 'processed' / 'lutheran_by_page.tif',
+        **kwargs
+    )
+
+    make_kde_surface(
+        data=page_data,
+        group='orthodox',
+        file_path=data_dir / 'processed' / 'orthodox_by_page.tif',
+        **kwargs
+    )
+
+    # plt.imshow(plots_surface)
+    # plt.show()

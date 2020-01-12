@@ -1,4 +1,5 @@
 import os
+from typing import Callable
 
 import numpy as np
 import pandas as pd
@@ -43,11 +44,11 @@ def biweight(u, bw, alpha=1):
 
 
 def kernel_density_surface(
-        data,
-        group,
+        data: gpd.GeoDataFrame,
+        group: str,
         bandwidth,
         cell_size,
-        kernel_function,
+        kernel_function: Callable,
 ):
     pop = get_xy(data)
     pad = bandwidth * 2
@@ -64,6 +65,7 @@ def kernel_density_surface(
     U = cdist(xy, pop[['y', 'x']].values, metric='euclidean')
     W = kernel_function(U, bandwidth)
     density = (W * pop[group].values).sum(axis=1).reshape(X.shape)
+
     return density
 
 
