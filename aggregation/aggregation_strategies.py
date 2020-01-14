@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from typing import Callable
+from itertools import product
 
 import numpy as np
 import pandas as pd
@@ -8,8 +9,10 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import rasterio as rio
 from scipy.spatial.distance import cdist
+from segregation.aspatial import MinMax
 
-from spatial_segregation.analysis import plot_density, gaussian, get_xy
+from aggregation.kernels import Gaussian
+from spatial_segregation.analysis import plot_density, get_xy
 from spatial_segregation.data import merge_dataframes,\
     split_plots, aggregate_sum, prepare_pop_data
 
@@ -34,7 +37,7 @@ def kernel_density_surface(
     X, Y = np.meshgrid(x, y)
     xy = np.vstack([Y.ravel(), X.ravel()]).T
     U = cdist(xy, pop[['y', 'x']].values, metric='euclidean')
-    W = kernel_function(U, bandwidth)
+    W = kernel_function(bandwidth)(U)
     density = (W * pop[group].values).sum(axis=1).reshape(X.shape)
 
     geotiff_meta = {
@@ -138,6 +141,66 @@ def make_kde_surface(
         fout.write(surface, 1)
 
 
+def get_S(
+        data,
+        bandwidth,
+        cell_size,
+        kernel_function,
+):
+    density_total, _ = kernel_density_surface(
+        data,
+        group='total',
+        bandwidth=bandwidth,
+        cell_size=cell_size,
+        kernel_function=kernel_function,
+    )
+    density_orthodox, _ = kernel_density_surface(
+        data,
+        group='orthodox',
+        bandwidth=bandwidth,
+        cell_size=cell_size,
+        kernel_function=kernel_function,
+    )
+
+    density = pd.DataFrame({'orthodox': density_orthodox.flatten(), 'total': density_total.flatten()})
+    s = MinMax(density, 'orthodox', 'total')
+
+    return s
+
+
+def get_multiple_S(
+        datasets,
+        *,
+        bandwidths,
+        cell_sizes,
+        kernel_functions,
+):
+    results = []
+
+    for bw, cell, kern in product(bandwidths, cell_sizes, kernel_functions):
+        kwargs = dict(
+            bandwidth=bw,
+            cell_size=cell,
+            kernel_function=kern,
+        )
+
+        plot_S = get_S(datasets['plot_data'], **kwargs)
+        page_S = get_S(datasets['page_data'], **kwargs)
+
+        results.append((
+            plot_S.statistic,
+            page_S.statistic,
+            bw,
+            cell,
+            str(kern(bw)),
+        ))
+
+    return pd.DataFrame(
+        results,
+        columns='S_by_plot S_by_age bandwidth cell function'.split(),
+    )
+
+
 if __name__ == '__main__':
     data_dir = Path('../data')
     fig_dir = Path('../figures')
@@ -167,21 +230,20 @@ if __name__ == '__main__':
         on_location='district plot_number'.split(),
         on_other='district plot_number'.split(),
     )
+    plot_data['total'] = plot_data[['other_christian', 'orthodox', 'other_religion', 'lutheran']].sum(axis=1)
     plot_data.to_csv(data_dir / 'processed' / 'plot_data_1880.csv')
 
     page_data = get_aggregate_locations(
         population_data=pop_by_page,
         location_data=points,
     )
+    page_data['total'] = page_data[['other_christian', 'orthodox', 'other_religion', 'lutheran']].sum(axis=1)
     page_data.to_csv(data_dir / 'processed' / 'page_data_1880.csv')
 
-    # page_data.plot(column='district', legend=True)
-    # plt.show()
-
     kwargs = dict(
-        bandwidth=250,
+        bandwidth=150,
         cell_size=50,
-        kernel_function=gaussian,
+        kernel_function=Gaussian,
     )
 
     make_kde_surface(
@@ -212,5 +274,14 @@ if __name__ == '__main__':
         **kwargs
     )
 
-    # plt.imshow(plots_surface)
-    # plt.show()
+    multiple_S = get_multiple_S(
+        datasets={
+            'page_data': page_data,
+            'plot_data': plot_data,
+        },
+        bandwidths=[100, 200, 250, 300, 400, 500],
+        cell_sizes=[25, 50, 75, 100],
+        kernel_functions=[Gaussian],
+    )
+
+    print(multiple_S)
