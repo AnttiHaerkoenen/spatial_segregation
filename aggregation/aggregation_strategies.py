@@ -11,7 +11,7 @@ import rasterio as rio
 from scipy.spatial.distance import cdist
 from segregation.aspatial import MinMax
 
-from aggregation.kernels import Gaussian
+from aggregation.kernels import Gaussian, Biweight, Box
 from spatial_segregation.analysis import plot_density, get_xy
 from spatial_segregation.data import merge_dataframes,\
     split_plots, aggregate_sum, prepare_pop_data
@@ -190,6 +190,7 @@ def get_multiple_S(
         results.append((
             plot_S.statistic,
             page_S.statistic,
+            plot_S.statistic - page_S.statistic,
             bw,
             cell,
             kern.classname,
@@ -197,7 +198,7 @@ def get_multiple_S(
 
     return pd.DataFrame(
         results,
-        columns='S_by_plot S_by_age bandwidth cell function'.split(),
+        columns='S_by_plot S_by_page S_difference bandwidth cell function'.split(),
     )
 
 
@@ -281,7 +282,9 @@ if __name__ == '__main__':
         },
         bandwidths=[100, 200, 250, 300, 400, 500],
         cell_sizes=[25, 50, 75, 100],
-        kernel_functions=[Gaussian],
+        kernel_functions=[Biweight],
     )
+    multiple_S.to_csv(data_dir / 'processed' / 'aggregation_effects_S.csv')
 
     print(multiple_S)
+    print(multiple_S['S_difference'].abs().mean())
