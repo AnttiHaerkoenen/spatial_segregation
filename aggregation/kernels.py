@@ -6,6 +6,8 @@ class Kernel:
 
 
 class Gaussian(Kernel):
+    classname = 'gaussian'
+
     def __init__(self, bandwidth):
         self.bandwidth = bandwidth
 
@@ -17,6 +19,8 @@ class Gaussian(Kernel):
 
 
 class Box(Kernel):
+    classname = 'box'
+
     def __init__(self, bandwidth):
         self.bandwidth = bandwidth
 
@@ -28,6 +32,8 @@ class Box(Kernel):
 
 
 class Biweight(Kernel):
+    classname = 'biweight'
+
     def __init__(self, bandwidth, alpha=1):
         self.bandwidth = bandwidth
         self.alpha = alpha
@@ -43,6 +49,8 @@ class Biweight(Kernel):
 
 
 class Triangle(Kernel):
+    classname = 'triangle'
+
     def __init__(self, bandwidth):
         self.bandwidth = bandwidth
 

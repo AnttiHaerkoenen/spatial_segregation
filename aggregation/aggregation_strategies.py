@@ -192,7 +192,7 @@ def get_multiple_S(
             page_S.statistic,
             bw,
             cell,
-            str(kern(bw)),
+            kern.classname,
         ))
 
     return pd.DataFrame(
