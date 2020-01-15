@@ -242,7 +242,7 @@ if __name__ == '__main__':
     page_data.to_csv(data_dir / 'processed' / 'page_data_1880.csv')
 
     kwargs = dict(
-        bandwidth=150,
+        bandwidth=250,
         cell_size=50,
         kernel_function=Gaussian,
     )
