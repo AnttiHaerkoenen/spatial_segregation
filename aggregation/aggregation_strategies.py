@@ -26,7 +26,9 @@ def kernel_density_surface(
 ):
     pop = get_xy(data)
     pad = bandwidth * 2
+
     minx, miny, maxx, maxy = pop.geometry.total_bounds
+
     minx -= pad
     miny -= pad
     maxx += pad
@@ -34,10 +36,14 @@ def kernel_density_surface(
 
     x = np.arange(minx, maxx, cell_size)
     y = np.arange(miny, maxy, cell_size)
+
     X, Y = np.meshgrid(x, y)
+
     xy = np.vstack([Y.ravel(), X.ravel()]).T
+
     U = cdist(xy, pop[['y', 'x']].values, metric='euclidean')
     W = kernel_function(bandwidth)(U)
+
     density = (W * pop[group].values).sum(axis=1).reshape(X.shape)
 
     geotiff_meta = {
