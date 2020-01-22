@@ -287,7 +287,7 @@ if __name__ == '__main__':
             'plot_data': plot_data,
         },
         bandwidths=[100, 200, 250, 300, 400, 500],
-        cell_sizes=[25, 50, 75, 100],
+        cell_sizes=[50],
         kernel_functions=[Biweight],
     )
     multiple_S.to_csv(data_dir / 'processed' / 'aggregation_effects_S.csv')
