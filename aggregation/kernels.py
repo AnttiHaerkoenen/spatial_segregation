@@ -5,19 +5,6 @@ class Kernel:
     pass
 
 
-class Gaussian(Kernel):
-    classname = 'gaussian'
-
-    def __init__(self, bandwidth):
-        self.bandwidth = bandwidth
-
-    def __call__(self, u):
-        return 1 / (np.sqrt(2 * np.pi) * self.bandwidth ** 2) * np.exp(- u ** 2 / (2 * self.bandwidth ** 2))
-
-    def __str__(self):
-        return f"gaussian(bandwidth={self.bandwidth})"
-
-
 class Box(Kernel):
     classname = 'box'
 

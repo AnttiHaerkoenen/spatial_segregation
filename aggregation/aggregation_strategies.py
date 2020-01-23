@@ -11,7 +11,7 @@ import rasterio as rio
 from scipy.spatial.distance import cdist
 from segregation.aspatial import MinMax
 
-from aggregation.kernels import Gaussian, Biweight, Box
+from aggregation.kernels import Biweight, Box, Triangle
 from spatial_segregation.analysis import plot_density, get_xy
 from spatial_segregation.data import merge_dataframes,\
     split_plots, aggregate_sum, prepare_pop_data
