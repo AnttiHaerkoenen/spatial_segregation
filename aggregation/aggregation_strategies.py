@@ -249,8 +249,8 @@ if __name__ == '__main__':
 
     kwargs = dict(
         bandwidth=250,
-        cell_size=50,
-        kernel_function=Gaussian,
+        cell_size=25,
+        kernel_function=Biweight,
     )
 
     make_kde_surface(
@@ -286,8 +286,8 @@ if __name__ == '__main__':
             'page_data': page_data,
             'plot_data': plot_data,
         },
-        bandwidths=[100, 200, 250, 300, 400, 500],
-        cell_sizes=[50],
+        bandwidths=[100, 150, 200, 250, 300, 400, 500],
+        cell_sizes=[25],
         kernel_functions=[Biweight],
     )
     multiple_S.to_csv(data_dir / 'processed' / 'aggregation_effects_S.csv')
