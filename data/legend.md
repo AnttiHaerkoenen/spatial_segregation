@@ -15,6 +15,6 @@ lower | Alempaa keskiluokkaa | lower middle class
 worker_industry | Teollisuustyöläinen | industrial worker
 worker_other | Muu työläinen | other worker
 orthodox | Ortodokseja | orthodox
-other_christian | Muita kuin luterilaisia ja ortodokseja kristittyjä | Non-lutheran and non-orthodox christian
+other_christian | Muita kuin luterilaisia ja ortodokseja kristittyjä | non-lutheran and non-orthodox christian
 other_religion | Muita uskontoja | other religions
 draft | Asevelvollinen | draftee
