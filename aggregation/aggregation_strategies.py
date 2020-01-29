@@ -286,7 +286,7 @@ if __name__ == '__main__':
             'page_data': page_data,
             'plot_data': plot_data,
         },
-        bandwidths=[100, 150, 200, 250, 300, 400, 500],
+        bandwidths=[100, 150, 200, 250, 300],
         cell_sizes=[25],
         kernel_functions=[Biweight],
     )
