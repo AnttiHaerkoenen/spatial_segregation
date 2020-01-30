@@ -10,11 +10,14 @@ in_russia_men | Venäjällä passilla oleskelevia miehiä | men legally residing
 in_russia_women | Venäjällä passilla oleskelevia naisia | women legally residing in Russia proper
 total_men | Miehiä yhteensä | total men
 total_women | Naisia yhteensä | total women
-upper | Ylempää keskiluokkaa tai yläluokkaa | upper middle class or upper class
-lower | Alempaa keskiluokkaa | lower middle class
-worker_industry | Teollisuustyöläinen | industrial worker
-worker_other | Muu työläinen | other worker
-orthodox | Ortodokseja | orthodox
-other_christian | Muita kuin luterilaisia ja ortodokseja kristittyjä | non-lutheran and non-orthodox christian
-other_religion | Muita uskontoja | other religions
-draft | Asevelvollinen | draftee
+independent | Viranhoidosta tai elinkeinonharjoittamisesta toimeentulonsa saavat (ml. vaimot ja lapset) | Civil servants, entrepreneurs and financially independent (incl. wives and children)
+white_collar | Toimihenkilöitä | White collar workers
+worker_industry | Teollisuustyöläinen | Workers in industry
+worker_other | Muu työläinen | Other workers
+servants | Palvelusväki (ml. vaimot ja lapset) | Servants (incl. wives and children)
+other | Muut | Other employment status
+non_resident | Muualla asuvia | Resident elsewhere
+orthodox | Ortodokseja | Orthodox
+other_christian | Muita kuin luterilaisia ja ortodokseja kristittyjä | Non-Lutheran and non-Orthodox Christian
+other_religion | Muita uskontoja | Other religions
+draft | Asevelvollisuusikäinen | Draftable
