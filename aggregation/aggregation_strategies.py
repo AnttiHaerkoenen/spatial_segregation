@@ -11,7 +11,7 @@ import rasterio as rio
 from scipy.spatial.distance import cdist
 from segregation.aspatial import MinMax
 
-from aggregation.kernels import Biweight, Box, Triangle
+from aggregation.kernels import Martin, Quartic, Box, Triangle
 from spatial_segregation.analysis import plot_density, get_xy
 from spatial_segregation.data import merge_dataframes,\
     split_plots, aggregate_sum, prepare_pop_data
@@ -250,7 +250,7 @@ if __name__ == '__main__':
     kwargs = dict(
         bandwidth=250,
         cell_size=25,
-        kernel_function=Biweight,
+        kernel_function=Martin,
     )
 
     make_kde_surface(
@@ -288,7 +288,7 @@ if __name__ == '__main__':
         },
         bandwidths=[100, 150, 200, 250, 300],
         cell_sizes=[25],
-        kernel_functions=[Biweight],
+        kernel_functions=[Martin],
     )
     multiple_S.to_csv(data_dir / 'processed' / 'aggregation_effects_S.csv')
 
