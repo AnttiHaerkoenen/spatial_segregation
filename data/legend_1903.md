@@ -20,4 +20,4 @@ non_resident | Muualla asuvia | Resident elsewhere
 orthodox | Ortodokseja | Orthodox
 other_christian | Muita kuin luterilaisia ja ortodokseja kristittyjä | Non-Lutheran and non-Orthodox Christian
 other_religion | Muita uskontoja | Other religions
-draft | Asevelvollisuusikäinen | Draftable
+draftable | Asevelvollisuusikäinen | Draftable 21-year old males
