@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import pandas as pd
 
@@ -55,26 +56,27 @@ def fill_data_sheet(
 
 
 if __name__ == '__main__':
-    data_dir = '../data'
-    os.chdir(data_dir)
+    data_dir = Path('../data')
+    input_dir = data_dir / 'raw'
+    output_dir = data_dir / 'intermediary'
 
     fill_data_sheet(
-        'Viipurin henkikirjat.xlsx',
-        'pop_by_plot_1880.xlsx',
+        input_dir / 'Viipurin henkikirjat.xlsx',
+        output_dir / 'pop_by_plot_1880.xlsx',
         sheet='1880',
         columns='district plot_number',
         fill_with_zeros='rest',
     )
     fill_data_sheet(
-        'Viipurin henkikirjat summat.xlsx',
-        'pop_by_page_1880.xlsx',
+        input_dir / 'Viipurin henkikirjat summat.xlsx',
+        output_dir / 'pop_by_page_1880.xlsx',
         sheet='1880',
         columns='district plot_number',
         fill_with_zeros='rest',
     )
     fill_data_sheet(
-        'Viipurin henkikirjat kaupunginosittain.xlsx',
-        'pop_by_district_1880.xlsx',
+        input_dir / 'Viipurin henkikirjat kaupunginosittain.xlsx',
+        output_dir / 'pop_by_district_1880.xlsx',
         sheet='1880',
         columns='district',
         fill_with_zeros='rest',

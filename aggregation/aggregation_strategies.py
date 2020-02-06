@@ -86,6 +86,7 @@ def get_aggregate_locations(
         population_data: pd.DataFrame,
         location_data: gpd.GeoDataFrame,
 ) -> gpd.GeoDataFrame:
+
     geodata_by_district = []
 
     for dist in set(population_data['district']):
@@ -224,12 +225,12 @@ if __name__ == '__main__':
     drop_ = points[points.district == 'Repola'].index[31:]
     points = points.drop(drop_)
 
-    pop_by_plot = pd.read_excel(data_dir / 'raw' / 'pop_by_plot_1880.xlsx').pipe(prepare_pop_data)
+    pop_by_plot = pd.read_excel(data_dir / 'intermediary' / 'pop_by_plot_1880.xlsx').pipe(prepare_pop_data)
     pop_by_plot['plot_number'] = [str(n).split(',')[0] for n in pop_by_plot['plot_number']]
 
-    pop_by_page = pd.read_excel(data_dir / 'raw' / 'pop_by_page_1880.xlsx').pipe(prepare_pop_data)
+    pop_by_page = pd.read_excel(data_dir / 'intermediary' / 'pop_by_page_1880.xlsx').pipe(prepare_pop_data)
 
-    pop_by_district = pd.read_excel(data_dir / 'raw' / 'pop_by_district_1880.xlsx').pipe(prepare_pop_data)
+    pop_by_district = pd.read_excel(data_dir / 'intermediary' / 'pop_by_district_1880.xlsx').pipe(prepare_pop_data)
 
     plot_data = merge_dataframes(
         location_data=points,
@@ -237,13 +238,16 @@ if __name__ == '__main__':
         on_location='district plot_number'.split(),
         on_other='district plot_number'.split(),
     )
+
     plot_data['total'] = plot_data[['other_christian', 'orthodox', 'other_religion', 'lutheran']].sum(axis=1)
+    plot_data = plot_data.drop(columns=['Unnamed: 0', 'plot_number'])
     plot_data.to_csv(data_dir / 'processed' / 'plot_data_1880.csv')
 
     page_data = get_aggregate_locations(
         population_data=pop_by_page,
         location_data=points,
     )
+
     page_data['total'] = page_data[['other_christian', 'orthodox', 'other_religion', 'lutheran']].sum(axis=1)
     page_data.to_csv(data_dir / 'processed' / 'page_data_1880.csv')
 
@@ -290,6 +294,7 @@ if __name__ == '__main__':
         cell_sizes=[25],
         kernel_functions=[Martin],
     )
+
     multiple_S.to_csv(data_dir / 'processed' / 'aggregation_effects_S.csv')
 
     print(multiple_S)
