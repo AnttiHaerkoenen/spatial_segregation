@@ -91,7 +91,7 @@ def get_aggregate_locations(
 
     for dist in set(population_data['district']):
         pop = population_data[population_data.district == dist]
-        loc = location_data.geometry[location_data.district == dist]
+        loc = location_data.loc[location_data.district == dist]
 
         geodata_by_district.append(_get_aggregate_locations_by_district(pop, loc))
 

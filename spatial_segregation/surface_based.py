@@ -1,4 +1,5 @@
 import os
+import timeit
 
 import numpy as np
 import pandas as pd
@@ -52,9 +53,15 @@ def _surface_dissim(
 if __name__ == '__main__':
     os.chdir('../data')
     data_dict = {
-        'geometry': [Point(1, 2), Point(2, 3), Point(3, 3)],
-        'pop1': [1, 2, 3],
-        'pop2': [0, 1, 1],
+        'geometry': [
+            Point(1, 2), Point(2, 3), Point(3, 3),
+            Point(11, 2), Point(12, 3), Point(13, 3),
+            Point(11, 12), Point(12, 13), Point(13, 13),
+            Point(5, 2), Point(5, 3), Point(5, 1),
+            Point(5, 6), Point(5, 7), Point(5, 8),
+        ],
+        'pop1': [1, 2, 4, 1, 2, 3, 1, 2, 3, 1, 5, 10, 1, 2, 3],
+        'pop2': [0, 1, 4, 0, 1, 1, 0, 1, 1, 0, 5, 13, 0, 1, 1],
     }
     data = gpd.GeoDataFrame.from_dict(data_dict)
     s, _ = _surface_dissim(data, group_1_pop_var='pop1', group_2_pop_var='pop2')
