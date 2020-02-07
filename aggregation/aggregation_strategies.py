@@ -103,30 +103,32 @@ def get_aggregate_locations(
 
 def _get_aggregate_locations_by_district(
         population_data: pd.DataFrame,
-        locations: gpd.GeoSeries,
+        locations: gpd.GeoDataFrame,
 ) -> gpd.GeoDataFrame:
 
     len_pop = len(population_data.index)
-    len_loc = len(locations)
+    len_loc = len(locations.index)
 
     if len_loc == 0 or len_pop == 0:
         geodata = gpd.GeoDataFrame()
 
     elif len_loc == len_pop:
-        geodata = gpd.GeoDataFrame(population_data)
+        geodata = locations.merge(population_data)
         geodata.index = locations.index
         geodata = geodata.set_geometry(locations)
 
     elif len_loc < len_pop:
-        sample_pop = population_data.loc[interval_sample(population_data.index, len_loc)]
+        sample_index = interval_sample(population_data.index, len_loc)
+        sample_pop = population_data.loc[sample_index, ]
         geodata = gpd.GeoDataFrame(sample_pop)
         geodata.index = sample_pop.index
         geodata = geodata.set_geometry(locations)
 
     else:
-        sample_locations = gpd.GeoSeries(interval_sample(locations, len_pop))
+        sample_index = interval_sample(locations.index, len_pop)
+        sample_locations = locations.loc[sample_index, ]
         sample_locations.index = population_data.index
-        geodata = gpd.GeoDataFrame(population_data)
+        geodata = sample_locations.merge(population_data)
         geodata = geodata.set_geometry(sample_locations)
 
     return geodata
@@ -243,6 +245,7 @@ if __name__ == '__main__':
     plot_data = plot_data.drop(columns=['Unnamed: 0', 'plot_number'])
     plot_data.to_csv(data_dir / 'processed' / 'plot_data_1880.csv')
 
+    # todo retain original plots
     page_data = get_aggregate_locations(
         population_data=pop_by_page,
         location_data=points,
