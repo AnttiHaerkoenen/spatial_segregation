@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
+
 import rasterio as rio
 from scipy.spatial.distance import cdist
 from segregation.aspatial import MinMax
@@ -71,12 +72,15 @@ def interval_sample(iterable, length) -> list:
     sample = []
 
     last_int = None
+
     for i, n in enumerate(iterable):
         integer = i // ratio
 
         if integer != last_int:
             last_int = integer
             sample.append(n)
+
+    assert len(sample) == length
 
     return sample
 
@@ -91,9 +95,14 @@ def get_aggregate_locations(
 
     for dist in set(population_data['district']):
         pop = population_data[population_data.district == dist]
-        loc = location_data.loc[location_data.district == dist]
+        loc = location_data[location_data.district == dist]
 
-        geodata_by_district.append(_get_aggregate_locations_by_district(pop, loc))
+        pop = pop.reset_index()
+        loc = loc.reset_index()
+
+        district = _get_aggregate_locations_by_district(pop, loc)
+
+        geodata_by_district.append(district)
 
     geodata = pd.concat(geodata_by_district, ignore_index=True)
     geodata.crs = location_data.crs
@@ -103,33 +112,35 @@ def get_aggregate_locations(
 
 def _get_aggregate_locations_by_district(
         population_data: pd.DataFrame,
-        locations: gpd.GeoDataFrame,
+        location_data: gpd.GeoDataFrame,
 ) -> gpd.GeoDataFrame:
 
     len_pop = len(population_data.index)
-    len_loc = len(locations.index)
+    len_loc = len(location_data.index)
 
     if len_loc == 0 or len_pop == 0:
-        geodata = gpd.GeoDataFrame()
-
-    elif len_loc == len_pop:
-        geodata = locations.merge(population_data)
-        geodata.index = locations.index
-        geodata = geodata.set_geometry(locations)
+        return gpd.GeoDataFrame()
 
     elif len_loc < len_pop:
         sample_index = interval_sample(population_data.index, len_loc)
-        sample_pop = population_data.loc[sample_index, ]
-        geodata = gpd.GeoDataFrame(sample_pop)
-        geodata.index = sample_pop.index
-        geodata = geodata.set_geometry(locations)
+        population_data = population_data.loc[sample_index, ]
 
-    else:
-        sample_index = interval_sample(locations.index, len_pop)
-        sample_locations = locations.loc[sample_index, ]
-        sample_locations.index = population_data.index
-        geodata = sample_locations.merge(population_data)
-        geodata = geodata.set_geometry(sample_locations)
+    elif len_pop < len_loc:
+        sample_index = interval_sample(location_data.index, len_pop)
+        location_data = location_data.loc[sample_index, ]
+
+    location_data = location_data.reset_index()
+    location_data = location_data.drop(columns=['level_0',  'index'])
+    population_data = population_data.drop(columns=['plot_number'])
+
+    geodata = pd.concat(
+        [location_data, population_data],
+        axis=1,
+    )
+    geodata = geodata.drop(columns=[
+        'index',
+        'Unnamed: 0',
+    ])
 
     return geodata
 
@@ -245,11 +256,11 @@ if __name__ == '__main__':
     plot_data = plot_data.drop(columns=['Unnamed: 0', 'plot_number'])
     plot_data.to_csv(data_dir / 'processed' / 'plot_data_1880.csv')
 
-    # todo retain original plots
     page_data = get_aggregate_locations(
         population_data=pop_by_page,
         location_data=points,
     )
+    print(page_data.columns)
 
     page_data['total'] = page_data[['other_christian', 'orthodox', 'other_religion', 'lutheran']].sum(axis=1)
     page_data.to_csv(data_dir / 'processed' / 'page_data_1880.csv')
