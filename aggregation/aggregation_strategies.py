@@ -131,7 +131,7 @@ def _get_aggregate_locations_by_district(
 
     location_data = location_data.reset_index()
     location_data = location_data.drop(columns=['level_0',  'index'])
-    population_data = population_data.drop(columns=['plot_number'])
+    population_data = population_data.drop(columns=['plot_number', 'district'])
 
     geodata = pd.concat(
         [location_data, population_data],
@@ -260,7 +260,6 @@ if __name__ == '__main__':
         population_data=pop_by_page,
         location_data=points,
     )
-    print(page_data.columns)
 
     page_data['total'] = page_data[['other_christian', 'orthodox', 'other_religion', 'lutheran']].sum(axis=1)
     page_data.to_csv(data_dir / 'processed' / 'page_data_1880.csv')
