@@ -25,8 +25,6 @@ if __name__ == '__main__':
         distances.append(dist_distances)
 
     dist_data = pd.Series(chain.from_iterable(distances))
-    print(point_data.geometry)
-    print(point_data.crs)
-    print(dist_data.describe())
+
     dist_data.plot.kde(xlim=(0, 500))
     plt.show()
