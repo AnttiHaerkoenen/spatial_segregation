@@ -40,6 +40,7 @@ def aggregate_sum(
     :param target_cols:
     :return:
     """
+    data.sort_values(by=target_cols, inplace=True)
     agg_data = pd.DataFrame(columns=data.columns)
     if isinstance(data, gpd.GeoDataFrame):
         agg_data.crs = data.crs
@@ -108,7 +109,7 @@ def merge_dataframes(
 
 
 def shuffle_data(data):
-    data.geometry = np.random.shuffle(data.geometry)
+    np.random.shuffle(data.geometry)
     return data
 
 

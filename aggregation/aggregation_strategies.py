@@ -67,7 +67,10 @@ def kernel_density_surface(
     return density[::-1, ], geotiff_meta
 
 
-def interval_sample(iterable, length) -> list:
+def interval_sample(
+        iterable,
+        length,
+) -> list:
     ratio = len(iterable) / length
     sample = []
 
@@ -122,11 +125,26 @@ def _get_aggregate_locations_by_district(
         return gpd.GeoDataFrame()
 
     elif len_loc < len_pop:
-        sample_index = interval_sample(population_data.index, len_loc)
-        population_data = population_data.loc[sample_index, ]
+        sample_index = interval_sample(
+            population_data.index,
+            len_loc,
+        )
+        new_geom = gpd.GeoDataFrame(
+            {'geometry': location_data.geometry},
+            index=sample_index,
+        )
+        new_geom = new_geom.align(
+            population_data,
+            how='outer',
+            method='pad',
+        )
+        location_data = new_geom
 
     elif len_pop < len_loc:
-        sample_index = interval_sample(location_data.index, len_pop)
+        sample_index = interval_sample(
+            location_data.index,
+            len_pop,
+        )
         location_data = location_data.loc[sample_index, ]
 
     location_data = location_data.reset_index()
@@ -182,7 +200,10 @@ def get_S(
         kernel_function=kernel_function,
     )
 
-    density = pd.DataFrame({'orthodox': density_orthodox.flatten(), 'total': density_total.flatten()})
+    density = pd.DataFrame({
+            'orthodox': density_orthodox.flatten(),
+            'total': density_total.flatten(),
+         })
     s = MinMax(density, 'orthodox', 'total')
 
     return s
