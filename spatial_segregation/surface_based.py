@@ -5,10 +5,9 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import MultiPoint, Point
-from libpysal.weights import W, Kernel
 
 
-def _surface_dissim(
+def surface_dissim(
         data: gpd.GeoDataFrame,
         group_1_pop_var: str,
         group_2_pop_var: str,
@@ -64,5 +63,5 @@ if __name__ == '__main__':
         'pop2': [0, 1, 4, 0, 1, 1, 0, 1, 1, 0, 5, 13, 0, 1, 1],
     }
     data = gpd.GeoDataFrame.from_dict(data_dict)
-    s, _ = _surface_dissim(data, group_1_pop_var='pop1', group_2_pop_var='pop2')
+    s, _ = surface_dissim(data, group_1_pop_var='pop1', group_2_pop_var='pop2')
     print(s)

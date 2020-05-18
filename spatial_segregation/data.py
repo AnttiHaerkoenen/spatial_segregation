@@ -20,9 +20,14 @@ def split_plots(
     """
     new_geodataframe = gpd.GeoDataFrame(columns=geodataframe.columns)
     for _, row in geodataframe.iterrows():
-        for c in str(row[target_col]).split(separator):
+        plots = str(row[target_col]).split(separator)
+
+        if len(plots) < 2:
+            continue
+
+        for plot in plots:
             new_row = row
-            new_row[target_col] = c
+            new_row[target_col] = plot
             new_geodataframe = new_geodataframe.append(new_row)
     return new_geodataframe.reindex()
 

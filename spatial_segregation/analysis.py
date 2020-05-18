@@ -161,8 +161,12 @@ def get_s(
         cell_size=10,
         kernel_function=biweight,
     )
-    density = pd.DataFrame({'orthodox': density_orthodox.flatten(), 'total': density_total.flatten()})
+    density = pd.DataFrame({
+        'orthodox': density_orthodox.flatten(),
+        'total': density_total.flatten(),
+    })
     s = MinMax(density, 'orthodox', 'total')
+
     return s
 
 
