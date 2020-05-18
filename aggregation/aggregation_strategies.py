@@ -133,11 +133,16 @@ def _get_aggregate_locations_by_district(
             {'geometry': location_data.geometry},
             index=sample_index,
         )
-        new_geom = new_geom.align(
-            population_data,
-            how='outer',
-            method='pad',
-        )
+
+        try:
+            new_geom = new_geom.align(
+                population_data,
+                join='outer',
+                method='pad',
+            )
+        except NotImplementedError:
+            return gpd.GeoDataFrame()
+
         location_data = new_geom
 
     elif len_pop < len_loc:
