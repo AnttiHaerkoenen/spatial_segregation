@@ -153,8 +153,14 @@ def _get_aggregate_locations_by_district(
         location_data = location_data.loc[sample_index, ]
 
     location_data = location_data.reset_index()
-    location_data = location_data.drop(columns=['level_0',  'index'])
-    population_data = population_data.drop(columns=['plot_number', 'district'])
+    location_data = location_data.drop(
+        columns=['level_0',  'index'],
+        errors='ignore',
+    )
+    population_data = population_data.drop(
+        columns=['plot_number', 'district'],
+        errors='ignore',
+    )
 
     geodata = pd.concat(
         [location_data, population_data],
@@ -264,12 +270,10 @@ if __name__ == '__main__':
     drop_ = points[points.district == 'Repola'].index[31:]
     points = points.drop(drop_)
 
-    pop_by_plot = pd.read_excel(data_dir / 'intermediary' / 'pop_by_plot_1880.xlsx').pipe(prepare_pop_data)
+    pop_by_plot = pd.read_csv(data_dir / 'intermediary' / 'pop_by_plot_1880.csv').pipe(prepare_pop_data)
     pop_by_plot['plot_number'] = [str(n).split(',')[0] for n in pop_by_plot['plot_number']]
 
-    pop_by_page = pd.read_excel(data_dir / 'intermediary' / 'pop_by_page_1880.xlsx').pipe(prepare_pop_data)
-
-    pop_by_district = pd.read_excel(data_dir / 'intermediary' / 'pop_by_district_1880.xlsx').pipe(prepare_pop_data)
+    pop_by_page = pd.read_csv(data_dir / 'intermediary' / 'pop_by_page_1880.csv').pipe(prepare_pop_data)
 
     plot_data = merge_dataframes(
         location_data=points,
