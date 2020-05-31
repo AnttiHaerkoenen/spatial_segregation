@@ -80,6 +80,15 @@ if __name__ == '__main__':
 
     for year in 1880, :
         fill_data_sheet(
+            input_dir / 'Viipurin henkikirjat.xlsx',
+            output_dir / f'pop_by_plot_{year}.csv',
+            sheet=f'{year}',
+            columns='district plot_number',
+            fill_with_zeros='rest',
+        )
+
+    for year in 1880, :
+        fill_data_sheet(
             input_dir / 'Viipurin suostuntaveroluettelo.xlsx',
             output_dir / f'income_tax_record_{year}.csv',
             sheet=f'{year}',
