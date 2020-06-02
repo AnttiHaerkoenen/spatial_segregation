@@ -58,6 +58,7 @@ def fill_data_sheet(
     df[columns] = df[columns].fillna(method='pad', axis=0)
     df[fill_with_zeros] = df[fill_with_zeros].fillna(value=0)
 
+    df[fill_with_zeros] = df[fill_with_zeros].apply(pd.to_numeric)
     if output_format == 'xlsx':
         df.to_excel(output_file)
     elif output_format == 'csv':
@@ -74,7 +75,7 @@ if __name__ == '__main__':
             input_dir / 'Viipurin henkikirjat summat.xlsx',
             output_dir / f'pop_by_page_{year}.csv',
             sheet=f'{year}',
-            columns='district',
+            columns='district page_number',
             fill_with_zeros='rest',
         )
 
