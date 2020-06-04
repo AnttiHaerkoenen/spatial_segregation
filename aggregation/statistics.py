@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def get_plots_by_page(
@@ -26,15 +27,14 @@ def get_plots_by_page(
         plots_in_district = {page_idx: []}
 
         for plot_idx, *plot in plot_iterator:
-            print(plot, page)
 
             if plot >= page:
-
                 try:
                     page_idx, *page = next(page_iterator)
                     plots_in_district[page_idx] = [plot_idx]
                 except StopIteration:
-                    raise ValueError(f'{district} empty, sums may not match')
+                    print(f'{district} empty, sums may not match')
+                    plots_in_district[page_idx].append(plot_idx)
 
             else:
                 plots_in_district[page_idx].append(plot_idx)
@@ -65,4 +65,13 @@ if __name__ == '__main__':
         pop_by_page=page_data,
     )
 
-    print(plots)
+    plots = {
+        k: [len(value) for value in v.values()]
+        for k, v
+        in plots.items()
+    }
+    plots = [(k, val) for k, v in plots.items() for val in v]
+    plot_df = pd.DataFrame.from_records(plots, columns='district plots'.split())
+
+    plot_df.hist(bins=15)
+    plt.show()
