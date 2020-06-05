@@ -2,6 +2,8 @@ from pathlib import Path
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from scipy.stats import stats
 
 
 def get_plots_by_page(
@@ -72,6 +74,15 @@ if __name__ == '__main__':
     }
     plots = [(k, val) for k, v in plots.items() for val in v]
     plot_df = pd.DataFrame.from_records(plots, columns='district plots'.split())
+    data = plot_df['plots']
+    mu = float(data.mean())
 
-    plot_df.hist(bins=15)
+    # plot_df.hist(by='district')
+
+    poisson_data = pd.Series(stats.distributions.poisson.rvs(mu, size=1000))
+    neg_binom_data = pd.Series(stats.distributions.nbinom.rvs(1, mu/28, size=1000))
+    beta_binom_data = pd.Series(stats.distributions.betabinom.rvs(28, 3, 12, size=len(data)))
+
+    # beta_binom_data.plot(kind='kde')
+    fig = sm.qqplot_2samples(data, beta_binom_data, line='45')
     plt.show()
