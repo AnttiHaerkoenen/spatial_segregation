@@ -81,7 +81,7 @@ if __name__ == '__main__':
 
     poisson_data = pd.Series(stats.distributions.poisson.rvs(mu, size=1000))
     neg_binom_data = pd.Series(stats.distributions.nbinom.rvs(1, mu/28, size=1000))
-    beta_binom_data = pd.Series(stats.distributions.betabinom.rvs(28, 3, 12, size=len(data)))
+    beta_binom_data = pd.Series(stats.distributions.betabinom.rvs(28, 3, 12, size=1000))
 
     # beta_binom_data.plot(kind='kde')
     fig = sm.qqplot_2samples(data, beta_binom_data, line='45')

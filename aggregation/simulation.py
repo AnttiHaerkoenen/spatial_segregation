@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import rasterio as rio
 from scipy.spatial.distance import cdist
 from segregation.aspatial import MinMax
+from scipy import stats
 
 from aggregation.kernels import Martin, Quartic, Box, Triangle
 from aggregation.aggregation_strategies import get_S, get_aggregate_locations
@@ -21,3 +22,5 @@ from spatial_segregation.data import merge_dataframes,\
 if __name__ == '__main__':
     data_dir = Path('../data')
     fig_dir = Path('../figures')
+    beta_binom_data = pd.Series(stats.distributions.betabinom.rvs(28, 3, 12, size=1000))
+
