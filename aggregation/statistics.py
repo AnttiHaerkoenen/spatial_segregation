@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from scipy.stats import stats
 
-from spatial_segregation.data import aggregate_sum, prepare_pop_data
+from spatial_segregation.data import prepare_pop_data
 
 
 def get_plots_by_page(
@@ -64,34 +64,29 @@ if __name__ == '__main__':
     page_data[num_cols] = page_data[num_cols].astype('int32')
     plot_data[num_cols] = plot_data[num_cols].astype('int32')
 
-    plots = get_plots_by_page(
-        pop_by_plot=plot_data,
-        pop_by_page=page_data,
-    )
+    # plots = get_plots_by_page(
+    #     pop_by_plot=plot_data,
+    #     pop_by_page=page_data,
+    # )
 
-    plot_data_agg = aggregate_sum(
-        plot_data,
-        group_cols='district plot_number'.split(),
-        target_cols=num_cols,
-    )
+    plot_data_agg = plot_data.groupby(by='district plot_number'.split()).sum().drop(columns='Unnamed: 0')
     plot_data_agg = prepare_pop_data(plot_data_agg)
-    print(plot_data_agg.columns)
 
-    plot_data_agg.hist(
-        column='lutheran',
-        # by='district',
-        bins=25,
-    )
+    # plot_data_agg.hist(
+    #     column='lutheran',
+    #     by='district',
+    #     bins=25,
+    # )
 
-    plots = {
-        k: [len(value) for value in v.values()]
-        for k, v
-        in plots.items()
-    }
-    plots = [(k, val) for k, v in plots.items() for val in v]
-    plot_df = pd.DataFrame.from_records(plots, columns='district plots'.split())
-    data = plot_df['plots']
-    mu = float(data.mean())
+    # plots = {
+    #     k: [len(value) for value in v.values()]
+    #     for k, v
+    #     in plots.items()
+    # }
+    # plots = [(k, val) for k, v in plots.items() for val in v]
+    # plot_df = pd.DataFrame.from_records(plots, columns='district plots'.split())
+    # data = plot_df['plots']
+    # mu = float(data.mean())
 
     # plot_df.hist(by='district')
 
@@ -101,4 +96,23 @@ if __name__ == '__main__':
 
     # beta_binom_data.plot(kind='kde')
     # fig = sm.qqplot_2samples(data, beta_binom_data, line='45')
+
+    # plot_data_agg['lutheran'].plot(
+    #     kind='kde',
+    #     xlim=(0, 30),
+    # )
+
+    a = 1.25
+    gamma_data = pd.Series(
+        stats.distributions.gamma.rvs(
+            a=a,
+            scale=plot_data_agg.lutheran.mean() / a,
+            size=plot_data_agg.shape[0] * 100,
+        )
+    )
+    gamma_data = gamma_data.where(gamma_data <= plot_data_agg.lutheran.max())
+
+    # fig = sm.qqplot_2samples(plot_data_agg['lutheran'], gamma_data, line='45')
+    gamma_data.plot(kind='kde', xlim=(0, 100))
+    plot_data_agg['lutheran'].plot(kind='kde')
     plt.show()

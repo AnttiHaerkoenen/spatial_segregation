@@ -32,38 +32,41 @@ def split_plots(
     return new_geodataframe.reindex()
 
 
-def aggregate_sum(
-        data: pd.DataFrame,
-        group_cols: Sequence,
-        target_cols: Sequence,
-) -> pd.DataFrame:
-    """
-    Calculates aggregate sums of target_cols based grouped by group_cols.
-    Preserves crs-attribute if 'data' is GeoDataFrame.
-    :param data: target dataframe
-    :param group_cols:
-    :param target_cols:
-    :return:
-    """
-    data.sort_values(by=target_cols, inplace=True)
-    agg_data = pd.DataFrame(columns=data.columns)
-    if isinstance(data, gpd.GeoDataFrame):
-        agg_data.crs = data.crs
-
-    last = pd.Series()
-    len_targets = len(target_cols)
-    sums = pd.Series(np.zeros(len_targets), index=target_cols)
-    for _, row in data.iterrows():
-        if row[group_cols].all() != last.all():
-            last = row[group_cols]
-            new_row = row
-            new_row[target_cols] = sums
-            sums = pd.Series(np.zeros(len_targets), index=target_cols)
-            agg_data = agg_data.append(new_row)
-        else:
-            sums += row[target_cols]
-
-    return agg_data.reindex()
+# def aggregate_sum(
+#         data: pd.DataFrame,
+#         group_cols: Sequence,
+#         target_cols: Sequence,
+# ) -> pd.DataFrame:
+#     """
+#     Calculates aggregate sums of target_cols based grouped by group_cols.
+#     Preserves crs-attribute if 'data' is GeoDataFrame.
+#     :param data: target dataframe
+#     :param group_cols:
+#     :param target_cols:
+#     :return:
+#     """
+#     data.sort_values(by=group_cols, inplace=True)
+#     agg_data = pd.DataFrame(columns=data.columns)
+#
+#     if isinstance(data, gpd.GeoDataFrame):
+#         agg_data.crs = data.crs
+#
+#     last = pd.Series()
+#     len_targets = len(target_cols)
+#     sums = pd.Series(np.zeros(len_targets), index=target_cols)
+#
+#     for _, row in data.iterrows():
+#         if row[group_cols].all() != last.all():
+#             last = row[group_cols]
+#             new_row = row
+#             new_row[target_cols] = sums
+#             sums = pd.Series(np.zeros(len_targets), index=target_cols)
+#             agg_data = agg_data.append(new_row)
+#
+#         else:
+#             sums += row[target_cols]
+#
+#     return agg_data.reindex()
 
 
 def merge_dataframes(
@@ -123,6 +126,7 @@ def prepare_pop_data(
         num_cols=None,
 ) -> pd.DataFrame:
     pop_frame = population_data.fillna(value=0)
+
     if not num_cols:
         num_cols = [
             'total_men',
@@ -131,12 +135,14 @@ def prepare_pop_data(
             'other_christian',
             'other_religion',
         ]
+
     pop_frame.loc[:, num_cols] = pop_frame.loc[:, num_cols].astype(int)
     pop_frame['lutheran'] = pop_frame['total_men'] \
         + pop_frame['total_women'] \
         - pop_frame['orthodox'] \
         - pop_frame['other_christian'] \
         - pop_frame['other_religion']
+
     return pop_frame
 
 
