@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import betabinom, gamma
+from scipy.stats import betabinom, gamma, rv_histogram
 
 
 class Distribution(ABC):
@@ -104,11 +104,53 @@ class Gamma(Distribution):
         )
 
 
+class Histogram(Distribution):
+    name = 'Histogram'
+
+    def __init__(
+            self,
+            data,
+            bins: int = 20,
+    ):
+        self.histogram = np.histogram(data, bins=bins)
+        self._distribution = rv_histogram(self.histogram)
+
+    def __str__(self):
+        return 'Custom distribution from histogram'
+
+    @property
+    def parameters(self):
+        return {'histogram': self.histogram}
+
+    def draw(self, size):
+        series = pd.Series(
+            self._distribution.rvs(size=size))
+        return series
+
+    def plot(self, **kwargs):
+        x = np.linspace(
+            self._distribution.ppf(0.01),
+            self._distribution.ppf(0.99),
+            100,
+        )
+        plt.plot(
+            x,
+            self._distribution.pdf(x),
+            label='pdf',
+            **kwargs
+        )
+
+
 if __name__ == '__main__':
-    beta_binom = BetaBinomial(28, 1, 2)
-    beta_binom.plot()
-    plt.show()
+    # beta_binom = BetaBinomial(28, 1, 2)
+    # beta_binom.plot()
+    # plt.show()
 
     # g = Gamma(1.25, 5)
     # g.plot()
     # plt.show()
+
+    hist_data = np.random.randint(0, 100, 1000)
+    hist = Histogram(hist_data, bins=20)
+    hist.plot()
+    plt.show()
