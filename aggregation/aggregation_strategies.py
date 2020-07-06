@@ -103,7 +103,7 @@ def get_aggregate_locations(
         pop = pop.reset_index()
         loc = loc.reset_index()
 
-        district = _get_aggregate_locations_by_district(pop, loc)
+        district = get_aggregate_locations_by_district(pop, loc)
 
         geodata_by_district.append(district)
 
@@ -113,7 +113,7 @@ def get_aggregate_locations(
     return geodata
 
 
-def _get_aggregate_locations_by_district(
+def get_aggregate_locations_by_district(
         population_data: pd.DataFrame,
         location_data: gpd.GeoDataFrame,
 ) -> gpd.GeoDataFrame:
