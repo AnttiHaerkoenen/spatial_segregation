@@ -90,7 +90,7 @@ def simulate_pop_by_page(
     return pages
 
 
-def simulate_plots_by_page(
+def _get_simulated_plots_by_page(
         page_distribution: Distribution,
         n_plots: int,
 ):
@@ -109,14 +109,29 @@ def simulate_plots_by_page(
     return pages
 
 
-def get_simulated_pop_by_page(
+def _get_simulated_pop_by_page(
         pop_by_plot: gpd.GeoDataFrame,
         plots_by_page: Sequence,
 ):
-    pop_by_plot['page_num'] = [[i] * n for i, n in enumerate(plots_by_page, start=1)]
+    page_nums = [[i] * n for i, n in enumerate(plots_by_page, start=1)]
+    pop_by_plot['page_num'] = list(chain.from_iterable(page_nums))
     pop_by_page = pop_by_plot.groupby(by='page_num').sum()
 
     return pop_by_page
+
+
+def paginate(
+        pop_by_plot: gpd.GeoDataFrame,
+        page_distribution: Distribution,
+        n_plots: int = None,
+):
+    if not n_plots:
+        n_plots = len(pop_by_plot.index)
+
+    pages = _get_simulated_plots_by_page(page_distribution, n_plots)
+    pop_by_plot = _get_simulated_pop_by_page(pop_by_plot, pages)
+
+    return pop_by_plot
 
 
 def make_synthetic_data(
@@ -146,7 +161,7 @@ if __name__ == '__main__':
 
     locations = gpd.read_file(data_dir / 'simulated' / 'synthetic_district_plots.shp')
     pop_distribution = Gamma(shape=1.25, scale=8)
-    plot_distribution = BetaBinomial(n=28, a=3, b=12)
+    page_distribution = BetaBinomial(n=28, a=3, b=12)
 
     data = make_synthetic_data(
         locations=locations,
@@ -155,9 +170,9 @@ if __name__ == '__main__':
         majority_col='lutheran',
         minority_col='orthodox',
         number_col='number',
-    )
+    ).drop(columns='id')
 
-    plots_in_page = simulate_plots_by_page(plot_distribution, len(data.index))
+    plots_in_page = paginate(data, page_distribution)
 
     print(plots_in_page)
     print(data)
