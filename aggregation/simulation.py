@@ -8,13 +8,12 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
-
 import rasterio as rio
 from scipy.spatial.distance import cdist
 from segregation.aspatial import MinMax
 from scipy import stats
 
-from aggregation.distributions import Distribution, Gamma
+from aggregation.distributions import Distribution, Gamma, BetaBinomial
 
 minority_locations = {
     'even': '011 016 021 026 031 036 041 046 051 056 '
@@ -105,6 +104,7 @@ def simulate_plots_by_page(
             plots = left
 
         pages.append(plots)
+        left -= plots
 
     return pages
 
@@ -127,41 +127,38 @@ def make_synthetic_data(
         minority_col: str,
         majority_col: str,
 ):
-    records = {}
+    pop_by_plot = locations.copy()
 
-    for number in locations[number_col]:
-        record = {number_col: number}
+    numbers = locations[number_col]
+    pop_by_plot[minority_col] = numbers.apply(
+        lambda i: int(population_distribution.draw(1)[0]) if i in minority_locations else 0
+    )
+    pop_by_plot[majority_col] = numbers.apply(
+        lambda i: int(population_distribution.draw(1)[0]) if i not in minority_locations else 0
+    )
 
-        if number in minority_locations:
-            record[minority_col] = population_distribution.draw(1)[0]
-            record[majority_col] = 0
-        else:
-            record[minority_col] = 0
-            record[majority_col] = population_distribution.draw(1)[0]
-
-        records[number] = record
-
-    return gpd.GeoDataFrame.from_dict(records, orient='index')
+    return pop_by_plot
 
 
 if __name__ == '__main__':
     data_dir = Path('../data')
     fig_dir = Path('../figures')
 
-    print([len(k) for k in minority_locations.values()])
-    print(orders)
-
     locations = gpd.read_file(data_dir / 'simulated' / 'synthetic_district_plots.shp')
-    distribution = Gamma(shape=1.25, scale=8)
+    pop_distribution = Gamma(shape=1.25, scale=8)
+    plot_distribution = BetaBinomial(n=28, a=3, b=12)
 
     data = make_synthetic_data(
         locations=locations,
         minority_locations=minority_locations['even'],
-        population_distribution=distribution,
+        population_distribution=pop_distribution,
         majority_col='lutheran',
         minority_col='orthodox',
         number_col='number',
     )
 
+    plots_in_page = simulate_plots_by_page(plot_distribution, len(data.index))
+
+    print(plots_in_page)
     print(data)
     print(data.describe())
