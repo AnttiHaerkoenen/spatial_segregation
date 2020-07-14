@@ -11,7 +11,7 @@ from bokeh.palettes import grey
 from bokeh.io import export_png
 from scipy.spatial.distance import cdist
 
-from spatial_segregation.data import merge_dataframes, prepare_pop_data, prepare_point_data, aggregate_sum
+from spatial_segregation.data import merge_dataframes, prepare_pop_data, prepare_point_data
 
 
 def get_xy(

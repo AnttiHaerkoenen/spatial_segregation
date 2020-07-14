@@ -15,7 +15,7 @@ from segregation.aspatial import MinMax
 from aggregation.kernels import Martin, Quartic, Box, Triangle
 from spatial_segregation.analysis import plot_density, get_xy
 from spatial_segregation.data import merge_dataframes,\
-    split_plots, aggregate_sum, prepare_pop_data
+    split_plots, prepare_pop_data
 
 
 def kernel_density_surface(

@@ -14,6 +14,7 @@ from segregation.aspatial import MinMax
 from scipy import stats
 
 from aggregation.distributions import Distribution, Gamma, BetaBinomial
+from aggregation.aggregation_strategies import get_aggregate_locations_by_district
 
 minority_locations = {
     'even': '011 016 021 026 031 036 041 046 051 056 '
@@ -62,11 +63,18 @@ random.seed(123)
 random_ = blocks.copy()
 random.shuffle(random_)
 
+
+def inverse_order(order: Sequence) -> list:
+    new_order = sorted([(k, v) for k, v in enumerate(order)], key=lambda e: e[1])
+    new_order = [e[0] for e in new_order]
+    return new_order
+
+
 orders = {
-    'blocks': blocks,
-    'rows': rows,
-    'snake': snake,
-    'random': random_,
+    'blocks': inverse_order(blocks),
+    'rows': inverse_order(rows),
+    'snake': inverse_order(snake),
+    'random': inverse_order(random_),
 }
 
 
@@ -112,24 +120,28 @@ def _get_simulated_plots_by_page(
 def _get_simulated_pop_by_page(
         pop_by_plot: gpd.GeoDataFrame,
         plots_by_page: Sequence,
+        page_col: str,
 ):
     page_nums = [[i] * n for i, n in enumerate(plots_by_page, start=1)]
-    pop_by_plot['page_num'] = list(chain.from_iterable(page_nums))
-    pop_by_page = pop_by_plot.groupby(by='page_num').sum()
+    pop_by_plot[page_col] = list(chain.from_iterable(page_nums))
+    pop_by_page = pop_by_plot.groupby(by=page_col).sum()
 
     return pop_by_page
 
 
 def paginate(
         pop_by_plot: gpd.GeoDataFrame,
+        order: Sequence,
         page_distribution: Distribution,
+        page_col: str,
         n_plots: int = None,
 ):
     if not n_plots:
         n_plots = len(pop_by_plot.index)
 
     pages = _get_simulated_plots_by_page(page_distribution, n_plots)
-    pop_by_plot = _get_simulated_pop_by_page(pop_by_plot, pages)
+    pop_by_plot = _get_simulated_pop_by_page(pop_by_plot, pages, page_col=page_col)
+    pop_by_plot
 
     return pop_by_plot
 
@@ -155,6 +167,23 @@ def make_synthetic_data(
     return pop_by_plot
 
 
+def aggregation_result(
+        synthetic_plot_data: gpd.GeoDataFrame,
+        page_distribution: Distribution,
+        order: Sequence,
+        number_col: str = 'number',
+        page_col: str = 'page_number',
+):
+    synthetic_page_data = paginate(
+        pop_by_plot=synthetic_plot_data,
+        page_col=page_col,
+        page_distribution=page_distribution,
+        order=order,
+    )
+    print(synthetic_plot_data.describe())
+    page_location_data = get_aggregate_locations_by_district(synthetic_page_data, location_data)
+
+
 if __name__ == '__main__':
     data_dir = Path('../data')
     fig_dir = Path('../figures')
@@ -171,9 +200,11 @@ if __name__ == '__main__':
         minority_col='orthodox',
         number_col='number',
     ).drop(columns='id')
+    print(data.geometry)
 
-    plots_in_page = paginate(data, page_distribution)
-
-    print(plots_in_page)
-    print(data)
-    print(data.describe())
+    aggregated_results = aggregation_result(
+        data,
+        page_distribution,
+        number_col='number',
+        order=orders['random'],
+    )
