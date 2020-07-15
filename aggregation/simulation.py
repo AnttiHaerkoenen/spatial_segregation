@@ -122,7 +122,7 @@ def _get_simulated_pop_by_page(
         plots_by_page: Sequence,
         page_col: str,
 ):
-    page_nums = [[i] * n for i, n in enumerate(plots_by_page, start=1)]
+    page_nums = [[i] * n for i, n in enumerate(plots_by_page, start=0)]
     pop_by_plot[page_col] = list(chain.from_iterable(page_nums))
     pop_by_page = pop_by_plot.groupby(by=page_col).sum()
 
@@ -139,11 +139,18 @@ def paginate(
     if not n_plots:
         n_plots = len(pop_by_plot.index)
 
-    pages = _get_simulated_plots_by_page(page_distribution, n_plots)
-    pop_by_plot = _get_simulated_pop_by_page(pop_by_plot, pages, page_col=page_col)
-    pop_by_plot
+    if order:
+        if len(order) != len(pop_by_plot.index):
+            raise ValueError('orders and plots do not match')
 
-    return pop_by_plot
+        pop_by_plot['order'] = order
+        pop_by_plot.sort_values(by='order', inplace=True)
+        pop_by_plot.drop(columns='order', inplace=True)
+
+    pages = _get_simulated_plots_by_page(page_distribution, n_plots)
+    pop_by_page = _get_simulated_pop_by_page(pop_by_plot, pages, page_col=page_col)
+
+    return pop_by_page
 
 
 def make_synthetic_data(
@@ -174,14 +181,18 @@ def aggregation_result(
         number_col: str = 'number',
         page_col: str = 'page_number',
 ):
+    location_data = synthetic_plot_data.loc[:, ['geometry', number_col]]
+
     synthetic_page_data = paginate(
         pop_by_plot=synthetic_plot_data,
         page_col=page_col,
         page_distribution=page_distribution,
         order=order,
     )
-    print(synthetic_plot_data.describe())
+
     page_location_data = get_aggregate_locations_by_district(synthetic_page_data, location_data)
+
+    return page_location_data
 
 
 if __name__ == '__main__':
@@ -200,7 +211,6 @@ if __name__ == '__main__':
         minority_col='orthodox',
         number_col='number',
     ).drop(columns='id')
-    print(data.geometry)
 
     aggregated_results = aggregation_result(
         data,

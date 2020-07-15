@@ -166,10 +166,11 @@ def get_aggregate_locations_by_district(
         [location_data, population_data],
         axis=1,
     )
-    geodata = geodata.drop(columns=[
-        'index',
-        'Unnamed: 0',
-    ])
+    geodata = geodata.drop(
+        columns=['index', 'Unnamed: 0'],
+        errors='ignore',
+    )
+    print(geodata)
 
     return geodata
 
