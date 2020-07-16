@@ -190,7 +190,10 @@ def aggregation_result(
         order=order,
     )
 
-    page_location_data = get_aggregate_locations_by_district(synthetic_page_data, location_data)
+    page_location_data = get_aggregate_locations_by_district(
+        synthetic_page_data,
+        location_data,
+    )
 
     return page_location_data
 
