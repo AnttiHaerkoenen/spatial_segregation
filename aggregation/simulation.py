@@ -13,8 +13,9 @@ from scipy.spatial.distance import cdist
 from segregation.aspatial import MinMax
 from scipy import stats
 
+from aggregation.kernels import Martin, Quartic, Box, Triangle
 from aggregation.distributions import Distribution, Gamma, BetaBinomial
-from aggregation.aggregation_strategies import get_aggregate_locations_by_district
+from aggregation.aggregation_strategies import get_aggregate_locations_by_district, get_S, get_multiple_S
 
 minority_locations = {
     'even': '011 016 021 026 031 036 041 046 051 056 '
@@ -160,6 +161,7 @@ def make_synthetic_data(
         number_col: str,
         minority_col: str,
         majority_col: str,
+        total_col: str,
 ):
     pop_by_plot = locations.copy()
 
@@ -170,6 +172,7 @@ def make_synthetic_data(
     pop_by_plot[majority_col] = numbers.apply(
         lambda i: int(population_distribution.draw(1)[0]) if i not in minority_locations else 0
     )
+    pop_by_plot[total_col] = pop_by_plot[minority_col] + pop_by_plot[majority_col]
 
     return pop_by_plot
 
@@ -203,21 +206,35 @@ if __name__ == '__main__':
     fig_dir = Path('../figures')
 
     locations = gpd.read_file(data_dir / 'simulated' / 'synthetic_district_plots.shp')
+    locations.geometry = locations.geometry.centroid
     pop_distribution = Gamma(shape=1.25, scale=8)
     page_distribution = BetaBinomial(n=28, a=3, b=12)
 
-    data = make_synthetic_data(
+    plot_data = make_synthetic_data(
         locations=locations,
         minority_locations=minority_locations['even'],
         population_distribution=pop_distribution,
         majority_col='lutheran',
         minority_col='orthodox',
+        total_col='total',
         number_col='number',
     ).drop(columns='id')
 
-    aggregated_results = aggregation_result(
-        data,
+    page_data = aggregation_result(
+        plot_data,
         page_distribution,
         number_col='number',
         order=orders['random'],
     )
+
+    multiple_S = get_multiple_S(
+        datasets={
+            'page_data': page_data,
+            'plot_data': plot_data,
+        },
+        bandwidths=[100, 150, 200, 250, 300],
+        cell_sizes=[25],
+        kernel_functions=[Martin],
+    )
+
+    print(multiple_S)

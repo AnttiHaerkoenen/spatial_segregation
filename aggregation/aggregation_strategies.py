@@ -40,9 +40,10 @@ def kernel_density_surface(
 
     X, Y = np.meshgrid(x, y)
 
-    xy = np.vstack([Y.ravel(), X.ravel()]).T
+    xy_A = np.vstack([Y.ravel(), X.ravel()]).T
+    xy_B = pop[['y', 'x']].values
 
-    U = cdist(xy, pop[['y', 'x']].values, metric='euclidean')
+    U = cdist(xy_A, xy_B, metric='euclidean')
     W = kernel_function(bandwidth)(U)
 
     density = (W * pop[group].values).sum(axis=1).reshape(X.shape)
@@ -283,7 +284,9 @@ if __name__ == '__main__':
         on_other='district plot_number'.split(),
     )
 
-    plot_data['total'] = plot_data[['other_christian', 'orthodox', 'other_religion', 'lutheran']].sum(axis=1)
+    plot_data['total'] = plot_data[
+        ['other_christian', 'orthodox', 'other_religion', 'lutheran']
+    ].sum(axis=1)
     plot_data = plot_data.drop(columns=['Unnamed: 0', 'plot_number'])
     plot_data.to_csv(data_dir / 'processed' / 'plot_data_1880.csv')
 
@@ -292,7 +295,9 @@ if __name__ == '__main__':
         location_data=points,
     )
 
-    page_data['total'] = page_data[['other_christian', 'orthodox', 'other_religion', 'lutheran']].sum(axis=1)
+    page_data['total'] = page_data[
+        ['other_christian', 'orthodox', 'other_religion', 'lutheran']
+    ].sum(axis=1)
     page_data.to_csv(data_dir / 'processed' / 'page_data_1880.csv')
 
     kwargs = dict(
