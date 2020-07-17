@@ -4,18 +4,12 @@ from typing import Callable, Sequence
 from itertools import product, chain
 import random
 
-import numpy as np
-import pandas as pd
 import geopandas as gpd
-import matplotlib.pyplot as plt
-import rasterio as rio
-from scipy.spatial.distance import cdist
-from segregation.aspatial import MinMax
-from scipy import stats
+import pandas as pd
 
 from aggregation.kernels import Martin, Quartic, Box, Triangle
 from aggregation.distributions import Distribution, Gamma, BetaBinomial
-from aggregation.aggregation_strategies import get_aggregate_locations_by_district, get_S, get_multiple_S
+from aggregation.aggregation_strategies import get_aggregate_locations_by_district, get_multiple_S
 
 minority_locations = {
     'even': '011 016 021 026 031 036 041 046 051 056 '
@@ -201,6 +195,53 @@ def aggregation_result(
     return page_location_data
 
 
+def simulate_multiple_segregation_levels(
+        locations,
+        minority_location_dict,
+        order,
+        page_distribution: Distribution,
+        population_distribution: Distribution,
+        majority_col='lutheran',
+        minority_col='orthodox',
+        total_col='total',
+        number_col='number',
+        n: int = 1,
+        **kwargs
+) -> pd.DataFrame:
+    results = []
+
+    for k, v in minority_location_dict.items():
+        plot_data = make_synthetic_data(
+            locations=locations,
+            minority_locations=v,
+            population_distribution=population_distribution,
+            majority_col=majority_col,
+            minority_col=minority_col,
+            total_col=total_col,
+            number_col=number_col,
+        ).drop(columns='id')
+
+        page_data = aggregation_result(
+            plot_data,
+            page_distribution,
+            number_col=number_col,
+            order=order,
+        )
+
+        multiple_S = get_multiple_S(
+            datasets={
+                'page_data': page_data,
+                'plot_data': plot_data,
+            },
+            n=n,
+            **kwargs
+        )
+        multiple_S['level'] = k
+        results.append(multiple_S)
+
+    return pd.concat(results, axis=0)
+
+
 if __name__ == '__main__':
     data_dir = Path('../data')
     fig_dir = Path('../figures')
@@ -210,32 +251,23 @@ if __name__ == '__main__':
     pop_distribution = Gamma(shape=1.25, scale=8)
     page_distribution = BetaBinomial(n=28, a=3, b=12)
 
-    plot_data = make_synthetic_data(
+    kwargs = {
+        'bandwidths': [100, 150, 200, 250],
+        'cell_sizes': [25, 50, 75],
+        'kernel_functions': [Martin, Triangle, Box],
+    }
+
+    order = 'rows'
+    simulation_results = simulate_multiple_segregation_levels(
         locations=locations,
-        minority_locations=minority_locations['even'],
+        minority_location_dict=minority_locations,
+        order=orders[order],
         population_distribution=pop_distribution,
-        majority_col='lutheran',
-        minority_col='orthodox',
-        total_col='total',
-        number_col='number',
-    ).drop(columns='id')
-
-    page_data = aggregation_result(
-        plot_data,
-        page_distribution,
-        number_col='number',
-        order=orders['random'],
+        page_distribution=page_distribution,
+        n=10,
+        **kwargs,
     )
 
-    multiple_S = get_multiple_S(
-        datasets={
-            'page_data': page_data,
-            'plot_data': plot_data,
-        },
-        bandwidths=[100, 150, 200, 250, 300],
-        cell_sizes=[25],
-        kernel_functions=[Martin],
-        n=100,
-    )
+    simulation_results.to_csv(data_dir / 'simulated' / f'simulated_aggregation_effects_S_{order}.csv')
 
-    print(multiple_S)
+    print(simulation_results.describe())
