@@ -235,6 +235,7 @@ if __name__ == '__main__':
         bandwidths=[100, 150, 200, 250, 300],
         cell_sizes=[25],
         kernel_functions=[Martin],
+        n=100,
     )
 
     print(multiple_S)
