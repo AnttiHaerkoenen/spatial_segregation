@@ -6,6 +6,7 @@ import random
 
 import geopandas as gpd
 import pandas as pd
+import numpy as np
 
 from aggregation.kernels import Martin, Quartic, Box, Triangle
 from aggregation.distributions import Distribution, Gamma, BetaBinomial
@@ -253,21 +254,23 @@ if __name__ == '__main__':
 
     kwargs = {
         'bandwidths': [100, 150, 200, 250],
-        'cell_sizes': [25, 50, 75],
+        'cell_sizes': [25, 50],
         'kernel_functions': [Martin, Triangle, Box],
     }
 
-    order = 'rows'
-    simulation_results = simulate_multiple_segregation_levels(
-        locations=locations,
-        minority_location_dict=minority_locations,
-        order=orders[order],
-        population_distribution=pop_distribution,
-        page_distribution=page_distribution,
-        n=10,
-        **kwargs,
-    )
+    for k, v in orders.items():
+        simulation_results = simulate_multiple_segregation_levels(
+            locations=locations,
+            minority_location_dict=minority_locations,
+            order=v,
+            population_distribution=pop_distribution,
+            page_distribution=page_distribution,
+            n=1000,
+            **kwargs,
+        )
 
-    simulation_results.to_csv(data_dir / 'simulated' / f'simulated_aggregation_effects_S_{order}.csv')
+        simulation_results.to_csv(data_dir / 'simulated' / f'aggregation_effects_S_{k}.csv')
 
-    print(simulation_results.describe())
+        print()
+        print(k.upper())
+        print(simulation_results.describe())
