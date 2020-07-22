@@ -232,8 +232,8 @@ def get_multiple_S(
 ):
     results = []
 
-    for _ in range(n):
-        for bw, cell, kern in product(bandwidths, cell_sizes, kernel_functions):
+    for bw, cell, kern in product(bandwidths, cell_sizes, kernel_functions):
+        for _ in range(n):
             kwargs = dict(
                 bandwidth=bw,
                 cell_size=cell,
