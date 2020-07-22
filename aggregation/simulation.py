@@ -39,6 +39,9 @@ minority_locations = {
               '171 172 173 174 175 176 177 178 '
               '181 182 183 184 185 186 187 188'.split(),
 }
+minority_locations['even-squares'] = minority_locations['even'][:19] + [120] + minority_locations['squares'][20:]
+# 121 would be duplicated
+minority_locations['squares-side'] = minority_locations['squares'][:20] + minority_locations['side'][20:]
 
 block_rows = [(1, 6), (6, 11), (11, 15), (15, 20), (20, 25)]
 blocks = [f'{block:0>2}{plot}' for block in range(1, 25) for plot in range(1, 9)]
@@ -66,12 +69,21 @@ def inverse_order(order: Sequence) -> list:
     return new_order
 
 
-orders = {
-    'blocks': inverse_order(blocks),
-    'rows': inverse_order(rows),
-    'snake': inverse_order(snake),
-    'random': inverse_order(random_),
-}
+orders = dict(
+    blocks=blocks,
+    rows=rows,
+    snake=snake,
+    random=random_,
+)
+orders['snake_20'] = orders['snake'][:40] + orders['blocks'][40:]
+orders['snake_40'] = orders['snake'][:80] + orders['blocks'][80:]
+orders['snake_60'] = orders['snake'][:112] + orders['blocks'][112:]
+orders['snake_80'] = orders['snake'][:152] + orders['blocks'][152:]
+
+orders = {k: inverse_order(v) for k, v in orders.items()}
+
+assert all([len(v) for v in minority_locations.values()]) == 40
+assert all([len(v) for v in orders.values()]) == 192
 
 
 def simulate_pop_by_page(
@@ -265,7 +277,7 @@ if __name__ == '__main__':
             order=v,
             population_distribution=pop_distribution,
             page_distribution=page_distribution,
-            n=1000,
+            n=500,
             **kwargs,
         )
 
