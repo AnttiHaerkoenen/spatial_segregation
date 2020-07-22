@@ -277,7 +277,7 @@ if __name__ == '__main__':
             order=v,
             population_distribution=pop_distribution,
             page_distribution=page_distribution,
-            n=100,
+            n=50,
             **kwargs,
         )
 
