@@ -82,8 +82,8 @@ orders['snake_80'] = orders['snake'][:152] + orders['blocks'][152:]
 
 orders = {k: inverse_order(v) for k, v in orders.items()}
 
-assert all([len(v) for v in minority_locations.values()]) == 40
-assert all([len(v) for v in orders.values()]) == 192
+assert all([len(v) == 40 for v in minority_locations.values()])
+assert all([len(v) == 192 for v in orders.values()])
 
 
 def simulate_pop_by_page(
