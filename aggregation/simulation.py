@@ -221,6 +221,7 @@ def simulate_multiple_segregation_levels(
         n: int = 1,
         **kwargs
 ) -> pd.DataFrame:
+
     results = []
 
     for k, v in minority_location_dict.items():
