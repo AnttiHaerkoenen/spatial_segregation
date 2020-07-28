@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from statsmodels.multivariate.pca import PCA
+from statsmodels.sandbox.regression.predstd import wls_prediction_std
 
 level_mapper = {k: v for v, k in enumerate('even even-squares squares squares-side side ghetto'.split())}
 
@@ -31,22 +32,51 @@ def load_data(
     return data
 
 
+def plot_regression(
+        ols_data,
+        independent,
+        dependent,
+        fig_size,
+        y_lim=(0, 1),
+        x_lim=(0, 1),
+):
+    data = ols_data.sort_values(by=independent)
+    ols_model = smf.ols(f'{dependent} ~ {independent}', data=data).fit()
+
+    x = data[independent]
+    y = data[dependent]
+
+    pred_std, interval_l, interval_u = wls_prediction_std(ols_model)
+
+    fig, ax = plt.subplots(figsize=fig_size)
+
+    ax.plot(x, y, 'o')
+    ax.plot(x, ols_model.fittedvalues, 'b-')
+    ax.plot(x, interval_u, 'r-')
+    ax.plot(x, interval_l, 'r-')
+
+    # todo xlim & ylim
+
+    return fig
+
+
 if __name__ == '__main__':
     data_dir = Path('../data/simulated')
 
-    order = 'snake'
-    data = pd.read_csv(
-        data_dir / f'aggregation_effects_S_{order}.csv', index_col=0)
-    data['level'] = data['level'].map(level_mapper)
-    data.drop(columns='function S_difference'.split(), inplace=True)
-
     data = load_data(data_dir, 'aggregation_effects_S_*.csv', index_col=0)
-    print(data)
+    data['level'] = data['level'].map(level_mapper)
+    data = data[~data['order'].isin('random rows'.split())]
+    data = data[data['level'] == 4]
 
-    # ols_model = smf.ols('S_by_page ~ S_by_plot + level', data=data).fit()
-    # print(ols_model.summary())
-    # print(ols_model.predict(exog=dict(S_by_plot=0.5)))
-    #
+    ax = plot_regression(
+        data,
+        independent='S_by_page',
+        dependent='S_by_plot',
+        fig_size=(8, 6),
+    )
+
+    plt.show()
+
     # pca_model = PCA(data, ncomp=4)
     # print(pca_model.loadings)
 
