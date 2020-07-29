@@ -225,35 +225,35 @@ def simulate_multiple_segregation_levels(
     results = []
 
     for k, v in minority_location_dict.items():
-        plot_data = make_synthetic_data(
-            locations=locations,
-            minority_locations=v,
-            population_distribution=population_distribution,
-            majority_col=majority_col,
-            minority_col=minority_col,
-            total_col=total_col,
-            number_col=number_col,
-        ).drop(columns='id')
+        for _ in range(n):
+            plot_data = make_synthetic_data(
+                locations=locations,
+                minority_locations=v,
+                population_distribution=population_distribution,
+                majority_col=majority_col,
+                minority_col=minority_col,
+                total_col=total_col,
+                number_col=number_col,
+            ).drop(columns='id')
 
-        page_data = aggregation_result(
-            plot_data,
-            page_distribution,
-            number_col=number_col,
-            order=order,
-        )
+            page_data = aggregation_result(
+                plot_data,
+                page_distribution,
+                number_col=number_col,
+                order=order,
+            )
 
-        multiple_S = get_multiple_S(
-            datasets={
-                'page_data': page_data,
-                'plot_data': plot_data,
-            },
-            n=n,
-            **kwargs
-        )
-        multiple_S['level'] = k
-        results.append(multiple_S)
+            multiple_S = get_multiple_S(
+                datasets={
+                    'page_data': page_data,
+                    'plot_data': plot_data,
+                },
+                **kwargs
+            )
+            multiple_S['level'] = k
+            results.append(multiple_S)
 
-    return pd.concat(results, axis=0)
+    return pd.concat(results, axis=0).reset_index(drop=True)
 
 
 if __name__ == '__main__':
