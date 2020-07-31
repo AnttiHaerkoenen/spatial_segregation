@@ -232,25 +232,24 @@ def get_multiple_S(
 ):
     results = []
 
-    for bw, cell, kern in product(bandwidths, cell_sizes, kernel_functions):
-        for _ in range(n):
-            kwargs = dict(
-                bandwidth=bw,
-                cell_size=cell,
-                kernel_function=kern,
-            )
+    for bw, cell, kern in product(bandwidths, cell_sizes, kernel_functions, repeat=n):
+        kwargs = dict(
+            bandwidth=bw,
+            cell_size=cell,
+            kernel_function=kern,
+        )
 
-            plot_S = get_S(datasets['plot_data'], **kwargs)
-            page_S = get_S(datasets['page_data'], **kwargs)
+        plot_S = get_S(datasets['plot_data'], **kwargs)
+        page_S = get_S(datasets['page_data'], **kwargs)
 
-            results.append((
-                plot_S.statistic,
-                page_S.statistic,
-                plot_S.statistic - page_S.statistic,
-                bw,
-                cell,
-                kern.classname,
-            ))
+        results.append((
+            plot_S.statistic,
+            page_S.statistic,
+            plot_S.statistic - page_S.statistic,
+            bw,
+            cell,
+            kern.classname,
+        ))
 
     return pd.DataFrame(
         results,

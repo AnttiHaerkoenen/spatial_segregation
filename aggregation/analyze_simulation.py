@@ -1,12 +1,16 @@
 from pathlib import Path
+from itertools import product
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from statsmodels.multivariate.pca import PCA
 from statsmodels.sandbox.regression.predstd import wls_prediction_std
+from statsmodels.graphics.agreement import mean_diff_plot
+from statsmodels.graphics.regressionplots import plot_regress_exog
 
 level_mapper = {k: v for v, k in enumerate('even even-squares squares squares-side side ghetto'.split())}
 
@@ -32,32 +36,34 @@ def load_data(
     return data
 
 
-def plot_regression(
-        ols_data,
-        independent,
-        dependent,
-        fig_size,
-        y_lim=(0, 1),
-        x_lim=(0, 1),
-):
-    data = ols_data.sort_values(by=independent)
-    ols_model = smf.ols(f'{dependent} ~ {independent}', data=data).fit()
+def get_multiple_corrected_S(data):
+    bandwidths = data['bandwidth'].unique()
+    cells = data['cell'].unique()
+    functions = data['function'].unique()
+    orders = data['order'].unique()
 
-    x = data[independent]
-    y = data[dependent]
+    results = []
 
-    pred_std, interval_l, interval_u = wls_prediction_std(ols_model)
+    for o, f, bw, c in product(orders, functions, bandwidths, cells):
+        case_data = data[
+            (data.order == o) &
+            (data.function == f) &
+            (data.bandwidth == bw) &
+            (data.cell == c)
+        ]
+        ols_model = smf.ols('S_by_plot ~ S_by_page', data=case_data).fit()
 
-    fig, ax = plt.subplots(figsize=fig_size)
+        a, b = ols_model.params
+        results.append({
+            'a': a,
+            'b': b,
+            'bandwidth': bw,
+            'cell': c,
+            'function': f,
+            'order': o,
+        })
 
-    ax.plot(x, y, 'o')
-    ax.plot(x, ols_model.fittedvalues, 'b-')
-    ax.plot(x, interval_u, 'r-')
-    ax.plot(x, interval_l, 'r-')
-
-    # todo xlim & ylim
-
-    return fig
+    return pd.DataFrame(results).sort_values(by='b').reset_index(drop=True)
 
 
 if __name__ == '__main__':
@@ -65,21 +71,34 @@ if __name__ == '__main__':
 
     data = load_data(data_dir, 'aggregation_effects_S_*.csv', index_col=0)
     data['level'] = data['level'].map(level_mapper)
-    data = data[~data['order'].isin('random rows'.split())]
-    data = data[data['level'] == 4]
 
-    ax = plot_regression(
-        data,
-        independent='S_by_page',
-        dependent='S_by_plot',
-        fig_size=(8, 6),
-    )
+    data = data[data['order'].isin('blocks'.split())]
+    # data = data[data['function'].isin('Martin_et_al_2000'.split())]
+    data = data[data['level'].isin([0, 1, 2, 3, 4])]
+    # data = data[data['bandwidth'] == 100]
+    # data = data[data['cell'] == 25]
 
+    results = get_multiple_corrected_S(data)
+    print(results.describe())
+    print(results)
+    results.hist(column='a')
+    results.hist(column='b')
     plt.show()
 
-    # pca_model = PCA(data, ncomp=4)
-    # print(pca_model.loadings)
+    # data['S_corrected'] = 1.1718 * data['S_by_page'] - 0.0201
+    # data['S_difference_corrected'] = data['S_corrected'] - data['S_by_plot']
 
-    # pca_model.plot_scree()
-    # pca_model.plot_rsquare()
+    # ols_model = smf.ols('S_by_plot ~ S_corrected', data=data).fit()
+    # print(ols_model.summary())
+
+    # plot_regress_exog(ols_model, 'S_corrected')
+    # data['S_difference_corrected'].hist()
+    # data.plot(
+    #     x='S_corrected',
+    #     y='S_by_plot',
+    #     c='level',
+    #     kind='scatter',
+    #     cmap=cm.get_cmap('viridis', 5),
+    # )
+    # mean_diff_plot(data['S_by_plot'], data['S_corrected'], sd_limit=3)
     # plt.show()
