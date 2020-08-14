@@ -12,6 +12,19 @@ from aggregation.kernels import Martin, Quartic, Box, Triangle
 from aggregation.distributions import Distribution, Gamma, BetaBinomial
 from aggregation.aggregation_strategies import get_aggregate_locations_by_district, get_multiple_S
 
+
+district_locs = {
+    '1': {'xoff': -1000, 'yoff': -650},
+    '2': {'xoff': 0, 'yoff': -650},
+    '3': {'xoff': 1000, 'yoff': -650},
+    '4': {'xoff': -1000, 'yoff': 0},
+    '5': {'xoff': 0, 'yoff': 0},
+    '6': {'xoff': 1000, 'yoff': 0},
+    '7': {'xoff': -1000, 'yoff': 650},
+    '8': {'xoff': 0, 'yoff': 650},
+    '9': {'xoff': 1000, 'yoff': 650},
+}
+
 minority_locations = {
     'even': '011 016 021 026 031 036 041 046 051 056 '
             '061 071 076 081 086 091 096 101 '
@@ -148,11 +161,11 @@ def paginate(
         n_plots = len(pop_by_plot.index)
 
     if order:
-        if len(order) != len(pop_by_plot.index):
+        if n_plots % len(order) != 0:
             raise ValueError('orders and plots do not match')
 
         pop_by_plot['order'] = order
-        pop_by_plot.sort_values(by='order', inplace=True)
+        pop_by_plot.sort_values(by='district order'.split(), inplace=True)
         pop_by_plot.drop(columns='order', inplace=True)
 
     pages = _get_simulated_plots_by_page(page_distribution, n_plots)
@@ -256,12 +269,32 @@ def simulate_multiple_segregation_levels(
     return pd.concat(results, axis=0).reset_index(drop=True)
 
 
+def clone_district(
+        locations: gpd.GeoDataFrame,
+        district_locs: dict,
+) -> gpd.GeoDataFrame:
+    districts = []
+
+    for d, offsets in district_locs.items():
+        new_locs = locations.copy()
+        new_locs['district'] = d
+        new_locs.geometry = locations.geometry.translate(**offsets)
+        districts.append(new_locs)
+
+    districts = pd.concat(districts).reset_index(drop=True)
+    return districts
+
+
 if __name__ == '__main__':
     data_dir = Path('../data')
     fig_dir = Path('../figures')
 
     locations = gpd.read_file(data_dir / 'simulated' / 'synthetic_district_plots.shp')
     locations.geometry = locations.geometry.centroid
+    locations = clone_district(locations, district_locs)
+
+    orders = {k: v * len(district_locs) for k, v in orders.items()}
+
     pop_distribution = Gamma(shape=1.25, scale=8)
     page_distribution = BetaBinomial(n=28, a=3, b=12)
 
