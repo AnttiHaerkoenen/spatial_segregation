@@ -41,15 +41,17 @@ def get_multiple_corrected_S(data):
     cells = data['cell'].unique()
     functions = data['function'].unique()
     orders = data['order'].unique()
+    levels = data['level'].unique()
 
     results = []
 
-    for o, f, bw, c in product(orders, functions, bandwidths, cells):
+    for o, f, bw, c, l in product(orders, functions, bandwidths, cells, levels):
         case_data = data[
             (data.order == o) &
             (data.function == f) &
             (data.bandwidth == bw) &
-            (data.cell == c)
+            (data.cell == c) &
+            (data.level == l)
         ]
         ols_model = smf.ols('S_by_plot ~ S_by_page', data=case_data).fit()
 
@@ -61,6 +63,7 @@ def get_multiple_corrected_S(data):
             'cell': c,
             'function': f,
             'order': o,
+            'level': l,
         })
 
     return pd.DataFrame(results).sort_values(by='b').reset_index(drop=True)
@@ -72,18 +75,19 @@ if __name__ == '__main__':
     data = load_data(data_dir, 'aggregation_effects_S_*.csv', index_col=0)
     data['level'] = data['level'].map(level_mapper)
 
-    data = data[data['order'].isin('blocks'.split())]
-    # data = data[data['function'].isin('Martin_et_al_2000'.split())]
-    data = data[data['level'].isin([0, 1, 2, 3, 4])]
-    # data = data[data['bandwidth'] == 100]
+    # data = data[data['order'].isin('blocks snake_20 snake_40 snake_60 snake_80'.split())]
+    data = data[data['order'].isin('snake_20'.split())]
+    data = data[data['function'].isin('Martin_et_al_2000'.split())]
+    data = data[data['level'].isin([0, 1, 2, 3, 4, 5])]
+    data = data[data['bandwidth'] == 150]
     # data = data[data['cell'] == 25]
 
-    results = get_multiple_corrected_S(data)
-    print(results.describe())
-    print(results)
-    results.hist(column='a')
-    results.hist(column='b')
-    plt.show()
+    # results.hist(column='a')
+    # results.hist(column='b')
+    # results.boxplot(column='a', by='level')
+    # results.boxplot(column='b', by='level')
+    # results.plot.scatter(x='level', y='b')
+    # plt.show()
 
     # data['S_corrected'] = 1.1718 * data['S_by_page'] - 0.0201
     # data['S_difference_corrected'] = data['S_corrected'] - data['S_by_plot']
@@ -100,5 +104,5 @@ if __name__ == '__main__':
     #     kind='scatter',
     #     cmap=cm.get_cmap('viridis', 5),
     # )
-    # mean_diff_plot(data['S_by_plot'], data['S_corrected'], sd_limit=3)
-    # plt.show()
+    mean_diff_plot(data['S_by_plot'], data['S_by_page'], sd_limit=2)
+    plt.show()

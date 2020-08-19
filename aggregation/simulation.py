@@ -46,15 +46,39 @@ minority_locations = {
             '141 142 143 144 145 146 147 148 '
             '191 192 193 194 195 196 197 198 '
             '241 242 243 244 245 246 247 248'.split(),
-    'ghetto': '081 082 083 084 085 086 087 088 '
-              '091 092 093 094 095 096 097 098 '
-              '131 132 133 134 135 136 137 138 '
-              '171 172 173 174 175 176 177 178 '
-              '181 182 183 184 185 186 187 188'.split(),
 }
 minority_locations['even-squares'] = minority_locations['even'][:19] + [120] + minority_locations['squares'][20:]
 # 121 would be duplicated
 minority_locations['squares-side'] = minority_locations['squares'][:20] + minority_locations['side'][20:]
+
+minority_locations = {
+    k: [(d, plot) for d in district_locs for plot in v]
+    for k, v
+    in minority_locations.items()
+}
+minority_locations['ghetto'] = [
+    (d, plot)
+    for d in '3 6 9'.split()
+    for plot in [
+        f'{block:0>2}{p}'
+        for block in chain(
+            range(2, 6),
+            range(8, 11),
+            range(13, 15),
+            range(17, 20),
+            range(22, 25),
+        )
+        for p in range(1, 9)
+    ]
+]
+minority_locations['ghetto-side'] = minority_locations['ghetto'][:576] \
+                                    + minority_locations['side'][576:]
+minority_locations['side-ghetto'] = minority_locations['side'][:576] \
+                                    + minority_locations['ghetto'][576:]
+
+minority_locations['squares-side-ghetto'] = minority_locations['squares'][:576] \
+                                            + minority_locations['side'][576:1152] \
+                                            + minority_locations['ghetto'][1152:]
 
 block_rows = [(1, 6), (6, 11), (11, 15), (15, 20), (20, 25)]
 blocks = [f'{block:0>2}{plot}' for block in range(1, 25) for plot in range(1, 9)]
@@ -95,7 +119,7 @@ orders['snake_80'] = orders['snake'][:152] + orders['blocks'][152:]
 
 orders = {k: inverse_order(v) for k, v in orders.items()}
 
-assert all([len(v) == 40 for v in minority_locations.values()])
+assert all([len(v) == 360 for v in minority_locations.values()])
 assert all([len(v) == 192 for v in orders.values()])
 
 
@@ -176,21 +200,24 @@ def paginate(
 
 def make_synthetic_data(
         locations: gpd.GeoDataFrame,
-        minority_locations: Sequence,
+        minority_locations: Sequence[tuple],
         population_distribution: Distribution,
-        number_col: str,
+        id_cols: Sequence,
         minority_col: str,
         majority_col: str,
         total_col: str,
 ):
     pop_by_plot = locations.copy()
 
-    numbers = locations[number_col]
+    numbers = locations.loc[:, id_cols]
+
     pop_by_plot[minority_col] = numbers.apply(
-        lambda i: int(population_distribution.draw(1)[0]) if i in minority_locations else 0
+        lambda i: int(population_distribution.draw(1)[0]) if tuple(i) in minority_locations else 0,
+        axis=1,
     )
     pop_by_plot[majority_col] = numbers.apply(
-        lambda i: int(population_distribution.draw(1)[0]) if i not in minority_locations else 0
+        lambda i: int(population_distribution.draw(1)[0]) if tuple(i) not in minority_locations else 0,
+        axis=1,
     )
     pop_by_plot[total_col] = pop_by_plot[minority_col] + pop_by_plot[majority_col]
 
@@ -231,6 +258,7 @@ def simulate_multiple_segregation_levels(
         minority_col='orthodox',
         total_col='total',
         number_col='number',
+        id_cols=('district', 'number'),
         n: int = 1,
         **kwargs
 ) -> pd.DataFrame:
@@ -246,7 +274,7 @@ def simulate_multiple_segregation_levels(
                 majority_col=majority_col,
                 minority_col=minority_col,
                 total_col=total_col,
-                number_col=number_col,
+                id_cols=id_cols,
             ).drop(columns='id')
 
             page_data = aggregation_result(
