@@ -71,14 +71,14 @@ minority_locations['ghetto'] = [
         for p in range(1, 9)
     ]
 ]
-minority_locations['ghetto-side'] = minority_locations['ghetto'][:576] \
-                                    + minority_locations['side'][576:]
-minority_locations['side-ghetto'] = minority_locations['side'][:576] \
-                                    + minority_locations['ghetto'][576:]
+minority_locations['ghetto-side'] = minority_locations['ghetto'][:120] \
+                                    + minority_locations['side'][120:]
+minority_locations['side-ghetto'] = minority_locations['side'][:120] \
+                                    + minority_locations['ghetto'][120:]
 
-minority_locations['squares-side-ghetto'] = minority_locations['squares'][:576] \
-                                            + minority_locations['side'][576:1152] \
-                                            + minority_locations['ghetto'][1152:]
+minority_locations['squares-side-ghetto'] = minority_locations['squares'][:120] \
+                                            + minority_locations['side'][120:240] \
+                                            + minority_locations['ghetto'][240:]
 
 block_rows = [(1, 6), (6, 11), (11, 15), (15, 20), (20, 25)]
 blocks = [f'{block:0>2}{plot}' for block in range(1, 25) for plot in range(1, 9)]
@@ -328,7 +328,7 @@ if __name__ == '__main__':
 
     kwargs = {
         'bandwidths': [100, 150, 200, 250],
-        'cell_sizes': [25, 50],
+        'cell_sizes': [25],
         'kernel_functions': [Martin, Triangle, Box],
     }
 
@@ -339,7 +339,7 @@ if __name__ == '__main__':
             order=v,
             population_distribution=pop_distribution,
             page_distribution=page_distribution,
-            n=50,
+            n=20,
             **kwargs,
         )
 
