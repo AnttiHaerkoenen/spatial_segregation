@@ -71,10 +71,10 @@ minority_locations['ghetto'] = [
         for p in range(1, 9)
     ]
 ]
-minority_locations['ghetto-side'] = minority_locations['ghetto'][:120] \
-                                    + minority_locations['side'][120:]
-minority_locations['side-ghetto'] = minority_locations['side'][:120] \
-                                    + minority_locations['ghetto'][120:]
+minority_locations['ghetto-side'] = minority_locations['ghetto'][:240] \
+                                    + minority_locations['side'][240:]
+minority_locations['side-ghetto'] = minority_locations['side'][:240] \
+                                    + minority_locations['ghetto'][240:]
 
 minority_locations['squares-side-ghetto'] = minority_locations['squares'][:120] \
                                             + minority_locations['side'][120:240] \
@@ -224,6 +224,24 @@ def make_synthetic_data(
     return pop_by_plot
 
 
+def make_synthetic_datasets(
+        n=1,
+        **kwargs
+):
+    datasets = []
+    print("Making simulated datasets", end='')
+
+    for i in range(n):
+        print(".", end='')
+
+        plot_data = make_synthetic_data(**kwargs).drop(columns='id')
+        datasets.append(plot_data)
+
+    print()
+
+    return datasets
+
+
 def aggregation_result(
         synthetic_plot_data: gpd.GeoDataFrame,
         page_distribution: Distribution,
@@ -263,20 +281,29 @@ def simulate_multiple_segregation_levels(
         **kwargs
 ) -> pd.DataFrame:
 
+    print(f"Simulating multiple segregation levels")
+
     results = []
 
     for k, v in minority_location_dict.items():
-        for _ in range(n):
-            plot_data = make_synthetic_data(
-                locations=locations,
-                minority_locations=v,
-                population_distribution=population_distribution,
-                majority_col=majority_col,
-                minority_col=minority_col,
-                total_col=total_col,
-                id_cols=id_cols,
-            ).drop(columns='id')
+        print(f"Simulating segregation with minority locations set to '{k}'")
 
+        synthetic_datasets = make_synthetic_datasets(
+            n=n,
+            locations=locations,
+            minority_locations=v,
+            population_distribution=population_distribution,
+            majority_col=majority_col,
+            minority_col=minority_col,
+            total_col=total_col,
+            id_cols=id_cols,
+        )
+
+        print('Simulating page-based aggregation', end='')
+        for i in range(n):
+            plot_data = synthetic_datasets[i]
+
+            print(".", end='')
             page_data = aggregation_result(
                 plot_data,
                 page_distribution,
@@ -293,6 +320,10 @@ def simulate_multiple_segregation_levels(
             )
             multiple_S['level'] = k
             results.append(multiple_S)
+
+        print()
+
+    print("Multiple segregation levels analysis finished.")
 
     return pd.concat(results, axis=0).reset_index(drop=True)
 
@@ -345,6 +376,5 @@ if __name__ == '__main__':
 
         simulation_results.to_csv(data_dir / 'simulated' / f'aggregation_effects_S_{k}.csv')
 
-        print()
         print(k.upper())
         print(simulation_results.describe())

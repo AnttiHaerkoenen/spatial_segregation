@@ -12,7 +12,22 @@ from statsmodels.sandbox.regression.predstd import wls_prediction_std
 from statsmodels.graphics.agreement import mean_diff_plot
 from statsmodels.graphics.regressionplots import plot_regress_exog
 
-level_mapper = {k: v for v, k in enumerate('even even-squares squares squares-side side ghetto'.split())}
+level_mapper = {
+    k: v for v, k in enumerate(
+        [
+            'even',
+            'even-squares',
+            'squares',
+            'squares-side',
+            'squares-side-ghetto',
+            'side',
+            'side-ghetto',
+            'ghetto-side',
+            'ghetto',
+         ],
+        start=1,
+    )
+}
 
 
 def load_data(
@@ -75,25 +90,20 @@ if __name__ == '__main__':
     data = load_data(data_dir, 'aggregation_effects_S_*.csv', index_col=0)
     data['level'] = data['level'].map(level_mapper)
 
-    # data = data[data['order'].isin('blocks snake_20 snake_40 snake_60 snake_80'.split())]
-    data = data[data['order'].isin('snake_20'.split())]
+    data = data[data['order'].isin('blocks snake_20 snake_40 snake_60 snake_80'.split())]
     data = data[data['function'].isin('Martin_et_al_2000'.split())]
-    data = data[data['level'].isin([0, 1, 2, 3, 4, 5])]
+    # data = data[data['level'].isin([0, 1, 2, 3, 4, 5])]
     data = data[data['bandwidth'] == 150]
-    # data = data[data['cell'] == 25]
-
-    # results.hist(column='a')
-    # results.hist(column='b')
-    # results.boxplot(column='a', by='level')
-    # results.boxplot(column='b', by='level')
-    # results.plot.scatter(x='level', y='b')
-    # plt.show()
+    data = data[data['cell'] == 25]
 
     # data['S_corrected'] = 1.1718 * data['S_by_page'] - 0.0201
     # data['S_difference_corrected'] = data['S_corrected'] - data['S_by_plot']
 
-    # ols_model = smf.ols('S_by_plot ~ S_corrected', data=data).fit()
-    # print(ols_model.summary())
+    ols_model = smf.ols('S_by_plot ~ S_by_page', data=data).fit()
+    print(ols_model.summary())
+    # data.plot(kind='scatter', x='S_by_page', y='S_by_plot', c='level')
+    data.boxplot(column='S_by_plot', by='level')
+    data.boxplot(column='S_by_page', by='level')
 
     # plot_regress_exog(ols_model, 'S_corrected')
     # data['S_difference_corrected'].hist()
@@ -104,5 +114,5 @@ if __name__ == '__main__':
     #     kind='scatter',
     #     cmap=cm.get_cmap('viridis', 5),
     # )
-    mean_diff_plot(data['S_by_plot'], data['S_by_page'], sd_limit=2)
+    # mean_diff_plot(data['S_by_plot'], data['S_by_page'], sd_limit=2)
     plt.show()
