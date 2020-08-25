@@ -17,14 +17,16 @@ level_mapper = {
         [
             'even',
             'even-squares',
+            'squares-even',
             'squares',
             'squares-side',
+            'side-squares',
             'squares-side-ghetto',
             'side',
             'side-ghetto',
             'ghetto-side',
             'ghetto',
-         ],
+        ],
         start=1,
     )
 }
@@ -90,9 +92,9 @@ if __name__ == '__main__':
     data = load_data(data_dir, 'aggregation_effects_S_*.csv', index_col=0)
     data['level'] = data['level'].map(level_mapper)
 
-    data = data[data['order'].isin('blocks snake_20 snake_40 snake_60 snake_80'.split())]
+    data = data[data['order'].isin('blocks snake_20 snake_40 snake_60 snake_80 snake'.split())]
     data = data[data['function'].isin('Martin_et_al_2000'.split())]
-    # data = data[data['level'].isin([0, 1, 2, 3, 4, 5])]
+    # data = data[data['level'].isin([v for k, v in level_mapper.items() if 'side' not in k])]
     data = data[data['bandwidth'] == 150]
     data = data[data['cell'] == 25]
 
@@ -107,12 +109,12 @@ if __name__ == '__main__':
 
     # plot_regress_exog(ols_model, 'S_corrected')
     # data['S_difference_corrected'].hist()
-    # data.plot(
-    #     x='S_corrected',
-    #     y='S_by_plot',
-    #     c='level',
-    #     kind='scatter',
-    #     cmap=cm.get_cmap('viridis', 5),
-    # )
-    # mean_diff_plot(data['S_by_plot'], data['S_by_page'], sd_limit=2)
+    data.plot(
+        x='S_by_page',
+        y='S_by_plot',
+        c='level',
+        kind='scatter',
+        cmap=cm.get_cmap('viridis', len(level_mapper)),
+    )
+    mean_diff_plot(data['S_by_plot'], data['S_by_page'], sd_limit=2)
     plt.show()

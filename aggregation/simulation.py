@@ -47,9 +47,6 @@ minority_locations = {
             '191 192 193 194 195 196 197 198 '
             '241 242 243 244 245 246 247 248'.split(),
 }
-minority_locations['even-squares'] = minority_locations['even'][:19] + [120] + minority_locations['squares'][20:]
-# 121 would be duplicated
-minority_locations['squares-side'] = minority_locations['squares'][:20] + minority_locations['side'][20:]
 
 minority_locations = {
     k: [(d, plot) for d in district_locs for plot in v]
@@ -71,10 +68,21 @@ minority_locations['ghetto'] = [
         for p in range(1, 9)
     ]
 ]
-minority_locations['ghetto-side'] = minority_locations['ghetto'][:240] \
-                                    + minority_locations['side'][240:]
+
+minority_locations['even-squares'] = minority_locations['even'][:240]\
+                                     + minority_locations['squares'][240:]
+minority_locations['squares-even'] = minority_locations['squares'][:240]\
+                                     + minority_locations['even'][240:]
+
+minority_locations['squares-side'] = minority_locations['squares'][:240]\
+                                     + minority_locations['side'][240:]
+minority_locations['side-squares'] = minority_locations['side'][:240]\
+                                     + minority_locations['squares'][240:]
+
 minority_locations['side-ghetto'] = minority_locations['side'][:240] \
                                     + minority_locations['ghetto'][240:]
+minority_locations['ghetto-side'] = minority_locations['ghetto'][:240] \
+                                    + minority_locations['side'][240:]
 
 minority_locations['squares-side-ghetto'] = minority_locations['squares'][:120] \
                                             + minority_locations['side'][120:240] \
@@ -303,7 +311,6 @@ def simulate_multiple_segregation_levels(
         for i in range(n):
             plot_data = synthetic_datasets[i]
 
-            print(".", end='')
             page_data = aggregation_result(
                 plot_data,
                 page_distribution,
@@ -320,6 +327,8 @@ def simulate_multiple_segregation_levels(
             )
             multiple_S['level'] = k
             results.append(multiple_S)
+
+            print(".", end='')
 
         print()
 
@@ -358,8 +367,8 @@ if __name__ == '__main__':
     page_distribution = BetaBinomial(n=28, a=3, b=12)
 
     kwargs = {
-        'bandwidths': [100, 150, 200, 250],
-        'cell_sizes': [25],
+        'bandwidths': [100, 150, 200, 250, 300, 400, 500],
+        'cell_sizes': [25, 50],
         'kernel_functions': [Martin, Triangle, Box],
     }
 
@@ -371,7 +380,7 @@ if __name__ == '__main__':
             population_distribution=pop_distribution,
             page_distribution=page_distribution,
             n=20,
-            **kwargs,
+            **kwargs
         )
 
         simulation_results.to_csv(data_dir / 'simulated' / f'aggregation_effects_S_{k}.csv')
