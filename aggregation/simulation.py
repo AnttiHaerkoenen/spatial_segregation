@@ -131,24 +131,24 @@ assert all([len(v) == 360 for v in minority_locations.values()])
 assert all([len(v) == 192 for v in orders.values()])
 
 
-def simulate_pop_by_page(
-        page_distribution: Distribution,
-        plot_distribution: Distribution,
-        n_plots: int,
-):
-    left = n_plots
-    pages = []
-
-    while left > 0:
-        plots = page_distribution.draw(1)[0]
-
-        if plots > left:
-            plots = left
-
-        pop = sum(plot_distribution.draw(plots))
-        pages.append(pop)
-
-    return pages
+# def simulate_pop_by_page(
+#         page_distribution: Distribution,
+#         plot_distribution: Distribution,
+#         n_plots: int,
+# ):
+#     left = n_plots
+#     pages = []
+#
+#     while left > 0:
+#         plots = page_distribution.draw(1)[0]
+#
+#         if plots > left:
+#             plots = left
+#
+#         pop = sum(plot_distribution.draw(plots))
+#         pages.append(pop)
+#
+#     return pages
 
 
 def _get_simulated_plots_by_page(
@@ -174,10 +174,14 @@ def _get_simulated_pop_by_page(
         pop_by_plot: gpd.GeoDataFrame,
         plots_by_page: Sequence,
         page_col: str,
+        plot_number_col: str,
 ):
     page_nums = [[i] * n for i, n in enumerate(plots_by_page, start=0)]
     pop_by_plot[page_col] = list(chain.from_iterable(page_nums))
     pop_by_page = pop_by_plot.groupby(by=page_col).sum()
+    pop_by_page[plot_number_col] = pop_by_plot.groupby(by=page_col).apply(
+        lambda group: group.loc[list(group[plot_number_col])[len(group) // 2], plot_number_col]
+    )
 
     return pop_by_page
 
@@ -308,6 +312,7 @@ def simulate_multiple_segregation_levels(
         )
 
         print('Simulating page-based aggregation', end='')
+
         for i in range(n):
             plot_data = synthetic_datasets[i]
 
