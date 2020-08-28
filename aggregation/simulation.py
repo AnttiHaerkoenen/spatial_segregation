@@ -7,6 +7,7 @@ import random
 import geopandas as gpd
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 from aggregation.kernels import Martin, Quartic, Box, Triangle
 from aggregation.distributions import Distribution, Gamma, BetaBinomial
@@ -14,15 +15,15 @@ from aggregation.aggregation_strategies import get_aggregate_locations_by_distri
 
 
 district_locs = {
-    '1': {'xoff': -1000, 'yoff': -650},
-    '2': {'xoff': 0, 'yoff': -650},
-    '3': {'xoff': 1000, 'yoff': -650},
-    '4': {'xoff': -1000, 'yoff': 0},
+    '1': {'xoff': -1100, 'yoff': -720},
+    '2': {'xoff': 0, 'yoff': -720},
+    '3': {'xoff': 1100, 'yoff': -720},
+    '4': {'xoff': -1100, 'yoff': 0},
     '5': {'xoff': 0, 'yoff': 0},
-    '6': {'xoff': 1000, 'yoff': 0},
-    '7': {'xoff': -1000, 'yoff': 650},
-    '8': {'xoff': 0, 'yoff': 650},
-    '9': {'xoff': 1000, 'yoff': 650},
+    '6': {'xoff': 1100, 'yoff': 0},
+    '7': {'xoff': -1100, 'yoff': 720},
+    '8': {'xoff': 0, 'yoff': 720},
+    '9': {'xoff': 1100, 'yoff': 720},
 }
 
 minority_locations = {
@@ -170,6 +171,24 @@ def _get_simulated_plots_by_page(
     return pages
 
 
+def _get_representative_plot(
+        plots_in_page,
+        plot_number_col,
+        how,
+):
+    assert how in {'first', 'mid', 'last'}
+
+    if how == 'mid':
+        midpoint = plots_in_page.index[len(plots_in_page.index) // 2]
+        return plots_in_page.loc[midpoint, plot_number_col]
+    elif how == 'first':
+        first = plots_in_page.index[0]
+        return plots_in_page.loc[first, plot_number_col]
+    elif how == 'last':
+        last = plots_in_page.index[-1]
+        return plots_in_page.loc[last, plot_number_col]
+
+
 def _get_simulated_pop_by_page(
         pop_by_plot: gpd.GeoDataFrame,
         plots_by_page: Sequence,
@@ -179,9 +198,15 @@ def _get_simulated_pop_by_page(
     page_nums = [[i] * n for i, n in enumerate(plots_by_page, start=0)]
     pop_by_plot[page_col] = list(chain.from_iterable(page_nums))
     pop_by_page = pop_by_plot.groupby(by=page_col).sum()
-    pop_by_page[plot_number_col] = pop_by_plot.groupby(by=page_col).apply(
-        lambda group: group.loc[list(group[plot_number_col])[len(group) // 2], plot_number_col]
+
+    representative_plots = pop_by_plot.groupby(by=page_col).apply(
+        _get_representative_plot,
+        plot_number_col=plot_number_col,
+        how='mid',
     )
+
+    assert len(representative_plots.index) == len(pop_by_page.index)
+    pop_by_page[plot_number_col] = representative_plots
 
     return pop_by_page
 
@@ -191,6 +216,7 @@ def paginate(
         order: Sequence,
         page_distribution: Distribution,
         page_col: str,
+        plot_number_col: str,
         n_plots: int = None,
 ):
     if not n_plots:
@@ -205,7 +231,12 @@ def paginate(
         pop_by_plot.drop(columns='order', inplace=True)
 
     pages = _get_simulated_plots_by_page(page_distribution, n_plots)
-    pop_by_page = _get_simulated_pop_by_page(pop_by_plot, pages, page_col=page_col)
+    pop_by_page = _get_simulated_pop_by_page(
+        pop_by_plot,
+        pages,
+        page_col=page_col,
+        plot_number_col=plot_number_col,
+    )
 
     return pop_by_page
 
@@ -258,22 +289,33 @@ def aggregation_result(
         synthetic_plot_data: gpd.GeoDataFrame,
         page_distribution: Distribution,
         order: Sequence,
-        number_col: str = 'number',
+        plot_number_col: str = 'number',
         page_col: str = 'page_number',
+        use_actual_plots: bool = True,
 ):
-    location_data = synthetic_plot_data.loc[:, ['geometry', number_col]]
+    location_data = synthetic_plot_data.loc[:, ['geometry', plot_number_col]]
 
     synthetic_page_data = paginate(
         pop_by_plot=synthetic_plot_data,
         page_col=page_col,
         page_distribution=page_distribution,
         order=order,
+        plot_number_col=plot_number_col,
     )
 
-    page_location_data = get_aggregate_locations_by_district(
-        synthetic_page_data,
-        location_data,
-    )
+    if use_actual_plots:
+        location_data = location_data.set_index(plot_number_col)
+        synthetic_page_data = synthetic_page_data.set_index(plot_number_col)
+        print(synthetic_page_data)
+        page_location_data = location_data.join(synthetic_page_data, on='number')
+        print(page_location_data)
+        # todo fix
+    else:
+        synthetic_page_data.drop(columns=[plot_number_col], inplace=True)
+        page_location_data = get_aggregate_locations_by_district(
+            synthetic_page_data,
+            location_data,
+        )
 
     return page_location_data
 
@@ -287,8 +329,9 @@ def simulate_multiple_segregation_levels(
         majority_col='lutheran',
         minority_col='orthodox',
         total_col='total',
-        number_col='number',
+        plot_number_col='number',
         id_cols=('district', 'number'),
+        use_actual_plots=True,
         n: int = 1,
         **kwargs
 ) -> pd.DataFrame:
@@ -319,8 +362,9 @@ def simulate_multiple_segregation_levels(
             page_data = aggregation_result(
                 plot_data,
                 page_distribution,
-                number_col=number_col,
+                plot_number_col=plot_number_col,
                 order=order,
+                use_actual_plots=use_actual_plots,
             )
 
             multiple_S = get_multiple_S(
