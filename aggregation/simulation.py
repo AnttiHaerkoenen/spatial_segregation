@@ -174,19 +174,20 @@ def _get_simulated_plots_by_page(
 def _get_representative_plot(
         plots_in_page,
         plot_number_col,
+        district_number_col,
         how,
 ):
     assert how in {'first', 'mid', 'last'}
 
     if how == 'mid':
         midpoint = plots_in_page.index[len(plots_in_page.index) // 2]
-        return plots_in_page.loc[midpoint, plot_number_col]
+        return plots_in_page.loc[midpoint, [district_number_col, plot_number_col]]
     elif how == 'first':
         first = plots_in_page.index[0]
-        return plots_in_page.loc[first, plot_number_col]
+        return plots_in_page.loc[first, [district_number_col, plot_number_col]]
     elif how == 'last':
         last = plots_in_page.index[-1]
-        return plots_in_page.loc[last, plot_number_col]
+        return plots_in_page.loc[last, [district_number_col, plot_number_col]]
 
 
 def _get_simulated_pop_by_page(
@@ -194,19 +195,22 @@ def _get_simulated_pop_by_page(
         plots_by_page: Sequence,
         page_col: str,
         plot_number_col: str,
+        district_number_col: str,
 ):
     page_nums = [[i] * n for i, n in enumerate(plots_by_page, start=0)]
     pop_by_plot[page_col] = list(chain.from_iterable(page_nums))
     pop_by_page = pop_by_plot.groupby(by=page_col).sum()
 
-    representative_plots = pop_by_plot.groupby(by=page_col).apply(
+    representative_plots_and_districts = pop_by_plot.groupby(by=page_col).apply(
         _get_representative_plot,
         plot_number_col=plot_number_col,
         how='mid',
+        district_number_col=district_number_col,
     )
 
-    assert len(representative_plots.index) == len(pop_by_page.index)
-    pop_by_page[plot_number_col] = representative_plots
+    assert len(representative_plots_and_districts.index) == len(pop_by_page.index)
+    pop_by_page[plot_number_col] = representative_plots_and_districts[plot_number_col]
+    pop_by_page[district_number_col] = representative_plots_and_districts[district_number_col]
 
     return pop_by_page
 
@@ -217,6 +221,7 @@ def paginate(
         page_distribution: Distribution,
         page_col: str,
         plot_number_col: str,
+        district_number_col: str,
         n_plots: int = None,
 ):
     if not n_plots:
@@ -236,6 +241,7 @@ def paginate(
         pages,
         page_col=page_col,
         plot_number_col=plot_number_col,
+        district_number_col=district_number_col,
     )
 
     return pop_by_page
@@ -290,26 +296,26 @@ def aggregation_result(
         page_distribution: Distribution,
         order: Sequence,
         plot_number_col: str = 'number',
+        district_number_col: str = 'district',
         page_col: str = 'page_number',
         use_actual_plots: bool = True,
 ):
-    location_data = synthetic_plot_data.loc[:, ['geometry', plot_number_col]]
+    location_data = synthetic_plot_data.loc[:, ['geometry', district_number_col, plot_number_col]]
 
     synthetic_page_data = paginate(
         pop_by_plot=synthetic_plot_data,
-        page_col=page_col,
-        page_distribution=page_distribution,
         order=order,
+        page_distribution=page_distribution,
+        page_col=page_col,
         plot_number_col=plot_number_col,
+        district_number_col=district_number_col
     )
 
     if use_actual_plots:
-        location_data = location_data.set_index(plot_number_col)
-        synthetic_page_data = synthetic_page_data.set_index(plot_number_col)
-        print(synthetic_page_data)
-        page_location_data = location_data.join(synthetic_page_data, on='number')
-        print(page_location_data)
-        # todo fix
+        location_data = location_data.set_index([district_number_col, plot_number_col])
+        synthetic_page_data = synthetic_page_data.set_index([district_number_col, plot_number_col])
+        page_location_data = location_data.join(synthetic_page_data, on=[district_number_col, plot_number_col])
+        page_location_data.dropna(axis=0, inplace=True)
     else:
         synthetic_page_data.drop(columns=[plot_number_col], inplace=True)
         page_location_data = get_aggregate_locations_by_district(
@@ -422,6 +428,10 @@ if __name__ == '__main__':
     }
 
     for k, v in orders.items():
+        print()
+        print(k.upper())
+        print()
+
         simulation_results = simulate_multiple_segregation_levels(
             locations=locations,
             minority_location_dict=minority_locations,
