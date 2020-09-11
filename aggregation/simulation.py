@@ -85,8 +85,17 @@ minority_locations['side-ghetto'] = minority_locations['side'][:240] \
 minority_locations['ghetto-side'] = minority_locations['ghetto'][:240] \
                                     + minority_locations['side'][240:]
 
+minority_locations['squares-ghetto'] = minority_locations['squares'][:240] \
+                                    + minority_locations['ghetto'][240:]
+minority_locations['ghetto-squares'] = minority_locations['ghetto'][:240] \
+                                    + minority_locations['squares'][240:]
+
 minority_locations['squares-side-ghetto'] = minority_locations['squares'][:120] \
                                             + minority_locations['side'][120:240] \
+                                            + minority_locations['ghetto'][240:]
+
+minority_locations['even-squares-ghetto'] = minority_locations['even'][:120] \
+                                            + minority_locations['squares'][120:240] \
                                             + minority_locations['ghetto'][240:]
 
 block_rows = [(1, 6), (6, 11), (11, 15), (15, 20), (20, 25)]

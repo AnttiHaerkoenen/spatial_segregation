@@ -94,9 +94,9 @@ if __name__ == '__main__':
 
     data = data[data['order'].isin('blocks snake_20 snake_40 snake_60 snake_80 snake'.split())]
     data = data[data['function'].isin('Martin_et_al_2000'.split())]
-    # data = data[data['level'].isin([v for k, v in level_mapper.items() if 'side' not in k])]
-    data = data[data['bandwidth'] == 150]
-    data = data[data['cell'] == 25]
+    data = data[data['level'].isin([v for k, v in level_mapper.items() if 'side' not in k])]
+    data = data[data['bandwidth'] == 200]
+    # data = data[data['cell'] == 25]
 
     # data['S_corrected'] = 1.1718 * data['S_by_page'] - 0.0201
     # data['S_difference_corrected'] = data['S_corrected'] - data['S_by_plot']
