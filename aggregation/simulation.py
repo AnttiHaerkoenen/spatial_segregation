@@ -422,6 +422,7 @@ if __name__ == '__main__':
     fig_dir = Path('../figures')
 
     locations = gpd.read_file(data_dir / 'simulated' / 'synthetic_district_plots.shp')
+
     locations.geometry = locations.geometry.centroid
     locations = clone_district(locations, district_locs)
 
@@ -451,7 +452,7 @@ if __name__ == '__main__':
             **kwargs
         )
 
-        simulation_results.to_csv(data_dir / 'simulated' / f'aggregation_effects_S_{k}.csv')
+        simulation_results.to_csv(data_dir / 'simulated' / 'actual_plots' / f'aggregation_effects_S_{k}.csv')
 
         print(k.upper())
         print(simulation_results.describe())
