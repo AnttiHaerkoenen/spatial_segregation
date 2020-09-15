@@ -20,8 +20,11 @@ level_mapper = {
             'squares-even',
             'squares',
             'squares-side',
+            'even-squares-ghetto',
+            'squares-ghetto',
             'side-squares',
             'squares-side-ghetto',
+            'ghetto-squares',
             'side',
             'side-ghetto',
             'ghetto-side',
@@ -87,7 +90,7 @@ def get_multiple_corrected_S(data):
 
 
 if __name__ == '__main__':
-    data_dir = Path('../data/simulated')
+    data_dir = Path('../data/simulated') / 'actual_plots'
 
     data = load_data(data_dir, 'aggregation_effects_S_*.csv', index_col=0)
     data['level'] = data['level'].map(level_mapper)
