@@ -20,8 +20,11 @@ level_mapper = {
             'squares-even',
             'squares',
             'squares-side',
+            'even-squares-ghetto',
+            'squares-ghetto',
             'side-squares',
             'squares-side-ghetto',
+            'ghetto-squares',
             'side',
             'side-ghetto',
             'ghetto-side',
@@ -87,7 +90,7 @@ def get_multiple_corrected_S(data):
 
 
 if __name__ == '__main__':
-    data_dir = Path('../data/simulated')
+    data_dir = Path('../data/simulated') / 'actual_plots'
 
     data = load_data(data_dir, 'aggregation_effects_S_*.csv', index_col=0)
     data['level'] = data['level'].map(level_mapper)
@@ -95,7 +98,7 @@ if __name__ == '__main__':
     data = data[data['order'].isin('blocks snake_20 snake_40 snake_60 snake_80 snake'.split())]
     data = data[data['function'].isin('Martin_et_al_2000'.split())]
     data = data[data['level'].isin([v for k, v in level_mapper.items() if 'side' not in k])]
-    data = data[data['bandwidth'] == 200]
+    data = data[data['bandwidth'] == 500]
     # data = data[data['cell'] == 25]
 
     # data['S_corrected'] = 1.1718 * data['S_by_page'] - 0.0201
