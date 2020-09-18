@@ -448,11 +448,12 @@ if __name__ == '__main__':
             order=v,
             population_distribution=pop_distribution,
             page_distribution=page_distribution,
+            use_actual_plots=False,
             n=20,
             **kwargs
         )
 
-        simulation_results.to_csv(data_dir / 'simulated' / 'actual_plots' / f'aggregation_effects_S_{k}.csv')
+        simulation_results.to_csv(data_dir / 'simulated' / 'estimated_plots' / f'aggregation_effects_S_{k}.csv')
 
         print(k.upper())
         print(simulation_results.describe())
