@@ -97,21 +97,14 @@ if __name__ == '__main__':
 
     data = data[data['order'].isin('blocks snake_20 snake_40 snake_60 snake_80 snake'.split())]
     data = data[data['function'].isin('Martin_et_al_2000'.split())]
-    data = data[data['level'].isin([v for k, v in level_mapper.items() if 'side' not in k])]
+    data = data[data['level'].isin([v for k, v in level_mapper.items() if k in 'squares squares-ghetto ghetto-squares ghetto'.split()])]
     data = data[data['bandwidth'] == 500]
-    # data = data[data['cell'] == 25]
-
-    # data['S_corrected'] = 1.1718 * data['S_by_page'] - 0.0201
-    # data['S_difference_corrected'] = data['S_corrected'] - data['S_by_plot']
+    data = data[data['cell'] == 25]
 
     ols_model = smf.ols('S_by_plot ~ S_by_page', data=data).fit()
     print(ols_model.summary())
     # data.plot(kind='scatter', x='S_by_page', y='S_by_plot', c='level')
-    data.boxplot(column='S_by_plot', by='level')
-    data.boxplot(column='S_by_page', by='level')
 
-    # plot_regress_exog(ols_model, 'S_corrected')
-    # data['S_difference_corrected'].hist()
     data.plot(
         x='S_by_page',
         y='S_by_plot',
