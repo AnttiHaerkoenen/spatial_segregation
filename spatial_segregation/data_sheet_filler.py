@@ -64,7 +64,7 @@ if __name__ == '__main__':
     input_dir = data_dir / 'raw'
     output_dir = data_dir / 'intermediary'
 
-    for year in range(1880, 1916, 10):
+    for year in range(1880, 1921, 10):
         fill_data_sheet(
             input_dir / 'Viipurin henkikirjat summat.xlsx',
             output_dir / f'pop_by_page_{year}.csv',
