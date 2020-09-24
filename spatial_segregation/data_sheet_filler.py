@@ -62,7 +62,7 @@ def fill_data_sheet(
 if __name__ == '__main__':
     data_dir = Path('../data')
     input_dir = data_dir / 'raw'
-    output_dir = data_dir / 'intermediary'
+    output_dir = data_dir / 'interim'
 
     for year in range(1880, 1921, 10):
         fill_data_sheet(
