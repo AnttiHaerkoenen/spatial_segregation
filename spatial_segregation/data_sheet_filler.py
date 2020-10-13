@@ -64,7 +64,10 @@ if __name__ == '__main__':
     input_dir = data_dir / 'raw'
     output_dir = data_dir / 'interim'
 
-    for year in range(1880, 1921, 10):
+    if not output_dir.exists():
+        output_dir.mkdir()
+
+    for year in range(1880, 1921, 5):
         fill_data_sheet(
             input_dir / 'Viipurin henkikirjat summat.xlsx',
             output_dir / f'pop_by_page_{year}.csv',
