@@ -76,7 +76,7 @@ pyrsistent==0.16.0
 pysal==2.1.0
 python-dateutil==2.8.1
 pytz==2020.1
-PyYAML==5.3.1
+PyYAML==5.4
 pyzmq==19.0.1
 qtconsole @ file:///home/conda/feedstock_root/build_artifacts/qtconsole_1589392299544/work
 QtPy==1.9.0
