@@ -102,7 +102,7 @@ tornado==6.0.4
 tqdm @ file:///home/conda/feedstock_root/build_artifacts/tqdm_1588513834538/work
 traitlets==4.3.3
 urbanaccess==0.2.0
-urllib3==1.25.6
+urllib3==1.25.8
 wcwidth==0.1.9
 webencodings==0.5.1
 widgetsnbextension==3.5.1
