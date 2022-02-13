@@ -1,6 +1,6 @@
-district,16_ore,12_ore,no_tax
-Kaupunki,558,101,19
-Valli,0,485,93
-Siikaniemi,0,623,56
+district,no_tax,12_ore,16_ore
+Kaupunki,19,101,558
+Valli,93,485,0
+Siikaniemi,56,623,0
 Pantsarlahti,0,90,0
 tenant_farmers,0,44,0
