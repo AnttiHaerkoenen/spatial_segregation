@@ -8,7 +8,6 @@ import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
-import rasterio as rio
 from scipy.spatial.distance import cdist
 from segregation.aspatial import MinMax
 
@@ -25,6 +24,7 @@ def kernel_density_surface(
         cell_size,
         kernel_function: Callable,
 ):
+    import rasterio as rio
     pop = get_xy(data)
     pad = bandwidth * 2
 
