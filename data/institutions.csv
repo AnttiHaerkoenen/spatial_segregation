@@ -49,6 +49,8 @@ year,district,plot_number
 1895,Anina,30
 1900,Anina,29
 1900,Anina,30
+1903,Anina,29
+1903,Anina,30
 1905,Anina,29
 1905,Anina,30
 1910,Anina,29
@@ -57,3 +59,7 @@ year,district,plot_number
 1915,Anina,30
 1910,Valli,116
 1915,Valli,116
+1905,Papula,288
+1910,Papula,288
+1913,Papula,288
+1915,Papula,288
