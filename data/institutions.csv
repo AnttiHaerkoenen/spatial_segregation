@@ -1,5 +1,6 @@
 year,district,plot_number
 1880,Pietarin_esikaupunki,25
+1883,Pietarin_esikaupunki,25
 1885,Pietarin_esikaupunki,25
 1890,Pietarin_esikaupunki,25
 1895,Pietarin_esikaupunki,21
@@ -8,6 +9,7 @@ year,district,plot_number
 1895,Pietarin_esikaupunki,24
 1915,Pietarin_esikaupunki,28
 1880,Saunalahti,13
+1883,Saunalahti,13
 1890,Saunalahti,13
 1895,Saunalahti,2
 1895,Saunalahti,3
@@ -59,6 +61,14 @@ year,district,plot_number
 1915,Anina,30
 1910,Valli,116
 1915,Valli,116
+1880,Papula,8
+1883,Papula,8
+1885,Papula,8
+1888,Papula,8
+1890,Papula,8
+1895,Papula,8
+1900,Papula,8
+1902,Papula,8
 1905,Papula,288
 1910,Papula,288
 1913,Papula,288

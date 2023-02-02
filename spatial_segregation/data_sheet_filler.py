@@ -60,11 +60,11 @@ def fill_data_sheet(
 
 
 if __name__ == '__main__':
-    data_dir = Path('../data')
+    data_dir = Path('./data')
     input_dir = data_dir / 'raw'
     output_dir = data_dir / 'interim'
 
-    YEARS = list(range(1880, 1921, 5)) + [1888, 1902, 1913]
+    YEARS = list(range(1880, 1921, 5)) + [1883, 1888, 1902, 1913]
 
     if not output_dir.exists():
         output_dir.mkdir()
