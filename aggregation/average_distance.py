@@ -6,7 +6,7 @@ import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
-from spatial_segregation.data import split_plots
+from src.data import split_plots
 
 if __name__ == '__main__':
     data_dir = Path('../data/')

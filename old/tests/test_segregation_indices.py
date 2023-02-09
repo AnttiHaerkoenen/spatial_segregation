@@ -5,7 +5,7 @@ import hypothesis.extra.numpy as hnp
 import numpy as np
 
 from old.src.segregation_indices import calc_indices
-from spatial_segregation.exceptions import SpatSegValueError
+from src.exceptions import SpatSegValueError
 
 
 class TestCalcIndices(unittest.TestCase):

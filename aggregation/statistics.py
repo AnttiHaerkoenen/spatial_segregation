@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from scipy.stats import stats
 
-from spatial_segregation.data import prepare_pop_data
+from src.data import prepare_pop_data
 
 
 def get_plots_by_page(

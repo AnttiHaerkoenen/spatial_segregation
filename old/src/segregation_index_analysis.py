@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from old.src import kde, segregation_indices, data
-from spatial_segregation.exceptions import SpatSegKeyError, SpatSegValueError
+from src.exceptions import SpatSegKeyError, SpatSegValueError
 
 
 class SegregationIndexAnalysis:

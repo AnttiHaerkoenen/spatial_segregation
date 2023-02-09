@@ -12,8 +12,8 @@ from scipy.spatial.distance import cdist
 from segregation.aspatial import MinMax
 
 from aggregation.kernels import Martin, Quartic, Box, Triangle
-from spatial_segregation.analysis import plot_density, get_xy
-from spatial_segregation.data import merge_dataframes,\
+from src.analysis import plot_density, get_xy
+from src.data import merge_dataframes,\
     split_plots, prepare_pop_data
 
 
