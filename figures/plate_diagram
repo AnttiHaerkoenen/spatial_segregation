@@ -12,16 +12,16 @@ Normal" shape=ellipse]
 		label=4 labeljust=r labelloc=b style=rounded
 	}
 	subgraph cluster8 {
-		S [label="S
-~
-Normal" shape=ellipse style=filled]
 		"μ" [label="μ
 ~
 Deterministic" shape=box]
+		S [label="S
+~
+Normal" shape=ellipse style=filled]
 		label=8 labeljust=r labelloc=b style=rounded
 	}
-	w -> "μ"
 	a -> "μ"
+	w -> "μ"
 	"μ" -> S
 	"σ" -> S
 }
