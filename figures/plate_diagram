@@ -1,10 +1,10 @@
 digraph {
-	a [label="a
-~
-Normal" shape=ellipse]
 	"σ" [label="σ
 ~
 HalfNormal" shape=ellipse]
+	a [label="a
+~
+Normal" shape=ellipse]
 	subgraph cluster4 {
 		w [label="w
 ~
@@ -20,8 +20,8 @@ Deterministic" shape=box]
 Normal" shape=ellipse style=filled]
 		label=8 labeljust=r labelloc=b style=rounded
 	}
-	a -> "μ"
 	w -> "μ"
+	a -> "μ"
 	"μ" -> S
 	"σ" -> S
 }
