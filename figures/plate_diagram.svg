@@ -27,7 +27,7 @@
 <text text-anchor="middle" x="41.72" y="-282.68" font-family="Times,serif" font-size="14.00">Normal</text>
 </g>
 <!-- μ -->
-<g id="node5" class="node">
+<g id="node4" class="node">
 <title>μ</title>
 <polygon fill="none" stroke="black" points="137.22,-213.93 46.22,-213.93 46.22,-160.93 137.22,-160.93 137.22,-213.93"/>
 <text text-anchor="middle" x="91.72" y="-198.73" font-family="Times,serif" font-size="14.00">μ</text>
@@ -49,7 +49,7 @@
 <text text-anchor="middle" x="213.72" y="-168.73" font-family="Times,serif" font-size="14.00">HalfNormal</text>
 </g>
 <!-- S -->
-<g id="node4" class="node">
+<g id="node5" class="node">
 <title>S</title>
 <ellipse fill="lightgrey" stroke="black" cx="93.72" cy="-76.48" rx="41.94" ry="37.45"/>
 <text text-anchor="middle" x="93.72" y="-87.78" font-family="Times,serif" font-size="14.00">S</text>
