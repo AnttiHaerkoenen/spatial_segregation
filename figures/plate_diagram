@@ -20,8 +20,8 @@ Normal" shape=ellipse style=filled]
 Deterministic" shape=box]
 		label=8 labeljust=r labelloc=b style=rounded
 	}
-	w -> "μ"
 	"α" -> "μ"
+	w -> "μ"
 	"σ" -> S
 	"μ" -> S
 }

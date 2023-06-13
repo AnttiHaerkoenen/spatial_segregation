@@ -57,7 +57,7 @@
 <text text-anchor="middle" x="180.69" y="-168.73" font-family="Times,serif" font-size="14.00">Deterministic</text>
 </g>
 <!-- α&#45;&gt;μ -->
-<g id="edge2" class="edge">
+<g id="edge1" class="edge">
 <title>α&#45;&gt;μ</title>
 <path fill="none" stroke="black" d="M126.98,-268.6C136.34,-254.63 147.37,-238.17 156.99,-223.81"/>
 <polygon fill="black" stroke="black" points="159.89,-225.77 162.54,-215.52 154.07,-221.88 159.89,-225.77"/>
@@ -71,7 +71,7 @@
 <text text-anchor="middle" x="206.69" y="-282.68" font-family="Times,serif" font-size="14.00">Normal</text>
 </g>
 <!-- w&#45;&gt;μ -->
-<g id="edge1" class="edge">
+<g id="edge2" class="edge">
 <title>w&#45;&gt;μ</title>
 <path fill="none" stroke="black" d="M198.32,-264.34C195.41,-251.82 192.14,-237.75 189.22,-225.17"/>
 <polygon fill="black" stroke="black" points="192.67,-224.54 187,-215.59 185.85,-226.12 192.67,-224.54"/>
